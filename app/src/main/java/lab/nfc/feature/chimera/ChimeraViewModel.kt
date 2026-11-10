@@ -15,10 +15,10 @@ import java.io.InputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
-class ChimeraViewModel(app:Application):AndroidViewModel(app) {
- val repository=lab.nfc.core.storage.SecureRepository.get(app)
+class ChimeraViewModel @JvmOverloads constructor(app:Application,repositoryOverride:lab.nfc.core.storage.SecureRepository?=null,ledgerOverride:ChimeraLedger?=null):AndroidViewModel(app) {
+ val repository=repositoryOverride ?: lab.nfc.core.storage.SecureRepository.get(app)
  private val generation=repository.generation
- val ledger=lab.nfc.core.storage.WorkspaceBootstrap.getLedger(app)
+ val ledger=ledgerOverride ?: lab.nfc.core.storage.WorkspaceBootstrap.getLedger(app)
  val appVersion=app.packageManager.getPackageInfo(app.packageName,0).versionName ?: "UNKNOWN"
  val research=JSONArray(app.assets.open("chimera/research.json").bufferedReader().use { it.readText() })
  val vectors=JSONObject(app.assets.open("chimera/public-vectors.json").bufferedReader().use { it.readText() })
@@ -42,6 +42,7 @@ class ChimeraViewModel(app:Application):AndroidViewModel(app) {
  fun flushDraft() { if(replacementCommitted) return;synchronized(draftLock) { repository.write("draft/workflow",draft.value.toString().toByteArray(),generation) } }
 
  var attachRole=ArtifactRole.OTHER
+ val recoveredImport=MutableStateFlow<Pair<String,String>?>(null)
  var pendingHexImport:((String)->Unit)?=null
  private val operation=java.util.concurrent.atomic.AtomicBoolean(false)
  fun work(action:()->String) { if(!operation.compareAndSet(false,true)) { message.value="Aguarde a operação atual";return };busy.value=true;viewModelScope.launch(Dispatchers.IO) {try { message.value=action();state.value=ledger.snapshot() } catch(e:Exception) { message.value=e.message ?: e.javaClass.simpleName } finally { state.value=ledger.snapshot();busy.value=false;operation.set(false) } } }

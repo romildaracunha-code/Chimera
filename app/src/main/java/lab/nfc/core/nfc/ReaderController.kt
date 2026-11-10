@@ -26,7 +26,7 @@ class ReaderController(private val activity: Activity,private val vm: LabViewMod
  }
  private fun read(tag: Tag) {
  if(!enabled || !inFlight.compareAndSet(false,true)) return
- vm.busy.value=true
+ vm.busy.value=true;vm.store.physicalCaptureActive=true
  val batch=commands.toList()
  val iso=IsoDep.get(tag)
  var managed: IsoSession?=null
@@ -58,11 +58,11 @@ class ReaderController(private val activity: Activity,private val vm: LabViewMod
  vm.store.append(s.id,Exchange(timestamp,"Leitor → tag FÍSICA",hex,result.hex(),duration/1_000_000,duration,"ISODEP_RESPONSE_RETURNED"))
  if(result.hex().takeLast(4)!="9000") break
  }
- val latest=vm.store.sessions.value.first { it.id==s.id }; vm.store.save(latest.copy(result=if(latest.exchanges.all { it.status=="9000" }) "Concluído; rádio NFC observado" else "Resposta de erro no hardware"))
+ val latest=requireNotNull(vm.store.session(s.id)); vm.store.save(latest.copy(result=if(latest.exchanges.all { it.status=="9000" }) "Concluído; rádio NFC observado" else "Resposta de erro no hardware"))
  } catch(e: Exception) {
- val latest=vm.store.sessions.value.find { it.id==s.id } ?: s
+ val latest=vm.store.session(s.id) ?: s
  vm.store.save(latest.copy(result="Erro de comunicação",error=e.javaClass.simpleName+": "+e.message)); vm.message.value="Erro: ${e.message}"
- } finally { managed?.close();runCatching { iso?.close() }; connected=null; sessionId=null; vm.busy.value=false; inFlight.set(false) }
+ } finally { managed?.close();runCatching { iso?.close() }; connected=null; sessionId=null; vm.store.physicalCaptureActive=false;vm.busy.value=false; inFlight.set(false) }
  }
  fun stop() { enabled=false; adapter?.disableReaderMode(activity); runCatching { connected?.close() } }
  fun destroy() { stop(); scope.cancel() }

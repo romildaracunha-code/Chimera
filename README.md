@@ -1,6 +1,16 @@
 # NFC Lab
 
-## NFC Lab 3.1 — operação e proteção de dados
+## NFC Lab 3.2 — recuperação e operação
+
+[APK atualizado](deliverables/NFC-Lab-3.2-operational-debug.apk) · [Fontes completos](deliverables/NFC-Lab-3.2-operational-project.zip) · [Manual 3.2](docs/operational/README.md) · [Validação executada](docs/operational/VALIDATION.md).
+
+Evolução da 3.1: recuperação pela tela de erro em banco separado, sessões criptografadas e paginadas (50 por página), exportação completa em stream, retenção automática opcional, recuperação do destino de importação após recriação da tela, diagnóstico do próprio Android e proteção de CSV contra fórmulas.
+
+**89 testes JVM aprovados, incluindo 3 testes de interação Compose e 16 testes operacionais; 19 testes Python; lint sem erros.** A carga de mil sessões foi exercitada em SQLite/Robolectric no host. APK e APK de testes compilados com a assinatura anterior preservada. **Zero experimentos físicos executados; nenhum dispositivo ADB conectado.** SDKs de fabricante, host/credenciais oficiais e validação no Android real continuam dependências externas.
+
+Fontes em `/workspace/NFC-Lab`; extração Windows em `D:\NFC-Lab`. Faça backup portátil antes de atualizar; use `adb install -r`, sem desinstalar/limpar dados. Não faça downgrade para a 3.1 sobre o formato migrado. Baseline `pre-v3.2-operational`; release `nfclab-3.2-operational`. As seções abaixo descrevem entregas históricas.
+
+## Histórico: NFC Lab 3.1 — operação e proteção de dados
 
 [APK 3.1](deliverables/NFC-Lab-3.1-hardened-debug.apk) · [Projeto completo](deliverables/NFC-Lab-3.1-hardened-project.zip) · [Guia e limites](docs/hardening/README.md) · [Resultados executados](docs/hardening/VALIDATION.md).
 

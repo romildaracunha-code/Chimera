@@ -41,16 +41,24 @@ import lab.nfc.feature.devices.*
 import lab.nfc.feature.physical.PhysicalScreen
 import lab.nfc.feature.chimera.*
 import lab.nfc.core.chimera.ArtifactRole
-@Composable fun LabApp(vm: LabViewModel,caps: Capabilities,onReader:(String)->Unit,onStopReader:()->Unit,onHce:()->Unit,onSettings:()->Unit,onExport:(Boolean,Session?)->Unit,onPhysicalExport:(String,String)->Unit,chimera:ChimeraViewModel,onChimeraExport:(String,String,String)->Unit,onImportText:(((String)->Unit))->Unit,onAttach:(String,ArtifactRole,Boolean)->Unit,onEvidenceZip:()->Unit) {
+@Composable fun LabApp(vm: LabViewModel,caps: Capabilities,onReader:(String)->Unit,onStopReader:()->Unit,onHce:()->Unit,onSettings:()->Unit,onExport:(Boolean,Session?)->Unit,onPhysicalExport:(String,String)->Unit,chimera:ChimeraViewModel,onChimeraExport:(String,String,String)->Unit,onImportText:(String,(String)->Unit)->Unit,onAttach:(String,ArtifactRole,Boolean)->Unit,onEvidenceZip:()->Unit) {
  var page by rememberSaveablePage()
  val sessions by vm.store.sessions.collectAsStateWithLifecycle()
+ val sessionCount by vm.store.sessionCount.collectAsStateWithLifecycle()
+ val historyOffset by vm.store.historyOffset.collectAsStateWithLifecycle()
  val profiles by vm.store.profiles.collectAsStateWithLifecycle()
  val devices by vm.store.devices.collectAsStateWithLifecycle()
  val profile by vm.profile.collectAsStateWithLifecycle()
  val message by vm.message.collectAsStateWithLifecycle()
  val busy by vm.busy.collectAsStateWithLifecycle()
+ LaunchedEffect(page) { if(page=="Dashboard") vm.historyPage(0) }
  var selected by remember { mutableStateOf<String?>(null) }
  var compare by remember { mutableStateOf<String?>(null) }
+ var selectedRecord by remember { mutableStateOf<Session?>(null) }
+ LaunchedEffect(selected,sessions) { selectedRecord=kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { selected?.let { vm.store.session(it) } } }
+ var referenceRecord by remember { mutableStateOf<Session?>(null) }
+ LaunchedEffect(compare,sessions) { referenceRecord=kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { compare?.let { vm.store.session(it) } } }
+
  val pages=listOf("Dashboard","Emulator","Reader","Inspector","Terminal","Sessions","Devices","Physical")+chimeraPages
  Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) {
  Column(Modifier.padding(16.dp)) {
@@ -79,13 +87,19 @@ import lab.nfc.core.chimera.ArtifactRole
  "Inspector" -> {
  item { Text("Comunicação do protocolo NFC Lab",style=MaterialTheme.typography.titleLarge); Text("Não há interceptação passiva de transações externas.") }
  item { Column { sessions.take(30).forEach { s -> TextButton(onClick={ selected=s.id }) { Text("${time(s.date)} • ${s.mode}") } } } }
- val s=sessions.find { it.id==selected } ?: sessions.firstOrNull()
+ val s=if(selected==null) sessions.firstOrNull() else selectedRecord?.takeIf { it.id==selected }
  if(s!=null) {
  item { Panel("Sessão ${s.id}") { Text(s.mode); Text(s.result); Text(s.technology); Text(s.error); Row { TextButton(onClick={ onExport(false,s) }) { Text("JSON") }; TextButton(onClick={ onExport(true,s) }) { Text("CSV") } } } }
  items(s.exchanges) { e -> ExchangeCard(e) }
  }
  }
  "Sessions" -> {
+ item { Row {
+  TextButton(enabled=historyOffset>0,onClick={ vm.historyPage((historyOffset-50).coerceAtLeast(0)) }) { Text("Anteriores") }
+  Text("${if(sessionCount==0) 0 else historyOffset+1}–${historyOffset+sessions.size} de $sessionCount")
+  TextButton(enabled=historyOffset+sessions.size<sessionCount,onClick={ vm.historyPage(historyOffset+50) }) { Text("Próximas") }
+ } }
+
  item { Row { TextButton(onClick={ onExport(false,null) }) { Text("Exportar JSON") }; TextButton(onClick={ onExport(true,null) }) { Text("Exportar CSV") } } }
  items(sessions,key={ it.id }) { s ->
  Panel("${time(s.date)} • ${s.mode}") {
@@ -95,7 +109,7 @@ import lab.nfc.core.chimera.ArtifactRole
  TextButton(onClick={ vm.notes(s.id,notes) }) { Text("Salvar observações") }
  Row { TextButton(onClick={ selected=s.id; page="Inspector" }) { Text("Inspecionar") }; TextButton(onClick={ vm.simulate(s) }) { Text("Repetir local") } }
  TextButton(onClick={ if(compare==null) compare=s.id else { selected=s.id } }) { Text(if(compare==s.id) "Referência selecionada" else "Comparar") }
- val ref=sessions.find { it.id==compare }
+ val ref=referenceRecord?.takeIf { it.id==compare }
  if(ref!=null && selected==s.id && ref.id!=s.id) {
  Text("Comparação com ${ref.id}: ${ref.mode} / ${s.mode}")
  Text("Comandos: ${ref.exchanges.size} / ${s.exchanges.size}")

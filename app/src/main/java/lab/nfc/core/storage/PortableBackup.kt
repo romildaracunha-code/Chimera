@@ -31,10 +31,19 @@ object PortableBackup {
  }
  fun validate(records:Map<String,ByteArray>) {
   require(records.isNotEmpty() && records.size<=10000 && records.values.sumOf { it.size.toLong() }<=70L*1024*1024)
-  records.forEach { (key,bytes) -> require(bytes.size<=20*1024*1024 && (key in setOf("legacy/sessions","legacy/devices","legacy/experiments","settings/lab","chimera/workspace-v3.json") || key.matches(Regex("chimera/[a-f0-9-]{36}\\.bin")) || key.matches(Regex("draft/[a-zA-Z0-9_-]{1,64}")))) { "Registro desconhecido/excessivo no backup" } }
+  records.forEach { (key,bytes) -> require(bytes.size<=20*1024*1024 && (key in setOf("legacy/sessions","legacy/devices","legacy/experiments","settings/lab","settings/retention","chimera/workspace-v3.json") || key.matches(Regex("chimera/[a-f0-9-]{36}\\.bin")) || key.matches(Regex("session/[0-9]{20}/[A-F0-9]{64}")) || key.matches(Regex("session-id/[A-F0-9]{64}")) || key.matches(Regex("draft/[a-zA-Z0-9_-]{1,64}")))) { "Registro desconhecido/excessivo no backup" } }
+  records.filterKeys { it.startsWith("session/") }.forEach { (key,bytes) ->
+   val session=Session.from(JSONObject(bytes.toString(Charsets.UTF_8)));require(SessionRepository.recordKey(session)==key)
+   require(records[SessionRepository.indexKey(session.id)]?.toString(Charsets.UTF_8)==key) { "Índice de sessão ausente ou divergente" }
+  }
+  records.filterKeys { it.startsWith("session-id/") }.forEach { (key,bytes) ->
+   val target=bytes.toString(Charsets.UTF_8);val row=records[target] ?: error("Índice aponta para sessão ausente")
+   require(target.startsWith("session/") && SessionRepository.indexKey(Session.from(JSONObject(row.toString(Charsets.UTF_8))).id)==key)
+  }
   records["legacy/sessions"]?.let { JSONArray(it.toString(Charsets.UTF_8)).objects().forEach { row -> Session.from(row) } }
   records["legacy/devices"]?.let { JSONArray(it.toString(Charsets.UTF_8)).objects().forEach { row -> DeviceRecord.from(row) } }
   records["legacy/experiments"]?.let { JSONArray(it.toString(Charsets.UTF_8)).objects().forEach { row -> PhysicalExperiment.from(row) } }
+  records["settings/retention"]?.let { val policy=JSONObject(it.toString(Charsets.UTF_8));require(policy.get("enabled") is Boolean && policy.getInt("days") in 1..3650) }
   records["settings/lab"]?.let { val s=JSONObject(it.toString(Charsets.UTF_8));lab.nfc.core.apdu.LabAids.requireLab(s.getString("selectedAid"));require(s.getJSONArray("profiles").length() in 1..128) }
   records["chimera/workspace-v3.json"]?.let { bytes ->
    val ledger=JSONObject(bytes.toString(Charsets.UTF_8));require(ledger.getInt("schemaVersion")==3);ChimeraLedger.verifyJournal(ledger)

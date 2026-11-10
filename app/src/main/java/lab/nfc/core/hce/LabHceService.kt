@@ -10,8 +10,8 @@ class LabHceService: HostApduService() {
  private var engine=LabEngine()
  private var sessionId: String?=null
  override fun processCommandApdu(commandApdu: ByteArray, extras: Bundle?): ByteArray {
- val store=LabStore.get(this); val id=store.activeHce ?: return "6985".bytes()
- val session=store.sessions.value.find { it.id==id && it.result=="Em andamento" } ?: return "6985".bytes()
+ val store=runCatching { LabStore.get(this) }.getOrElse { android.util.Log.e("NfcLab","HCE storage unavailable",it);return "6F00".bytes() }; val id=store.activeHce ?: return "6985".bytes()
+ val session=store.session(id)?.takeIf { it.result=="Em andamento" } ?: return "6985".bytes()
  if(sessionId!=id) { engine=LabEngine(session.labAid,session.labScenario=="REJECT_GET_DATA");sessionId=id }
  val timestamp=System.currentTimeMillis(); val start=SystemClock.elapsedRealtimeNanos()
  val result=engine.exchange(commandApdu,session.profile)

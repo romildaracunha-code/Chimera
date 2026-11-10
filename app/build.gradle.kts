@@ -1,7 +1,7 @@
 plugins { id("com.android.application"); id("org.jetbrains.kotlin.android"); id("org.jetbrains.kotlin.plugin.compose") }
 android {
  namespace = "lab.nfc"; compileSdk = 35
- defaultConfig { applicationId = "lab.nfc"; minSdk = 26; targetSdk = 35; versionCode = 4; versionName = "3.1-hardened"; testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+ defaultConfig { applicationId = "lab.nfc"; minSdk = 26; targetSdk = 35; versionCode = 5; versionName = "3.2-operational"; testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
  sourceSets.getByName("test").resources.srcDir("src/main/assets")
  testOptions { unitTests.isIncludeAndroidResources = true }
  buildFeatures { compose = true }
@@ -19,6 +19,9 @@ dependencies {
  androidTestImplementation("androidx.test.ext:junit:1.2.1")
  androidTestImplementation("androidx.test:runner:1.6.2")
  androidTestImplementation("androidx.test:core:1.6.1")
+ testImplementation(platform("androidx.compose:compose-bom:2024.12.01"))
+ testImplementation("androidx.compose.ui:ui-test-junit4")
+ debugImplementation("androidx.compose.ui:ui-test-manifest")
  testImplementation("junit:junit:4.13.2")
  testImplementation("org.robolectric:robolectric:4.14.1")
  testImplementation("org.json:json:20240303")

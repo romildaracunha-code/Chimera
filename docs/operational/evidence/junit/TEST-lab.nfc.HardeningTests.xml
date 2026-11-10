@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lab.nfc.HardeningTests" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-11-10T09:50:28" hostname="d61db6bbd1f9" time="3.128">
+  <properties/>
+  <testcase name="retentionDeletesOnlyExplicitPreviewIds" classname="lab.nfc.HardeningTests" time="0.071"/>
+  <testcase name="tvRtsiAipAndCvmDecodeWithoutInferringApproval" classname="lab.nfc.HardeningTests" time="0.003"/>
+  <testcase name="cvmListAndKernelScope" classname="lab.nfc.HardeningTests" time="0.008"/>
+  <testcase name="aesEnvelopeAuthenticatesContextAndTampering" classname="lab.nfc.HardeningTests" time="0.001"/>
+  <testcase name="contextualContradictionIsReviewFindingOnly" classname="lab.nfc.HardeningTests" time="0.006"/>
+  <testcase name="artifactDeletionInvalidatesReviewAndExportUsesDecryptedBytes" classname="lab.nfc.HardeningTests" time="0.035"/>
+  <testcase name="pcscImportPreservesFailuresTimingAndProvenance" classname="lab.nfc.HardeningTests" time="0.06"/>
+  <testcase name="typedSdkContractCannotProduceLocalVerification" classname="lab.nfc.HardeningTests" time="0.014"/>
+  <testcase name="streamingEnvelopeAndPortableFixtureForIndependentVerification" classname="lab.nfc.HardeningTests" time="1.105"/>
+  <testcase name="encryptedRecordBackendAndDeletionRemainAuditable" classname="lab.nfc.HardeningTests" time="0.003"/>
+  <testcase name="simulationImportCannotBecomePhysicalAndBatchIsSeparated" classname="lab.nfc.HardeningTests" time="0.006"/>
+  <testcase name="portableBackupAuthenticatesPasswordAndRejectsTampering" classname="lab.nfc.HardeningTests" time="1.807"/>
+  <testcase name="comparisonIncludesFailureSequenceConfigAndTimingScope" classname="lab.nfc.HardeningTests" time="0.003"/>
+  <testcase name="independentRandomNonces" classname="lab.nfc.HardeningTests" time="0.0"/>
+  <testcase name="backupRejectsUnknownRecordsMissingArtifactsAndBadJournal" classname="lab.nfc.HardeningTests" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

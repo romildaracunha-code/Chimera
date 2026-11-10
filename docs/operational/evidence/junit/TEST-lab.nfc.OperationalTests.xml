@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lab.nfc.OperationalTests" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-11-10T09:50:31" hostname="d61db6bbd1f9" time="5.524">
+  <properties/>
+  <testcase name="appendingOneSessionDoesNotRewriteOtherSessions" classname="lab.nfc.OperationalTests" time="3.358"/>
+  <testcase name="indexedBackupValidatesBindingsAndRejectsMissingIndex" classname="lab.nfc.OperationalTests" time="0.041"/>
+  <testcase name="recoverySwitchesOnlyAfterVerifiedSeparateVaultAndPreservesOriginal" classname="lab.nfc.OperationalTests" time="0.079"/>
+  <testcase name="recoveryWriteFailureLeavesExistingActivePointerUntouched" classname="lab.nfc.OperationalTests" time="0.039"/>
+  <testcase name="invalidRecoveryNeverChangesActivePointerOrOriginalRecords" classname="lab.nfc.OperationalTests" time="0.045"/>
+  <testcase name="dateChangeMovesIndexWithoutLeavingDuplicateRecord" classname="lab.nfc.OperationalTests" time="0.042"/>
+  <testcase name="retentionSchedulingIsOptInPersistedIdleChargingAndCancellable" classname="lab.nfc.OperationalTests" time="0.081"/>
+  <testcase name="cancelledRetentionDoesNotDeleteAnySelectedRecord" classname="lab.nfc.OperationalTests" time="0.041"/>
+  <testcase name="malformedPointerFailsClosed" classname="lab.nfc.OperationalTests" time="0.034"/>
+  <testcase name="migratesWholeLegacySnapshotIntoBoundedPagesAndIndexes" classname="lab.nfc.OperationalTests" time="0.255"/>
+  <testcase name="thousandSessionsLoadOnePageAndExportAllWithHostMetrics" classname="lab.nfc.OperationalTests" time="0.853"/>
+  <testcase name="writesIndexedBackupForIndependentVerifier" classname="lab.nfc.OperationalTests" time="0.322"/>
+  <testcase name="migrationRejectsDuplicateIdsWithoutDestroyingLegacy" classname="lab.nfc.OperationalTests" time="0.044"/>
+  <testcase name="streamExportsAllPagesAndCsvHeaderAppearsOnce" classname="lab.nfc.OperationalTests" time="0.221"/>
+  <testcase name="migrationRejectsDivergentRecordAndKeepsLegacy" classname="lab.nfc.OperationalTests" time="0.039"/>
+  <testcase name="csvEscapesSpreadsheetFormulaWhileJsonPreservesOriginalNotes" classname="lab.nfc.OperationalTests" time="0.026"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -43,3 +43,16 @@ class PortableTests(unittest.TestCase):
     def test_truncated_envelope_rejected(self):
         with self.assertRaises(ValueError):
             inspect_backup(b'NFCPBK01', self.password)
+
+    def test_indexed_sessions_and_binding(self):
+        session = {'id': 'UNIT-SESSION', 'date': 123}
+        identity = hashlib.sha256(session['id'].encode()).hexdigest().upper()
+        name = 'session/' + str(session['date']).zfill(20) + '/' + identity
+        records = [(name, json.dumps(session).encode()), ('session-id/' + identity, name.encode())]
+        self.assertEqual(2, inspect_backup(self.envelope(records), self.password)['recordCount'])
+        with self.assertRaises(ValueError):
+            inspect_backup(self.envelope(records[:1]), self.password)
+
+    def test_invalid_retention_policy_rejected(self):
+        with self.assertRaises(ValueError):
+            inspect_backup(self.envelope([('settings/retention', b'{"enabled":true,"days":0}')]), self.password)

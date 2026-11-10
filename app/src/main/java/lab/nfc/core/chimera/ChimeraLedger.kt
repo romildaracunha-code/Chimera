@@ -134,16 +134,17 @@ class ChimeraLedger(private val directory:File,seedCases:JSONArray,private val r
    .put("artifacts",JSONArray(root.getJSONArray("artifacts").objects().filter { it.getLong("registeredAt")<cutoff }.map { it.getString("id") }))
    .put("limit","Manual confirmation required; attached evidence deletion invalidates reviews. Runs/journal are retained.")
  }
- @Synchronized fun applyRetention(preview:JSONObject):JSONObject {
+ @Synchronized fun applyRetention(preview:JSONObject,continueAllowed:()->Boolean={true}):JSONObject {
   val plan=cloneJson(preview);require(plan.getInt("days") in 1..3650 && plan.getLong("cutoff")<=System.currentTimeMillis())
   val cutoff=plan.getLong("cutoff")
   val artifacts=plan.getJSONArray("artifacts");val analyses=plan.getJSONArray("analyses")
   // Validate all selected records before deletion; never add records absent from the reviewed preview.
   for(i in 0 until artifacts.length()) require(find("artifacts",artifacts.getString(i)).getLong("registeredAt")<cutoff)
   for(i in 0 until analyses.length()) require(find("analyses",analyses.getString(i)).getLong("savedAt")<cutoff)
-  for(i in 0 until artifacts.length()) deleteArtifact(artifacts.getString(i))
-  for(i in 0 until analyses.length()) deleteAnalysis(analyses.getString(i))
-  return plan
+  var removedArtifacts=0;var removedAnalyses=0
+  for(i in 0 until artifacts.length()) { if(!continueAllowed()) break;deleteArtifact(artifacts.getString(i));removedArtifacts++ }
+  for(i in 0 until analyses.length()) { if(!continueAllowed()) break;deleteAnalysis(analyses.getString(i));removedAnalyses++ }
+  return plan.put("removedArtifacts",removedArtifacts).put("removedAnalyses",removedAnalyses).put("interrupted",removedArtifacts<artifacts.length() || removedAnalyses<analyses.length())
  }
  @Synchronized fun deleteArtifact(id:String) {
   val artifact=find("artifacts",id);val runId=artifact.getString("runId")

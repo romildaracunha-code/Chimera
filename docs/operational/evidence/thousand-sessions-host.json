@@ -1,0 +1,8 @@
+{
+  "origin": "ROBOLECTRIC_SQLITE_HOST_SYNTHETIC",
+  "sessions": 1000,
+  "pageSize": 50,
+  "migrationMs": 650.002122,
+  "pageReadMs": 9.697495,
+  "physicalHardwareValidated": false
+}

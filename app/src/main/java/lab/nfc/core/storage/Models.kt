@@ -23,7 +23,18 @@ data class Session(val id: String = UUID.randomUUID().toString(), val date: Long
 }
 object Export {
  fun json(sessions: List<Session>) = JSONArray(sessions.map { it.json() }).toString(2)
- private fun cell(s: Any) = "\"" + s.toString().replace("\"", "\"\"") + "\""
+ fun writeJson(out:java.io.OutputStream,sessions:Sequence<Session>) {
+  out.write('['.code);var first=true
+  sessions.forEach { session -> if(!first) out.write(','.code);out.write(session.json().toString().toByteArray());first=false };out.write(']'.code)
+ }
+ fun writeCsv(out:java.io.OutputStream,sessions:Sequence<Session>) {
+  out.write(csv(emptyList()).toByteArray())
+  sessions.forEach { session -> out.write(csv(listOf(session)).substringAfter("\r\n").toByteArray());out.write("\r\n".toByteArray()) }
+ }
+ private fun cell(s:Any):String {
+  val text=s.toString();val safe=if(text.trimStart().firstOrNull() in listOf('=','+','-','@')) "'"+text else text
+  return "\""+safe.replace("\"","\"\"")+"\""
+ }
  fun csv(sessions: List<Session>): String = "session,date,device,technology,mode,profile,result,error,notes,timestamp,direction,command,response,status,durationMs,durationNanos,capturePoint,transportError\r\n" + sessions.flatMap { s -> (s.exchanges.ifEmpty { listOf(Exchange(s.date,"","","",0)) }).map { e -> listOf(s.id,s.date,s.device,s.technology,s.mode,s.profile,s.result,s.error,s.notes,e.timestamp,e.direction,e.command,e.response,e.status,e.durationMs,e.durationNanos,e.capturePoint,e.transportError).joinToString(",") { cell(it) } } }.joinToString("\r\n")
 }
 data class DeviceRecord(

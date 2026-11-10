@@ -46,7 +46,7 @@ class AndroidIntegrationTest {
  val c=ApplicationProvider.getApplicationContext<Context>(); val store=LabStore.get(c)
  val e=LabEngine(); val s=Session(device="Android instrumentation",technology="Logical only",mode="SIMULAÇÃO LOCAL",profile="LAB-TEST")
  store.save(s); store.append(s.id,Exchange(1,"SIMULATED",LabProtocol.SELECT,e.exchange(LabProtocol.SELECT.bytes(),s.profile).hex(),0))
- val disk=SecureRepository.get(c).read("legacy/sessions")!!.toString(Charsets.UTF_8); val a=JSONArray(disk)
+ val disk=SessionRepository(SecureRepository.get(c)).page(0,500).map { it.json() }; val a=JSONArray(disk)
  val found=(0 until a.length()).map { Session.from(a.getJSONObject(it)) }.first { it.id==s.id }
  assertEquals("9000",found.exchanges.single().status)
  assertTrue(Export.csv(listOf(found)).contains("SIMULATED"))

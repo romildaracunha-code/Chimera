@@ -54,14 +54,25 @@ import java.io.File
     };"Workspace restaurado; reiniciando interface"
    } }) { Text("Restaurar atomicamente e reabrir") }
   }
-  TextButton(enabled=!busy && File(context.filesDir,"restore-point.enc").exists(),onClick={ vm.work {
+  TextButton(enabled=!busy && vm.repository.hasRestorePoint(),onClick={ vm.work {
    val records=vm.repository.restorePoint();Handler(Looper.getMainLooper()).post { staged=records;confirmed=false };"Ponto local autenticado; confirme a substituição na prévia"
   } }) { Text("Revisar ponto de recuperação anterior") }
   Text("Um ponto de recuperação criptografado é salvo antes da substituição. Se o seletor de arquivos for interrompido, repita a operação; a senha precisa ser informada novamente.")
  }
  Panel("Retenção e revisão de exportação") {
+  var automaticConsent by remember { mutableStateOf(false) }
+  var schedulingStatus by remember { mutableStateOf("Consulte ou configure o agendamento Android") }
+  Text(schedulingStatus)
+  TextButton(enabled=!busy,onClick={ vm.work {
+   val policy=RetentionScheduler.policy(vm.repository);Handler(Looper.getMainLooper()).post { schedulingStatus="Retenção automática: ${policy.getBoolean("enabled")} • ${policy.getInt("days")} dias" };"Política consultada"
+  } }) { Text("Consultar política automática") }
+  Row { Checkbox(automaticConsent,{ automaticConsent=it });Text("Autorizo exclusão automática de anexos e análises antigos, invalidando revisões; execuções e journal são mantidos") }
   var retentionDays by remember { mutableStateOf("90") };var retentionPreview by remember { mutableStateOf<org.json.JSONObject?>(null) }
   OutlinedTextField(retentionDays,{ retentionDays=it.take(4);retentionPreview=null },label={ Text("Retenção manual: dias (1–3650)") },singleLine=true)
+  Button(enabled=!busy && automaticConsent,onClick={ val days=retentionDays.toIntOrNull();vm.work {
+   RetentionScheduler.configure(context,vm.repository,true,days ?: error("Informe dias válidos"));Handler(Looper.getMainLooper()).post { schedulingStatus="Retenção automática configurada: $days dias; Android agenda quando ocioso e carregando" };"Agendamento periódico solicitado ao Android"
+  } }) { Text("Ativar retenção automática com este prazo") }
+  TextButton(enabled=!busy,onClick={ vm.work { RetentionScheduler.configure(context,vm.repository,false,90);Handler(Looper.getMainLooper()).post { schedulingStatus="Retenção automática desativada" };"Agendamento cancelado" } }) { Text("Desativar retenção automática") }
   TextButton(enabled=!busy,onClick={ val days=retentionDays.toIntOrNull();vm.work {
    val plan=vm.ledger.retentionPreview(days ?: error("Informe dias válidos"));Handler(Looper.getMainLooper()).post { retentionPreview=plan };"Prévia de retenção calculada; nada removido"
   } }) { Text("Pré-visualizar retenção") }

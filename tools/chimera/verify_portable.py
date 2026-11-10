@@ -22,17 +22,35 @@ def inspect_backup(data, password):
     if root['format'] != 'NFCLAB_PORTABLE_1' or not 0 < len(root['records']) <= 10000:
         raise ValueError('Invalid portable schema')
     records = {}
-    allowed = {'legacy/sessions', 'legacy/devices', 'legacy/experiments', 'settings/lab', 'chimera/workspace-v3.json'}
+    allowed = {'legacy/sessions', 'legacy/devices', 'legacy/experiments', 'settings/lab', 'settings/retention', 'chimera/workspace-v3.json'}
     total = 0
     for row in root['records']:
         key = row['key']
-        if key in records or not (key in allowed or re.fullmatch(r'chimera/[a-f0-9-]{36}\.bin|draft/[a-zA-Z0-9_-]{1,64}', key)):
+        if key in records or not (key in allowed or re.fullmatch(r'chimera/[a-f0-9-]{36}\.bin|draft/[a-zA-Z0-9_-]{1,64}|session/[0-9]{20}/[A-F0-9]{64}|session-id/[A-F0-9]{64}', key)):
             raise ValueError('Duplicate/unknown record')
         value = base64.b64decode(row['data'], validate=True)
         total += len(value)
         if len(value) > 20 * 1024 * 1024 or total > 70 * 1024 * 1024 or hashlib.sha256(value).hexdigest().upper() != row['sha256']:
             raise ValueError('Record size/hash mismatch')
         records[key] = value
+    if 'settings/retention' in records:
+        policy = json.loads(records['settings/retention'])
+        if type(policy.get('enabled')) is not bool or type(policy.get('days')) is not int or not 1 <= policy['days'] <= 3650:
+            raise ValueError('Invalid retention policy')
+    for name, value in records.items():
+        if name.startswith('session/'):
+            session = json.loads(value)
+            identity = hashlib.sha256(session['id'].encode()).hexdigest().upper()
+            expected = 'session/' + str(session['date']).zfill(20) + '/' + identity
+            if name != expected or records.get('session-id/' + identity) != name.encode():
+                raise ValueError('Invalid session/index binding')
+        elif name.startswith('session-id/'):
+            target = value.decode()
+            if not target.startswith('session/') or target not in records:
+                raise ValueError('Missing session for index')
+            identity = hashlib.sha256(json.loads(records[target])['id'].encode()).hexdigest().upper()
+            if name != 'session-id/' + identity:
+                raise ValueError('Index identity mismatch')
     if 'chimera/workspace-v3.json' in records:
         report = verify_manifest(json.loads(records['chimera/workspace-v3.json']), lambda aid, size: records['chimera/' + aid + '.bin'])
         if report['integrity'] != 'CONSISTENT':

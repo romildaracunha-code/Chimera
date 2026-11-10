@@ -26,7 +26,17 @@ class LabStore private constructor(context: Context,private val vault:SecureRepo
   val next=org.json.JSONObject(settings.toString()).put(name,value)
   vault.write("settings/lab",next.toString().toByteArray(),generation);settings=next
  }
- val sessions = MutableStateFlow(readSessions())
+ private val history=SessionRepository(vault).also { it.migrateLegacy(readLegacy(file,"sessions")?.toByteArray());it.recoverInterrupted() }
+ val sessions = MutableStateFlow(history.page())
+ @Volatile var physicalCaptureActive=false
+ val sessionCount=MutableStateFlow(history.count())
+ val historyOffset=MutableStateFlow(0)
+ @Synchronized fun page(offset:Int) { require(offset>=0);val next=history.page(offset);sessions.value=next;historyOffset.value=offset;sessionCount.value=history.count() }
+ fun session(id:String)=sessions.value.firstOrNull { it.id==id } ?: history.get(id)
+ fun allSessions()=history.all()
+ fun exportHistory(out:java.io.OutputStream,csv:Boolean)=vault.consistentRead { if(csv) Export.writeCsv(out,history.all()) else Export.writeJson(out,history.all()) }
+
+
  val devices = MutableStateFlow(run { val a=JSONArray(readLegacy(deviceFile,"devices") ?: "[]"); (0 until a.length()).map { DeviceRecord.from(a.getJSONObject(it)) } })
  val experiments = MutableStateFlow(JSONArray(readLegacy(experimentFile,"experiments") ?: "[]").let { a -> (0 until a.length()).map { PhysicalExperiment.from(a.getJSONObject(it)) } })
  val profiles = MutableStateFlow((0 until settings.getJSONArray("profiles").length()).map { settings.getJSONArray("profiles").getString(it) }.sorted())
@@ -43,23 +53,22 @@ class LabStore private constructor(context: Context,private val vault:SecureRepo
  get() = settings.optString("activeHce").ifBlank { null }
  set(value) { setting("activeHce",value ?: "") }
  init {
-  val interrupted=sessions.value.filter { it.result=="Em andamento" }
-  interrupted.forEach { save(it.copy(result="Interrompido: processo reiniciado; retome com nova sessão",error="PROCESS_RESTART")) }
   activeHce=null
  }
  private fun readLegacy(file:File,key:String)=vault.migrate(file,"legacy/$key")?.toString(Charsets.UTF_8)
- private fun readSessions(): List<Session> = runCatching { val a=JSONArray(readLegacy(file,"sessions") ?: "[]"); (0 until a.length()).map { Session.from(a.getJSONObject(it)) } }.getOrElse { throw IllegalStateException("Histórico inválido; arquivo preservado",it) }
- @Synchronized fun save(s: Session) {
- val next = listOf(s) + sessions.value.filter { it.id != s.id }
- vault.write("legacy/sessions",Export.json(next).toByteArray(),generation); sessions.value = next
+ @Synchronized fun save(s:Session) {
+  history.save(s)
+  val cached=sessions.value
+  sessions.value=if(cached.any { it.id==s.id }) cached.map { if(it.id==s.id) s else it } else if(historyOffset.value==0) (cached+s).sortedByDescending { SessionRepository.recordKey(it) }.take(50) else cached
+  sessionCount.value=history.count()
  }
- @Synchronized fun append(id: String, e: Exchange) { sessions.value.find { it.id==id }?.let { save(it.copy(exchanges=it.exchanges+e,result=if(it.result=="Encerrado sem comunicação física") "Encerrado; comandos HCE observados" else it.result)) } }
+ @Synchronized fun append(id: String, e: Exchange) { session(id)?.let { save(it.copy(exchanges=it.exchanges+e,result=if(it.result=="Encerrado sem comunicação física") "Encerrado; comandos HCE observados" else it.result)) } }
  @Synchronized fun addProfile(name: String) { require(profiles.value.size<128 || name in profiles.value);require(name.matches(Regex("[A-Za-z0-9_-]{1,32}"))); profiles.value=(profiles.value+name).distinct().sorted(); setting("profiles",JSONArray(profiles.value)); profile=name }
  @Synchronized fun addDevice(d: DeviceRecord) { val next=listOf(d)+devices.value.filter { it.internalId != d.internalId }; vault.write("legacy/devices",JSONArray(next.map { it.json() }).toString(2).toByteArray(),generation); devices.value=next }
  @Synchronized fun saveExperiment(e: PhysicalExperiment) {
   require(e.issues().isEmpty()) { e.issues().joinToString("; ") }
   require(devices.value.any { it.internalId == e.terminalId }) { "Cadastre o terminal em Devices" }
-  if(e.labSessionId.isNotBlank()) require(sessions.value.any { it.id == e.labSessionId && it.mode in listOf("HARDWARE HCE","HARDWARE LEITOR") && it.exchanges.isNotEmpty() }) { "Vínculo exige sessão física com APDUs; simulação não é evidência" }
+  if(e.labSessionId.isNotBlank()) require(session(e.labSessionId)?.let { it.mode in listOf("HARDWARE HCE","HARDWARE LEITOR") && it.exchanges.isNotEmpty() }==true) { "Vínculo exige sessão física com APDUs; simulação não é evidência" }
   val snapshot=e.terminalSnapshot ?: devices.value.first { it.internalId == e.terminalId }
   require(snapshot.internalId == e.terminalId) { "Snapshot e terminal divergentes" }
   val saved=e.copy(terminalSnapshot=snapshot)

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lab.nfc.RoomIntegrationTests" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-10T09:50:37" hostname="d61db6bbd1f9" time="0.35">
+  <properties/>
+  <testcase name="legacyWorkspaceAndPreferencesMigrateWithRestartRecovery" classname="lab.nfc.RoomIntegrationTests" time="0.069"/>
+  <testcase name="wrongKeyCannotReadExistingRecords" classname="lab.nfc.RoomIntegrationTests" time="0.036"/>
+  <testcase name="chunksRoundTripAndReopen" classname="lab.nfc.RoomIntegrationTests" time="0.058"/>
+  <testcase name="atomicReplacementRollsBackOnInvalidRecordAndKeepsOldData" classname="lab.nfc.RoomIntegrationTests" time="0.035"/>
+  <testcase name="encryptionAuthenticatesOnReadAndDeletionRemovesRecord" classname="lab.nfc.RoomIntegrationTests" time="0.05"/>
+  <testcase name="migratesOnlyAfterVerifiedReadBackAndIsIdempotent" classname="lab.nfc.RoomIntegrationTests" time="0.028"/>
+  <testcase name="restorePointSurvivesAtomicReplacement" classname="lab.nfc.RoomIntegrationTests" time="0.045"/>
+  <testcase name="staleWorkspaceWriterCannotOverwriteRestoredData" classname="lab.nfc.RoomIntegrationTests" time="0.028"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

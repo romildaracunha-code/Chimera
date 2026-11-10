@@ -41,6 +41,7 @@ class MainActivity: ComponentActivity() {
  private val chimera: ChimeraViewModel by viewModels()
  private var pendingText:String?=null
  private var pendingFile:java.io.File?=null
+ private var pendingImportKind:String?=null
  private var pendingRead:((String)->Unit)?=null
  private var pendingAttachment:Triple<String,ArtifactRole,Boolean>?=null
  private val saveChimera=registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -52,11 +53,10 @@ class MainActivity: ComponentActivity() {
   }
  }
  private val readChimera=registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-  val callback=pendingRead;pendingRead=null
-  if(uri!=null && callback==null) chimera.message.value="Importação interrompida pela recriação da tela; selecione novamente o arquivo para revisar seu conteúdo"
-  if(uri!=null && callback!=null) lifecycleScope.launch(Dispatchers.IO) {
+  val callback=pendingRead;val kind=pendingImportKind;pendingRead=null;pendingImportKind=null
+  if(uri!=null && (callback!=null || kind in listOf("analysis","sdk"))) lifecycleScope.launch(Dispatchers.IO) {
    runCatching { contentResolver.openInputStream(uri)?.use { chimera.importAnalysisFile(it) } ?: error("Arquivo indisponível") }
-    .onSuccess { text -> runOnUiThread { callback(text) } }.onFailure { chimera.message.value=it.message ?: "Importação inválida" }
+    .onSuccess { text -> runOnUiThread { if(callback!=null) callback(text) else if(kind!=null) chimera.recoveredImport.value=kind to text } }.onFailure { chimera.message.value=it.message ?: "Importação inválida" }
   }
  }
  private val attachChimera=registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -103,21 +103,25 @@ class MainActivity: ComponentActivity() {
  }
  override fun onCreate(savedInstanceState: Bundle?) {
   super.onCreate(savedInstanceState)
+  pendingImportKind=savedInstanceState?.getString("pendingImportKind")
   savedInstanceState?.getString("pendingFile")?.let { path -> java.io.File(path).takeIf { it.canonicalFile.parentFile==cacheDir.canonicalFile }?.let { pendingFile=it } }
   savedInstanceState?.getString("attachmentRun")?.let { run -> runCatching { pendingAttachment=Triple(run,ArtifactRole.valueOf(savedInstanceState.getString("attachmentRole")!!),savedInstanceState.getBoolean("attachmentAuthorized")) } }
+  openWorkspace()
+ }
+ private fun openWorkspace() {
   setContent { MaterialTheme(colorScheme=darkColorScheme()) { Surface(Modifier.fillMaxSize()) { Column(Modifier.padding(24.dp)) { Text("NFC Lab • abrindo e verificando armazenamento…");LinearProgressIndicator() } } } }
   lifecycleScope.launch(Dispatchers.IO) {
-   runCatching { WorkspaceBootstrap.prepare(applicationContext) }.onSuccess {
+   runCatching { WorkspaceBootstrap.prepare(applicationContext);runCatching { RetentionScheduler.reconcile(applicationContext,SecureRepository.get(applicationContext)) }.onFailure { android.util.Log.w("NfcLab","Optional retention schedule unavailable",it) } }.onSuccess {
     kotlinx.coroutines.withContext(Dispatchers.Main) { ready=true;reader=ReaderController(this@MainActivity,vm);showApp();capability.value=Capabilities.detect(this@MainActivity) }
-   }.onFailure { error -> runOnUiThread { setContent { MaterialTheme { Surface(Modifier.fillMaxSize()) { Column(Modifier.padding(24.dp)) { Text("Armazenamento indisponível; dados preservados. Não reinstale nem limpe os dados.");Text(error.cause?.message ?: error.message ?: "Erro de abertura") } } } } } }
+   }.onFailure { error -> runOnUiThread { setContent { lab.nfc.feature.chimera.RecoveryScreen(error.cause?.message ?: error.message ?: "Erro de abertura") { openWorkspace() } } } }
   }
  }
  private fun showApp() { setContent {
- MaterialTheme(colorScheme=darkColorScheme(primary=Color(0xFF29D8FF),secondary=Color(0xFF418BFF),background=Color(0xFF0B0F16),surface=Color(0xFF151D29))) {
+ lab.nfc.feature.shared.NfcLabTheme {
  Surface(Modifier.fillMaxSize()) { LabApp(vm,capability.value,
  chimera=chimera,
  onChimeraExport={ name,mime,body -> offerExport(name,mime,body) },
- onImportText={ callback -> pendingRead=callback;readChimera.launch(arrayOf("text/*","application/json","application/octet-stream")) },
+ onImportText={ kind,callback -> require(kind in listOf("analysis","sdk"));pendingImportKind=kind;pendingRead=callback;readChimera.launch(arrayOf("text/*","application/json","application/octet-stream")) },
  onAttach={ id,role,authorized -> pendingAttachment=Triple(id,role,authorized);attachChimera.launch(arrayOf("*/*")) },
  onEvidenceZip={ chimera.work { val bundle=chimera.evidenceZip();offerExport("chimera-evidence.zip","application/zip",file=bundle);"Pacote verificado preparado" } },
  onReader={ cmd -> runCatching { vm.stopHce(); reader.start(cmd) }.onFailure { vm.message.value=it.message ?: "Erro" } },
@@ -125,11 +129,18 @@ class MainActivity: ComponentActivity() {
  onHce={ reader.stop(); if(capability.value.enabled && capability.value.hce) { vm.startHce(); preferHce() } else vm.message.value="HCE requer NFC ligado e suporte HCE" },
  onSettings={ runCatching { startActivity(Intent(Settings.ACTION_NFC_SETTINGS)) }.onFailure { vm.message.value="Configuração NFC não disponível neste Android" } },
  onPhysicalExport={ filename,body -> offerLegacyExport(filename,body) },
- onExport={ csv,session -> val list=session?.let { listOf(it) } ?: vm.store.sessions.value; offerLegacyExport(if(csv) "nfc-lab.csv" else "nfc-lab.json",if(csv) Export.csv(list) else Export.json(list),csv) }) }
+ onExport={ csv,session -> lifecycleScope.launch(Dispatchers.IO) {
+  runCatching {
+   val file=java.io.File(cacheDir,if(csv) "nfc-history.csv.enc" else "nfc-history.json.enc")
+   chimera.repository.sealFile(file) { out -> if(session==null) vm.store.exportHistory(out,csv) else if(csv) Export.writeCsv(out,sequenceOf(session)) else Export.writeJson(out,sequenceOf(session)) }
+   offerExport(if(csv) "nfc-lab.csv" else "nfc-lab.json",if(csv) "text/csv" else "application/json",file=file)
+  }.onFailure { vm.message.value=it.message ?: "Erro ao exportar histórico" }
+ } }) }
  }
  }
  }
  override fun onSaveInstanceState(out:Bundle) {
+  pendingImportKind?.let { out.putString("pendingImportKind",it) }
   pendingFile?.let { out.putString("pendingFile",it.absolutePath) }
   pendingAttachment?.let { out.putString("attachmentRun",it.first);out.putString("attachmentRole",it.second.name);out.putBoolean("attachmentAuthorized",it.third) }
   super.onSaveInstanceState(out)

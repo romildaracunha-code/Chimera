@@ -13,13 +13,13 @@ import lab.nfc.feature.shared.Panel
 import lab.nfc.feature.devices.DeviceEditor
 import org.json.JSONObject
 
-val chimeraPages=listOf("Guided Workflow","Data Protection","SDK Integrations","EMV Explorer","Vulnerability Research","Physical Test Lab","Terminal Inventory","Test Case Manager","Security Evidence","Red/Blue Comparison","Technical Reports")
+val chimeraPages=listOf("Device Diagnostics","Guided Workflow","Data Protection","SDK Integrations","EMV Explorer","Vulnerability Research","Physical Test Lab","Terminal Inventory","Test Case Manager","Security Evidence","Red/Blue Comparison","Technical Reports")
 @Composable private fun Field(value:String,set:(String)->Unit,label:String)=OutlinedTextField(value,{ if(it.length<=32768) set(it) },label={ Text(label) },modifier=Modifier.fillMaxWidth(),maxLines=8)
 @Composable private fun <T:Enum<T>> Cycle(label:String,value:T,values:List<T>,set:(T)->Unit) { TextButton(onClick={ set(values[(values.indexOf(value)+1)%values.size]) }) { Text("$label: ${value.name} ▸") } }
 
 /** Functional controls over the existing hardware path and separate evidence ledger. No financial emulation. */
 @Composable fun ChimeraScreen(page:String,vm:ChimeraViewModel,legacy:LabViewModel,
- export:(String,String,String)->Unit,importText:(((String)->Unit))->Unit,
+ export:(String,String,String)->Unit,importText:(String,(String)->Unit)->Unit,
  attach:(String,ArtifactRole,Boolean)->Unit,exportZip:()->Unit) {
  val state by vm.state.collectAsStateWithLifecycle()
  val message by vm.message.collectAsStateWithLifecycle()
@@ -36,6 +36,7 @@ val chimeraPages=listOf("Guided Workflow","Data Protection","SDK Integrations","
   if(busy) LinearProgressIndicator(Modifier.fillMaxWidth())
   if(vm.ledger.integrityError!=null) { Text("Módulo V3 bloqueado; arquivos originais preservados: ${vm.ledger.integrityError}");return@Column }
   when(page) {
+   "Device Diagnostics" -> DiagnosticsScreen(export)
    "Guided Workflow" -> GuidedWorkflow(vm,legacy,attach,export)
    "Data Protection" -> DataProtection(vm,legacy)
    "SDK Integrations" -> {
@@ -49,11 +50,13 @@ val chimeraPages=listOf("Guided Workflow","Data Protection","SDK Integrations","
    "EMV Explorer" -> {
     var hex by remember { mutableStateOf("") };var source by remember { mutableStateOf("Entrada autorizada do pesquisador") }
     var context by remember { mutableStateOf("") };var kind by remember { mutableStateOf(InputKind.TLV) };var origin by remember { mutableStateOf(DataOrigin.IMPORTED_AUTHORIZED) }
+    val recovered by vm.recoveredImport.collectAsStateWithLifecycle()
+    LaunchedEffect(recovered) { recovered?.takeIf { it.first=="analysis" }?.let { hex=it.second;kind=if(hex.trimStart().startsWith("{") || hex.trimStart().startsWith("[")) InputKind.TRACE_JSON else InputKind.TLV;origin=DataOrigin.IMPORTED_AUTHORIZED;source="Arquivo autorizado importado por SAF após recriação";vm.recoveredImport.value=null } }
     Panel("BER-TLV / APDU • análise offline") {
      Text("Não envia APDUs nem comprova autenticação. PAN/trilhas/criptogramas/certificados e tags desconhecidas são omitidos nos relatórios. Não insira dados reais secretos.")
      Cycle("Formato",kind,InputKind.entries) { kind=it }
      Text("Origem: $origin. Importações nunca se tornam hardware observado pelo app.")
-     Button(onClick={ importText { hex=it;if(it.trimStart().startsWith("{") || it.trimStart().startsWith("[")) kind=InputKind.TRACE_JSON;origin=DataOrigin.IMPORTED_AUTHORIZED;source="Arquivo autorizado importado por SAF" } }) { Text("Importar arquivo autorizado (hex / JSON NFC Lab / PCSC)") }
+     Button(onClick={ importText("analysis") { hex=it;if(it.trimStart().startsWith("{") || it.trimStart().startsWith("[")) kind=InputKind.TRACE_JSON;origin=DataOrigin.IMPORTED_AUTHORIZED;source="Arquivo autorizado importado por SAF" } }) { Text("Importar arquivo autorizado (hex / JSON NFC Lab / PCSC)") }
      vm.vectors.getJSONArray("vectors").objects().forEach { v -> TextButton(onClick={ hex=v.getString("hex");source=vm.vectors.getString("sourceUrl")+"#"+v.getString("id");kind=InputKind.TLV;origin=DataOrigin.PUBLIC_TEST }) { Text("Fixture pública: ${v.getString("id")}") } }
      TextButton(onClick={ origin=DataOrigin.SIMULATED;source="Fixture sintética declarada pelo operador" }) { Text("Marcar entrada como sintética") }
      Field(hex,{ hex=it;if(origin==DataOrigin.PUBLIC_TEST) { origin=DataOrigin.IMPORTED_AUTHORIZED;source="Fixture editada pelo operador" } },if(kind==InputKind.TRACE_JSON) "JSON: exchanges [{command,response,timestamp}]" else "Hexadecimal BER-TLV / APDU")
@@ -110,6 +113,8 @@ val chimeraPages=listOf("Guided Workflow","Data Protection","SDK Integrations","
     TypedSdkSummary(vm)
     var stage by remember { mutableStateOf(EvidenceStage.UNVERIFIED) };var outcome by remember { mutableStateOf("INCONCLUSIVE") };var notes by remember { mutableStateOf("") };var physical by remember { mutableStateOf(false) }
     var role by remember { mutableStateOf(ArtifactRole.PHYSICAL_CONTEXT) };var authorized by remember { mutableStateOf(false) };var reviewer by remember { mutableStateOf("") };var reviewRef by remember { mutableStateOf("") };var sdk by remember { mutableStateOf("") }
+    val recovered by vm.recoveredImport.collectAsStateWithLifecycle()
+    LaunchedEffect(recovered) { recovered?.takeIf { it.first=="sdk" }?.let { sdk=it.second;vm.recoveredImport.value=null } }
     Panel("Captura, hash e revisão de evidências") {
      runs.forEach { r -> TextButton(onClick={ selectRun(r.getString("id"));stage=EvidenceStage.UNVERIFIED;physical=false }) { Text("${if(runId==r.getString("id")) "●" else "○"} ${r.getString("id").take(8)} • ${r.getJSONObject("terminalSnapshot").optString("model")}") } }
      Text("Execução: ${vm.selectedRun}")
@@ -124,7 +129,7 @@ val chimeraPages=listOf("Guided Workflow","Data Protection","SDK Integrations","
      Text("Hash confirma bytes, não autenticidade nem conteúdo. Anexo importado nunca vira captura do app automaticamente.")
      Field(sdk,{ sdk=it },"Resumo SDK JSON; authenticationResult obrigatório para etapa de autenticação")
      Text("result PASS/FAIL é veredito do caso. authenticationResult VALID/INVALID/NOT_PERFORMED é separado; nenhum deles é verificado criptograficamente pelo app.")
-     TextButton(onClick={ importText { sdk=it } }) { Text("Importar resumo SDK autorizado") }
+     TextButton(onClick={ importText("sdk") { sdk=it } }) { Text("Importar resumo SDK autorizado") }
      Button(enabled=!busy && vm.selectedRun.isNotBlank(),onClick={ vm.sdk(sdk) }) { Text("Associar resultado declarado pelo SDK") }
      var terminalDecision by remember { mutableStateOf("UNKNOWN") };var hostDecision by remember { mutableStateOf("UNKNOWN") };var correlation by remember { mutableStateOf("") }
      TextButton(onClick={ val v=listOf("UNKNOWN","APPROVED","DECLINED","NOT_REQUESTED");terminalDecision=v[(v.indexOf(terminalDecision)+1)%v.size] }) { Text("Resultado terminal: $terminalDecision") }

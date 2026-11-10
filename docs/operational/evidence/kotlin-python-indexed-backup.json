@@ -1,0 +1,7 @@
+{
+  "backupAuthentication": "VALID",
+  "recordCount": 4,
+  "plaintextBytes": 660,
+  "physicalResults": "NOT_VERIFIED",
+  "scope": "Password authentication, schema, record hashes and journal; no extraction performed"
+}
