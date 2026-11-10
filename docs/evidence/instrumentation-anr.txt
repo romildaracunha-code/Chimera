@@ -1,0 +1,20 @@
+11-08 21:59:54.030  1313  1712 E ActivityManager: Reason: Process ProcessRecord{21a904d 1568:com.android.systemui/u0a120} failed to complete startup
+11-08 22:00:06.831  1313  1712 E ActivityManager: Reason: Process ProcessRecord{19fdf24 1729:com.android.phone/1001} failed to complete startup
+11-08 22:00:57.020  1313  2055 E ActivityManager: Reason: Process ProcessRecord{7931420 1946:com.android.launcher3/u0a122} failed to complete startup
+11-08 22:01:10.483  1313  2055 E ActivityManager: Reason: Process ProcessRecord{19fdf24 1929:com.android.phone/1001} failed to complete startup
+11-08 22:01:22.201  1313  2055 E ActivityManager: Reason: Process ProcessRecord{6c7cb3d 1974:android.ext.services/u0a125} failed to complete startup
+11-08 22:02:02.872  1313  2241 E ActivityManager: Reason: Process ProcessRecord{ff43919 2113:com.android.providers.media.module/u0a132} failed to complete startup
+11-08 22:02:19.015  1313  2241 E ActivityManager: Reason: Process ProcessRecord{19fdf24 2216:com.android.phone/1001} failed to complete startup
+11-08 22:02:32.645  1313  2241 E ActivityManager: Reason: Process ProcessRecord{524817d 2271:com.android.documentsui/u0a62} failed to complete startup
+11-08 22:02:37.364  1313  2241 E ActivityManager: Reason: Process ProcessRecord{de2139a 2460:com.android.permissioncontroller/u0a147} failed to complete startup
+11-08 22:03:17.472  1313  2757 E ActivityManager: Reason: Process ProcessRecord{19fdf24 2574:com.android.phone/1001} failed to complete startup
+11-08 22:03:51.322  1313  2826 E ActivityManager: Reason: Process ProcessRecord{1d04089 2680:com.android.providers.media.module/u0a132} failed to complete startup
+11-08 22:03:54.397  1313  2826 E ActivityManager: Reason: Process ProcessRecord{5483e2f 2773:com.android.providers.calendar/u0a79} failed to complete startup
+11-08 22:04:22.700  1313  3006 E ActivityManager: Reason: Process ProcessRecord{19fdf24 2881:com.android.phone/1001} failed to complete startup
+11-08 22:04:24.681  1313  3006 E ActivityManager: ANR in lab.nfc
+11-08 22:04:24.681  1313  3006 E ActivityManager: Reason: Process ProcessRecord{b242492 2905:lab.nfc/u0a148} failed to complete startup
+11-08 22:04:25.105  1313  3006 I ActivityManager: Killing 2905:lab.nfc/u0a148 (adj 0): bg anr
+11-08 22:04:25.876  1313  1407 W ActivityManager: Crash of app lab.nfc running instrumentation ComponentInfo{lab.nfc.test/androidx.test.runner.AndroidJUnitRunner}
+11-08 22:04:34.131  1313  3068 E ActivityManager: Reason: Process ProcessRecord{fa7d57d 2966:com.android.providers.media.module/u0a132} failed to complete startup
+11-08 22:04:58.388  1313  3167 E ActivityManager: Reason: Process ProcessRecord{19fdf24 3039:com.android.phone/1001} failed to complete startup
+11-08 22:05:09.421  1313  3219 E ActivityManager: Reason: Process ProcessRecord{1959b44 3113:com.android.providers.media.module/u0a132} failed to complete startup

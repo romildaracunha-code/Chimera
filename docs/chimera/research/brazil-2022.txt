@@ -1,0 +1,102 @@
+App criminoso engana maquininha e faz pagamento falso  - Estadão
+Jornal do Carro
+TecMundo
+E-Investidor
+Pulsa
+Paladar
+Descubra
+Assine
+Entrar
+Hoje
+JC
+TecMundo
+E-Investidor
+Pulsa
+Paladar
+Descubra
+Assine
+Notícia
+Estadão
+TecMundo
+Cibersegurança
+App criminoso engana maquininha e faz pagamento falso
+Exclusivo: aplicativo usa NFC para realizar pagamento falso
+PUBLICIDADE
+Por
+Felipe Payão
+07/02/2022 | 12h24
+Cibercriminosos desenvolveram um arquivo de aplicação (APK) que simula cartões de crédito e permite o pagamento de compras via NFC. Com funcionamento similar ao de um aplicativo de celular, o APK roda em aparelho Android e “engana” as máquinas de pagamento ao realizar compras por aproximação.
+PUBLICIDADE
+De maneira clara: utilizando o aplicativo criminoso, o atacante simula uma compra e engana o vendedor. Dessa maneira, ele consegue realizar a compra de qualquer produto sem gastar dinheiro.
+O aplicativo falso é ofertado em grupos privados no Telegram e Facebook
+O
+TecMundo
+recebeu as informações anônimas sobre o funcionamento do APK e como ele é oferecido em grupos no Telegram e Facebook. Esse tipo de golpe é realizado por carders, alcunha para cibercriminosos que realizam golpes focados em cartões de crédito e débito ou financeiros.
+Em uma publicação no Facebook, um carder chamado “Flaviol Pereira” explica o funcionamento do APK acompanhado de um vídeo, na íntegra: “O app vem assim, vocês vão adicionar a informação na Track 2 da seguinte maneira (...) o cartão passa por uma aproximação, o celular tem que ser Android e ter NFC”.
+Detalhes do golpe
+De acordo com o perfil @akaclandestine do Twitter, especialista de inteligência de ameaças que auxiliou o
+TecMundo
+no relato, o APK deleta uma tag da maquininha via NFC e reescreve a informação. Além disso, que a versão oficial do arquivo teria surgido em 2016 via repositório conhecido como “PeterBaratta”.
+Já sobre a autoria do APK criminoso, Clandestine revelou ao
+TecMundo
+que o desenvolvedor se chamaria Wellington Lima, residente da cidade de Cotia (SP). A informação foi obtida após depuração do arquivo e recolhimento da assinatura.
+PUBLICIDADE
+Não há prejuízo para os titulares dos cartões
+O aplicativo falso é ofertado em grupos privados no Telegram e Facebook voltados para golpes online. Segundo as informações recebidas, o arquivo é vendido por cerca de R$ 250 e vem acompanhado de fotos e vídeos ensinando o passo a passo do esquema fraudulento.
+Para o crime funcionar, um crime anterior – ou falha – precisa acontecer: o vazamento de dados de cartões. Os carders utilizam as informações provenientes de vazamentos diversos para preencher as lacunas do APK. No caso, são usadas as BINs, números de identificação dos cartões.
+Nesse caso em específico, não há prejuízo para os titulares dos cartões. O prejuízo fica restrito ao vendedor. O aplicativo falso usa a BIN real apenas para “enganar” a maquininha.
+Onde acontece?
+PUBLICIDADE
+Até o momento, não foi possível confirmar em quais máquinas o golpe é possível de ser realizado, com vídeos e fotos mostrando apenas dos aparelhos da Stone sendo usados. Mesmo assim, carders afirmam em mensagens que o golpe pode ser realizado em qualquer máquina.
+No dia 21 de janeiro, uma matéria do Metrópoles trouxe um problema gerado exatamente por causa desse APK. A notícia “
+Bandidos tentam aplicar golpe em feirantes e acabam apanhando
+” mostra que um grupo de criminosos realizou diversas compras sem repasse via celular, mas foram pegos por feirantes. O caso aconteceu em Brasília.
+Vale relembrar que esse APK não pode ser encontrado em lojas oficiais como Google Play Store (ou Apple App Store).
+PUBLICIDADE
+A Stone enviou um comunicado ao
+TecMundo
+sobre o caso: "A empresa afirma que atua sob os mais rígidos padrões de qualidade e segurança para atender milhares de empreendedores de todo o país. A Stone informa que já identificou e resolveu o problema e salienta que está apoiando os clientes prejudicados que entraram em contato com a empresa".
+Denúncias ao TecMundo
+felipepayao@protonmail.com
+denuncia@gruponzn.com
+Compartilhar
+Siga nas redes
+Siga o Estadão no Google
+Encontrou algum erro?
+Entre em contato
+Tudo sobre
+Crime Virtual
+Hacker
+Ofertas
+Notícias
+m
+ais recentes
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Veja mais
+Mais lidas
+1
+.
+Polícia Civil de São Paulo sofre suposto ataque cibernético e vazamento de dados
+2
+.
+Anthropic lança Claude Mythos 5.2 e Fable 5.2, novas versões de sua IA ‘superpoderosa’
+3
+.
+Pornô gerado por IA: entenda os perigos por trás do DeepNude
+4
+.
+Home office: 55 vagas para trabalho remoto internacional [06/11]
+5
+.
+CEO da Nvidia vira meme após traição e possível caso de espionagem; veja reações da internet
+Hoje
+Em Alta
+Opinião
+Descubra

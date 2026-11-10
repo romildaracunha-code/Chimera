@@ -1,0 +1,74 @@
+[
+  {
+    "id": "emvrace",
+    "url": "https://emvrace.github.io/",
+    "status": 200,
+    "sha256": "7782931e4f8b8d8203da0dfba8adf48acd07ce4c740abe11a4dbee0382888617",
+    "links": [
+      "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-infsec/information-security-group-dam/research/publications/pub2021/emv-sp21.pdf",
+      "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-infsec/information-security-group-dam/research/publications/pub2021/sec21fall-basin.pdf",
+      "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-infsec/information-security-group-dam/research/publications/pub2023/mastercard-usenix23.pdf",
+      "https://www.emvco.com/wp-content/uploads/documents/EMVCo-Annual-Report-2020.pdf",
+      "https://tamarin-prover.github.io/",
+      "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-infsec/information-security-group-dam/research/publications/pub2021/emv-sp21.pdf",
+      "https://github.com/EMVrace/EMVerify",
+      "https://jorgetp.github.io/assets/img/oakland-award.jpg",
+      "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-infsec/information-security-group-dam/research/publications/pub2021/sec21fall-basin.pdf",
+      "https://github.com/EMVrace/EMVerify-PAN-routing",
+      "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-infsec/information-security-group-dam/research/publications/pub2023/mastercard-usenix23.pdf",
+      "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-infsec/information-security-group-dam/research/publications/pub2023/mastercard-usenix23.bib",
+      "https://www.zdnet.com/article/academics-bypass-pins-for-visa-contactless-payments/",
+      "https://www.srf.ch/news/schweiz/eth-forscher-warnen-sicherheitsluecke-bei-visa-kreditkarten-entdeckt",
+      "https://www.heise.de/security/meldung/Zahlen-ohne-PIN-Forscher-knacken-Visas-NFC-Bezahlfunktion-4881555.html",
+      "https://jorgetp.github.io/",
+      "https://pages.github.com"
+    ]
+  },
+  {
+    "id": "more-is-less",
+    "url": "https://www.usenix.org/conference/usenixsecurity25/presentation/pavlides",
+    "status": 200,
+    "sha256": "75aac1127b9f5c6a3a5c7ddc71cdd0db56c2e1b3f2b4d3fd1a2de740f804d02e",
+    "links": [
+      "/conference/usenixsecurity25/cycle1-accepted-papers",
+      "/conference/usenixsecurity25/call-for-papers",
+      "/conference/usenixsecurity25/call-for-papers",
+      "https://www.usenix.org/system/files/usenixsecurity25-pavlides.pdf",
+      "https://www.usenix.org/system/files/conference/usenixsecurity25/sec25cycle1-prepub-812-pavlides.pdf",
+      "/conference/usenixsecurity25/cycle1-accepted-papers",
+      "/conference/usenixsecurity25/call-for-papers",
+      "/conference/usenixsecurity25/call-for-papers"
+    ]
+  },
+  {
+    "id": "zombie",
+    "url": "https://khwarizmilab.github.io/emvexpiredcards/",
+    "status": 200,
+    "sha256": "039b13414bebb8cea91ef927b035eeeb7764dfb5ff0dd74e6e40b5fbd5fd690a",
+    "links": [
+      "https://khwarizmilab.github.io/",
+      "https://khwarizmilab.github.io/research/",
+      "https://khwarizmilab.github.io/emvexpiredcards",
+      "https://khwarizmilab.github.io/talks/",
+      "https://khwarizmilab.github.io/publications",
+      "https://khwarizmilab.github.io/team/",
+      "https://khwarizmilab.github.io/gallery",
+      "https://khwarizmilab.github.io/media.html",
+      "https://khwarizmilab.github.io/ece371/",
+      "https://arynews.tv/zombie-card-attack-revives-expired-visa-cards-for-real-purchases",
+      "https://www.wired.com/story/security-news-this-week-your-expired-visa-card-could-be-zombiefied-to-make-contactless-payments/",
+      "https://www.techjuice.pk/zombie-card-attack-expired-visa-nfc-relay/",
+      "https://www.malwarebytes.com/blog/news/2026/08/zombie-card-an-expired-visa-credit-card-can-be-used-for-purchases",
+      "https://www.repubblica.it/tecnologia/2026/08/21/news/zombie_card_errore_carte_di_credito_scadute_visa-425539948/",
+      "https://www.securityweek.com/in-other-news-zombie-card-attack-t-mobile-cut-cable-to-stop-hackers-github-denies-ai-caused-bug/",
+      "https://www.lesnumeriques.com/banque-en-ligne/cartes-de-credit-zombies-des-chercheurs-arrivent-a-payer-sans-contact-avec-des-cartes-visa-perimees-n260595.html"
+    ]
+  },
+  {
+    "id": "brazil-2022",
+    "url": "https://www.estadao.com.br/tecmundo/ciberseguranca/233341-app-criminoso-engana-maquininha-pagamento-falso/",
+    "status": 200,
+    "sha256": "cf8e85632bfcc7f63495600bed44415d739c4a604b5ff762c3ddddbea133d074",
+    "links": []
+  }
+]

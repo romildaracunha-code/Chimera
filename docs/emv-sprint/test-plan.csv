@@ -1,0 +1,7 @@
+localPlanId,environment,credential,officialCaseId,status,objective,expectedBasis,evidenceRequired
+PLAN-LAB-01,LAB_PROTOCOL,NFC_LAB_FICTITIOUS,,NOT_EXECUTED,SELECT e GET DATA reais em leitor controlável,Especificação NFC Lab,contexto físico + trace PCSC/Android + diagnóstico
+PLAN-LAB-02,LAB_PROTOCOL,NFC_LAB_FICTITIOUS,,NOT_EXECUTED,Latência e perda física de link,Procedimento de bancada autorizado,trace de tentativas e falhas + contexto físico
+PLAN-HOM-POS-01,OFFICIAL_HOMOLOGATION,OFFICIAL_POSITIVE,,BLOCKED_NO_OFFICIAL_CASE,Fluxo positivo EMV oficial,Plano e versão do provedor a preencher,contexto + trace L2/L3 + host se previsto
+PLAN-HOM-NEG-AUTH-01,OFFICIAL_HOMOLOGATION,OFFICIAL_NEGATIVE,,BLOCKED_NO_OFFICIAL_CASE,Negativo de autenticação fornecido oficialmente,Resultado exato do caso oficial a preencher,contexto + trace L2/L3 + host correlacionado se previsto
+PLAN-HOM-NEG-INTEGRITY-01,OFFICIAL_HOMOLOGATION,OFFICIAL_NEGATIVE,,BLOCKED_NO_OFFICIAL_CASE,Negativo de integridade fornecido oficialmente,Resultado exato do caso oficial a preencher,contexto + trace L2/L3 + host correlacionado se previsto
+PLAN-PROD-OBS-01,PRODUCTION_OBSERVATION,LEGITIMATE,,NOT_EXECUTED,Observação normal autorizada ou registro existente,Procedimento normal do responsável sem caso negativo,referências mascaradas + host autorizado + reconciliação somente se disponível

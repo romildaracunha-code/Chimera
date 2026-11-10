@@ -1,0 +1,15 @@
+AVD: Android API 35, default x86_64, perfil Pixel 5.
+Executor sem /dev/kvm; execução por tradução de CPU (-accel off).
+Inicialização: -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect -cores 2.
+Imagem userdata ext4 inicialmente esparsa para contornar a verificação de espaço de criação do AVD; o emulador a expandiu logicamente para 6 GiB.
+Primeiro boot: watchdog encerrou system_server antes da instalação de NFC Lab:
+21:57:56.147 Watchdog: *** WATCHDOG KILLING SYSTEM PROCESS: Blocked in handler on main thread (main) for 65s.
+Ajuste exclusivo no AVD: adb shell settings put global watchdog_timeout_millis 600000.
+O comando settings get global watchdog_timeout_millis confirmou 600000.
+Este AVD não fornece evidência de rádio NFC físico.
+Primeira execução instrumentada: zero testes executados, runner encerrado por ANR de inicialização; veja instrumentation-anr.txt e instrumentation-first-attempt.xml.
+Nova tentativa: pré-compilação AOT dos dois APKs com cmd package compile -m speed -f antes de executar o runner diretamente por adb.
+O usuário 0 foi confirmado em RUNNING_UNLOCKED.
+A sessão de ferramentas foi atualizada durante a segunda tentativa, encerrando o AVD e a conexão ADB. Não houve resultado dessa execução. Arquivos e overlay qcow2 preservados; AVD retomado após remover apenas seus locks abandonados, com processos anteriores confirmados em estado zombie.
+Resultado final após retomada e AOT: OK (4 tests), INSTRUMENTATION_CODE -1, Time 216.72 s. Comando e saída integral em instrumentation-final.txt. Nenhum teste de rádio NFC físico.
+Conferência visual não aprovada: System UI isn't responding, depois captura preta; UIAutomator retornou null root node. A abertura/recriação da Activity e os casos de uso testados passaram, mas não se declara revisão visual completa.

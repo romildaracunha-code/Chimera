@@ -1,0 +1,6 @@
+Starting: Intent { cmp=lab.nfc/.MainActivity }
+Status: ok
+LaunchState: UNKNOWN (0)
+Activity: lab.nfc/.MainActivity
+WaitTime: 19010
+Complete

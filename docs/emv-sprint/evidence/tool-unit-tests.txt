@@ -1,0 +1,14 @@
+test_empty_plan_never_proves_physical_execution (test_labctl.EvidenceTests.test_empty_plan_never_proves_physical_execution) ... ok
+test_failed_device_query_is_unknown_not_absent_hce (test_labctl.EvidenceTests.test_failed_device_query_is_unknown_not_absent_hce) ... ok
+test_hash_validation_and_tampering (test_labctl.EvidenceTests.test_hash_validation_and_tampering) ... ok
+test_lab_cannot_claim_emv_or_authorization (test_labctl.EvidenceTests.test_lab_cannot_claim_emv_or_authorization) ... ok
+test_latency_empty_and_nearest_rank (test_labctl.EvidenceTests.test_latency_empty_and_nearest_rank) ... ok
+test_official_negative_must_be_homologation (test_labctl.EvidenceTests.test_official_negative_must_be_homologation) ... ok
+test_path_escape_rejected (test_labctl.EvidenceTests.test_path_escape_rejected) ... ok
+test_unknown_model_and_invalid_status_remain_incomplete (test_labctl.EvidenceTests.test_unknown_model_and_invalid_status_remain_incomplete) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.003s
+
+OK
+DEVICE_QUERY_FAILED

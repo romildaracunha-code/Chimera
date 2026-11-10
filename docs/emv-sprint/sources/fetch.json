@@ -1,0 +1,47 @@
+[
+  {
+    "name": "emvco-contactless",
+    "requested": "https://www.emvco.com/emv-technologies/contactless/",
+    "url": "https://www.emvco.com/emv-technologies/emv-contactless-chip/",
+    "status": 200,
+    "bytes": 189023
+  },
+  {
+    "name": "emvco-l3",
+    "url": "https://www.emvco.com/emv-technologies/level-3-testing/",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "name": "emvco-tools",
+    "url": "https://www.emvco.com/approved-registered/approved-test-tools/",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "name": "emvco-products",
+    "requested": "https://www.emvco.com/approved-registered/",
+    "url": "https://www.emvco.com/approved-evaluated/",
+    "status": 200,
+    "bytes": 162879
+  },
+  {
+    "name": "android-hce",
+    "requested": "https://developer.android.com/develop/connectivity/nfc/hce",
+    "url": "https://developer.android.com/develop/connectivity/nfc/hce",
+    "status": 200,
+    "bytes": 329506
+  },
+  {
+    "name": "fime-tools",
+    "requested": "https://www.fime.com/",
+    "url": "https://www.fime.com/",
+    "status": 200,
+    "bytes": 147882
+  },
+  {
+    "name": "galitt-tools",
+    "requested": "https://www.galitt.com/",
+    "url": "https://www.galitt.com/",
+    "status": 200,
+    "bytes": 193259
+  }
+]

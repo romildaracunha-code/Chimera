@@ -1,0 +1,384 @@
+EMV® Level 3 Testing | EMVCo
+About EMVCo
+Trademark Centre
+News & Publications
+Events
+Contact EMVCo
+Open Search Bar
+EMVCo Login
+Type here to search...
+Search Submit
+Close Search Bar
+EMVCo Logo
+Why EMV
+®
+?
+EMV
+®
+Technologies
+More options of
+Document Search
+Approved and Evaluated
+More options of Approved and Evaluated
+Registered
+More options of
+Join Us
+Open/Close Burger Menu
+Card & Mobile
+Laboratory Recognition Process
+Product Approval or Assessment Process
+Recognised Laboratories, Auditors and Qualified Test Tools
+Approved Products
+Acceptance Device
+Laboratory Recognition Process
+Product Approval Process
+Recognised Laboratories, Auditors and Qualified Test Tools
+Approved Products
+3-D Secure
+Laboratory Recognition Process
+Platform Provider Qualification and Recognition
+Product Approval Process
+Recognised Laboratories, Auditors and Test Platform Providers
+Approved Products
+Security Evaluation
+Product Evaluation Process
+Recognised Laboratories
+Evaluated Products
+Level 3
+Qualification Service Provider
+Tools Qualification Process
+Qualified Test Tools
+Overview
+Registration Processes
+Process for designated payment systems and providers to be issued identifiers.
+Registered IDs
+Identifiers for designated payment systems and providers
+For Review
+Public review
+Associate review
+All Specifications
+By Technology
+3-D Secure
+Contact
+Contactless
+Level 3 Testing
+Mobile
+Payment Tokenisation
+QR
+Secure Remote Commerce
+By Type
+Draft Specification
+Draft Specification Bulletins
+Specifications
+Specification Bulletins
+General Bulletin
+What are EMV
+®
+Specifications?
+EMV
+®
+Specifications are technical requirements for designing payment products to work seamlessly and securely everywhere.
+Overview
+EMV
+®
+3-D Secure
+EMV 3DS allows seamless authentication of consumers to prevent card-not-present (CNP) fraud and increase the security of e-commerce payments.
+EMV
+®
+Contact Chip
+EMV Contact Chip supports seamless and secure in-store payments and helps prevent card fraud.
+EMV
+®
+Contactless Chip
+EMV Contactless Chip supports seamless and secure transactions made with contactless chip cards and NFC enabled mobile devices.
+EMV
+®
+Electric Vehicle Open Payments
+As EV adoption accelerates globally, supporting the charging infrastructure to meet growing demand is an urgent priority for industry stakeholders and policymakers across the world.
+EMV
+®
+Level 3 Testing
+EMVCo manages an EMV
+®
+Level 3 (L3) Testing Framework and the qualification process of related EMV L3 test tools.
+EMV
+®
+Mobile
+EMV Mobile supports the growing use of mobile devices for secure and convenient payments.
+EMV
+®
+Payment Tokenisation
+EMV Payment Tokenisation replaces valuable card data with payment tokens to increase the security of mobile and e-commerce transactions.
+EMV
+®
+QR Codes
+EMV QR Codes support consistent, efficient and convenient QR code payments.
+EMV
+®
+Secure Remote Commerce
+EMV SRC simplifies e-commerce checkout to make the payment process quicker, easier and more secure.
+Overview
+EMVCo Associates & Subscribers
+Participating organisations
+Industry Partners & Liaisons
+Technical bodies and associations
+Ways to Participate
+Participation options
+Events
+EMVCo and industry events
+Type here to search...
+Search Submit
+EMVCo Login
+Why EMV
+®
+?
+EMV
+®
+Technologies
+Overview
+EMV
+®
+3-D Secure
+EMV
+®
+Contact Chip
+EMV
+®
+Contactless Chip
+EMV
+®
+Electric Vehicle Open Payments
+EMV
+®
+Level 3 Testing
+EMV
+®
+Mobile
+EMV
+®
+Payment Tokenisation
+EMV
+®
+QR Codes
+EMV
+®
+Secure Remote Commerce
+Document Search
+Approved and Evaluated
+Overview
+Card & Mobile
+Laboratory Recognition Process
+Product Approval or Assessment Process
+Recognised Laboratories, Auditors and Qualified Test Tools
+Approved Products
+Acceptance Device
+Laboratory Recognition Process
+Product Approval Process
+Recognised Laboratories, Auditors and Qualified Test Tools
+Approved Products
+3-D Secure
+Laboratory Recognition Process
+Platform Provider Qualification and Recognition
+Product Approval Process
+Recognised Laboratories, Auditors and Test Platform Providers
+Approved Products
+Security Evaluation
+Product Evaluation Process
+Recognised Laboratories
+Evaluated Products
+Level 3
+Qualification Service Provider
+Tools Qualification Process
+Qualified Test Tools
+Registered
+Registration Processes
+Registered IDs
+Join Us
+About EMVCo
+News
+Trademark Centre
+Knowledge Hub
+Contact EMVCo
+Home
+>
+EMV® Technologies
+>
+EMV® Level 3 Testing
+EMV
+®
+Level 3 Testing
+EMVCo manages an EMV
+®
+Level 3 (L3) Testing Framework and the qualification process of related EMV L3 test tools.
+What is EMVCo’s Role in L3 Testing?
+Benefits
+Specifications
+Technical Resources
+Testing & Approval
+FAQs
+What is EMVCo’s Role in L3 Testing?
+EMV L3 testing is defined by each payment system’s policies. EMVCo supports this by defining a set of standardised L3 test tool technical components – the EMV L3 Testing Framework – and a streamlined qualification process for L3 test tools.
+For EMV L3 testing, the test cases are provided by the ‘Participant Systems.’ This term refers to payment systems and other entities that elect to use the EMV L3 Testing Framework and EMVCo L3 Test Tool Qualification Process.
+EMVCo qualified L3 test tools are listed on the
+EMVCo website
+for use by acquirers and processors in achieving L3 testing and certification with the Participant Systems.
+EMVCo also manages an L3 Participant System Identifier (PSI) service to allow domestic payment systems (and other similar entities) to use the EMV L3 Testing Framework.
+News & Insights
+Oct 15, 2025
+EMV® Insights
+What is EMV
+®
+Level 3 Testing?
+Oct 15, 2025
+EMV® Insights
+What are EMVCo Approvals and Evaluations?
+Oct 15, 2025
+Publications
+An Introduction to EMVCo Approvals and Evaluations for In-Person Payments
+Benefits
+By standardising and qualifying the tools used to perform EMV L3 testing, EMVCo’s work helps to improve the quality of test tools and reduce the time spent testing and certifying the integration of EMV terminals.
+Test tool providers can develop consolidated solutions to perform EMV L3 testing across different payment systems, without the need for repeated test tool qualification.
+For merchants and acquirer processors, a streamlined testing approach means quicker time to market for integrating new, or updating existing, payment acceptance terminals.
+Specifications & Associated Bulletins
+Version:
+v1.6
+Technology:
+Contact, Contactless, Level 3 Testing
+Specification Type:
+Specifications
+EMV® Level 3 Testing Framework Pseudo-Function Definitions for Test Card Images
+Published: 28 Mar 2023
+Public Access
+Version:
+v1.0
+Technology:
+Level 3 Testing
+Specification Type:
+Specifications
+EMV® Level 3 Testing Framework – Common Syntax for Online Message Responses
+Published: 4 Aug 2023
+Public Access
+View all EMV L3 specifications
+Close Specification Details modal
+Technical Resources
+Version:
+v3.0
+Doc Type:
+ID Registration Forms
+L3 Participant System Identifier Agreement and Registration Form
+Published: 11 Sep 2024
+Public Access
+View all EMV L3 technical resources
+EMV L3 Test Tool Qualification
+EMVCo qualifies L3 test tools to be used for execution of payment systems’ L3 test cases. The L3 Test Tool Qualification Process is intended to attest compliance of the service provider’s test tool to the EMVCo L3 Test Tool requirements.
+Qualification Processes
+L3 Test Tool Qualification Process
+EMVCo Listings
+L3 Qualified Test Tools
+L3 Qualification Service Provider
+EMV L3 Registration Programmes
+EMVCo manages a L3 Participant System Identifier (PSI) service to allow domestic payment systems (and other similar entities) to use the EMV L3 Testing Framework.
+L3 Participant System Identifier Code
+L3 Participant System Identifier Registration Programme
+FAQs
+What is the EMV L3 Participant System Identifier?
+This service allows entities other than the EMVCo member payment systems (such as domestic payment systems) to include their own EMV L3 testing requirements in an EMVCo qualified test tool alongside those of the international payment systems. It achieves this by using an EMVCo pre-assigned identifier. Visit
+EMVCo Registered IDs
+for the latest details.
+The EMVCo qualified tools then automatically select and execute applicable tests for that particular Participant System.
+What are the guidelines for L3 testing and test tool usage?
+Policy decisions about L3 testing and test tool usage are out of EMVCo’s scope. Individual Participant Systems define the guidelines.
+Get involved
+Interested in collaborating with EMVCo?
+Sign Up
+More than a hundred organisations – including merchants, issuers, acquirers, payment networks, financial institutions, manufacturers, technology providers and testing laboratories – contribute their knowledge and expertise to the development of EMV Specifications.
+Associate
+EMVCo Associates can contribute their knowledge and expertise to shape the development of EMV Specifications.
+Learn more
+Subscriber
+EMVCo Subscribers can receive notice of pending EMV Specification developments and participate in a formal dialogue with EMVCo.
+Learn more
+Public
+All industry participants can review and provide comments on new EMV Specifications and major updates before final publication.
+Learn more
+Newsletter
+Email Address *
+Subscribe
+Follow us
+Visit our X page
+Visit our LinkedIn page
+Visit our YouTube page
+EMV
+®
+Technologies
+EMV
+®
+3-D Secure
+EMV
+®
+Contact Chip
+EMV
+®
+Contactless Chip
+EMV
+®
+Electric Vehicle Open Payments
+EMV
+®
+Level 3 Testing
+EMV
+®
+Mobile
+EMV
+®
+Payment Tokenisation
+EMV
+®
+QR Codes
+EMV
+®
+Secure Remote Commerce
+Specifications
+3-D Secure
+Contact
+Contactless
+Level 3 Testing
+Mobile
+Payment Tokenisation
+QR Codes
+Secure Remote Commerce
+Resources
+Approved & Evaluated
+Registered
+Knowledge Hub
+Industry Collaboration
+EMVCo Associates & Subscribers
+Industry Partners & Liaisons
+Ways to Participate
+Events
+Antitrust Policy
+Privacy Policy
+Accessibility Statement
+Terms of Use
+Sitemap
+Cookie Settings
+EMV
+®
+is a registered trademark in the U.S. and other countries and an unregistered trademark elsewhere.
+The EMV trademark is owned by EMVCo, LLC.
+© Copyright 2026 EMVCo
+Close Login Modal
+EMVCo Login
+Please login below. If you have forgotten your password, please click the
+Lost your password?
+link.
+Email *
+Password *
+Lost your password?
+Log In
+Don't have an account?
+EMVCo Associates, Subscribers and public users of EMVCo.com can create accounts to manage their engagement and participation with EMVCo. Using your EMVCo account, you can monitor queries and responses, and manage your profile.
+Ways to participate
+×
+Complete Question To Visit Link
+Submit

@@ -1,0 +1,378 @@
+Brand Test Tool (BTT) - Fime
+What trust framework is needed for autonomous payments?
+Read the blog
+Businesses we serve
+Our offering
+About us
+Our insights
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+Industries
+Schemes & central banks
+Standards & scheme compliance
+Payment processing
+Network & clearing
+Acceptance technology
+Terminals, SoftPOS & NFC
+Issuance technology
+Card, token & wallet
+Digital identity
+Biometrics & eID
+Smart mobility
+Transit, EV & connected vehicle
+Expertise
+Tokenization
+The foundation of digital payments
+Authentication
+For secure digital experiences
+Digital money
+Where trust meets innovation
+Agentic commerce
+Trust in AI payments
+Quantum resilience
+Build it before it matters most
+Instant payments
+For a real-time economy
+Card payment
+Continuously evolving payments
+Cybersecurity
+Secure connected products
+Credentials
+Accreditations
+EMVCo, PCI SSC, Visa…
+Memberships
+Industry bodies
+References
+Global clients
+OUR INSIGHTS
+Get industry leading insights on the latest trends
+Go deeper
+Consulting
+Testing solutions
+Testing services
+Digital ecosystem strategy
+Define where and how to win
+Technology consulting
+Make the right choices
+Client-side implementation support
+Keep programs on track
+Test & certification advisory
+Accelerate market adoption
+Acquiring testing solutions
+Speed up acquiring certification
+Issuing testing solutions
+Validate cards, tokens, wallets
+Digital identity test tools
+Validate wallets and readers
+Card, terminal, mobile
+Launch trusted payment products
+3-D Secure test platform
+Achieve 3DS compliance faster
+Smart mobility test tools
+Validate fare and ticketing flows
+Host testing solutions
+Prove host readiness early
+Agentic commerce
+Check autonomous transactions
+Telecom test tools
+Test SIM and device flows
+Acquiring
+Speed up acquiring certification
+Issuing
+Validate cards, tokens, wallets
+Smart mobility
+Validate fare and ticketing flows
+Card, terminal, mobile
+Launch trusted payment products
+3-D Secure
+Achieve 3DS compliance faster
+Cybersecurity
+Find vulnerabilities before launch
+Host
+Prove host readiness early
+Digital identity & Biometrics
+Ensure trust via independent testing
+Digital payment
+Ensuring quality, security and trust
+End-to-end expertise
+Discover the innovations shaping the future of payments
+Learn more
+Who we are
+Our story
+Discover our journey
+Our mission
+Making innovation possible
+Our brands
+Fime, Consult Hyperion & more
+Our leadership team
+The people behind the expertise
+Join & connect
+Careers
+Shape the future with us
+Our offices
+Global reach. Local expertise.
+Contact us
+We're hiring
+Join a team of 900+ experts worldwide.
+See open positions
+Learn
+Blog articles
+Case studies
+Podcasts
+Videos
+Go deeper
+eBooks
+White paper
+Scientific paper
+Report
+News & events
+News
+Event
+Fime event
+Webinar
+expertise
+Discover the innovations shaping the future of payments
+Learn more
+Businesses we serve
+Our offering
+About us
+Our insights
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Lionel Grosclaude on agentic commerce: can AI really buy what you mean? June 24, 2026
+Watch the video
+Contact us
+←
+Back
+Industries
+Schemes & central banks
+Payment processing
+Acceptance technology
+Issuance technology
+Digital identity
+Smart mobility
+Expertise
+Tokenization
+Authentication
+Digital money
+Agentic commerce
+Quantum resilience
+Instant payments
+Card payment
+Cybersecurity
+Credentials
+Accreditations
+Memberships
+References
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+←
+Back
+Consulting
+Digital ecosystem strategy
+Technology consulting
+Client-side implementation support
+Test & certification advisory
+Testing solutions
+Acquiring testing solutions
+Issuing testing solutions
+Digital identity test tools
+Card, terminal, mobile
+3-D Secure test platform
+Smart mobility test tools
+Host testing solutions
+Agentic commerce
+Telecom test tools
+Testing services
+Acquiring
+Issuing
+Smart mobility
+Card, terminal, mobile
+3-D Secure
+Cybersecurity
+Host
+Digital identity & Biometrics
+Digital payment
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+←
+Back
+Who we are
+Our story
+Our mission
+Our brands
+Our leadership team
+Join & connect
+Careers
+Our offices
+Contact us
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+←
+Back
+Learn
+Blog articles
+Case studies
+Podcasts
+Videos
+Go deeper
+eBooks
+White paper
+Scientific paper
+Report
+News & events
+News
+Event
+Fime event
+Webinar
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+Testing solutions
+Acquiring
+Brand Test Tool (BTT)
+Validate payment devices before connecting to payment networks
+Perform the brand testing easily and successfully
+Payment schemes mandate proper testing before payment devices may connect to their network infrastructure. This is to ensure interoperability and an EMV®-compliant, payment association certified terminal performing trouble-free transactions within your payment infrastructure.
+Brand Test Tool (BTT) assists in performing the brand testing processes and provides all mandatory tests implemented for Point of Sale terminals, Mobile POS devices, Automated Teller Machines, Vending machines and other payment devices.
+Get your quote
+Get your quote
+Your request
+Topic
+First name*
+(Required)
+First name*
+Last name*
+Company*
+(Required)
+Telephone
+Business email*
+(Required)
+Consent
+(Required)
+I consent to Fime processing and using my personal data. I also agree to receive marketing communications in accordance with the Fime
+Privacy Policy
+. By submitting this form, you confirm that you have read and agree to our terms and conditions.
+(Required)
+Submit
+Key benefits
+Use one brand certification tool for all major payment brands.
+Benefit from fully integrated EMVCo L3 functionality.
+Be always up-to-date with the latest specifications.
+Perform tests with clear on-screen user guidance.
+Supports integration with M-TIP and Visa L3 test processes.
+Learn more
+Download the product sheet for a complete overview of the solution and its capabilities.
+Download product sheet
+Download the product sheet
+Your request
+Topic
+First name*
+(Required)
+First name*
+Last name*
+Company*
+(Required)
+Telephone
+Business email*
+(Required)
+Consent
+(Required)
+I consent to Fime processing and using my personal data. I also agree to receive marketing communications in accordance with the Fime
+Privacy Policy
+. By submitting this form, you confirm that you have read and agree to our terms and conditions.
+(Required)
+Submit
+Explore
+Related solutions and services
+Acquiring
+Card Simulator
+Test the correct processing of payment transactions
+Learn more
+Acquiring
+Self Test Platform (STP)
+Streamline the payment terminal testing process
+Learn more
+Acquiring testing services
+Acquiring certification services
+Achieve multi-brand terminal L3 certification quickly, cost-effectively and safely
+Learn more
+Get in Touch
+Share your challenge
+Get the expertise and support to enable your innovations and provide payment solutions with the highest standards of customer experience.
+Contact us
+Consulting
+Digital ecosystem strategy
+Technology consulting
+Client-side implementation support
+Test & certification advisory
+Testing Solutions
+Acquiring
+Card, terminal, mobile
+Host
+Issuing
+3-D Secure test platform
+Agentic commerce
+Digital identity test tools
+Smart mobility test tools
+Telecom test tools
+Testing services
+Acquiring
+Card, terminal, mobile
+Host testing services
+Issuing
+3-D Secure compliance services
+Digital identity testing services
+Smart mobility testing services
+Security testing services
+Contact
+Locations
+Careers
+Legal
+Copyright © 2026 Fime. All rights reserved.
+marcom@fime.com

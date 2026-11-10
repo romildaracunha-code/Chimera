@@ -1,0 +1,95 @@
+More is Less: Extra Features in Contactless Payments Break Security | USENIX
+Back to USENIX
+Sign In
+Conferences
+Attend
+Registration Information
+Registration Discounts
+Grant Opportunities
+Venue, Hotel, and Travel
+Schedule
+Technical Sessions
+Cycle 1 Accepted Papers
+Activities
+Poster Session
+Participate
+Call for Papers
+Submission Policies and Instructions
+Reviewing Model
+Ethics Guidelines
+Call for Artifacts
+Enigma Track Call for Participation
+Call for Posters
+Mentorship Event
+Instructions for Presenters and Authors
+Sponsors
+Exhibitor Services
+About
+Symposium Organizers
+Past Symposia
+Conference Policies
+Code of Conduct
+Questions
+More is Less: Extra Features in Contactless Payments Break Security
+George Pavlides,
+Surrey Centre for Cyber Security, University of Surrey;
+Anna Clee,
+University of Birmingham;
+Ioana Boureanu,
+Surrey Centre for Cyber Security, University of Surrey;
+Tom Chothia,
+University of Birmingham
+The EMV contactless payment system has many independent parties: payment providers, terminal companies, smartphone companies, banks and regulators. EMVCo publishes a 15 book specification that these companies use to operate together. However, many of these parties have independently added additional features, such as Square restricting offline readers to phone transactions only, Apple, Google and Samsung implementing transit modes and Visa and Mastercard complying with regional regulations on high value contactless payments. We investigate these features, and find that these parties have been independently retrofitting and overloading the core EMV specification. Subtle interactions and mismatches between the different companies' additions lead to a range of vulnerabilities, making it possible to bypass restrictions to smartphone only payments, make unauthenticated high value transactions offline, and use a cloned card to make a £25000 transaction offline. To find fixes, we build formal models of the EMV protocol with the new features we investigated and test different possible solutions. We have engaged with EMV stakeholders and worked with the company Square to implement these fixes.
+Open Access Media
+USENIX is committed to Open Access to the research presented at our events. Papers and proceedings are freely available to everyone once the event begins. Any video, audio, and/or slides that are posted after the event are also free and open to everyone.
+Support USENIX
+and our commitment to Open Access.
+BibTeX
+@inproceedings {307996,
+author = {George Pavlides and Anna Clee and Ioana Boureanu and Tom Chothia},
+title = {More is Less: Extra Features in Contactless Payments Break Security},
+booktitle = {34th USENIX Security Symposium (USENIX Security 25)},
+year = {2025},
+isbn = {978-1-939133-52-6},
+address = {Seattle, WA},
+pages = {7977--7996},
+url = {https://www.usenix.org/conference/usenixsecurity25/presentation/pavlides},
+publisher = {USENIX Association},
+month = aug
+}
+Download
+Pavlides PDF
+Pavlides (Prepublication) PDF
+Attend
+Registration Information
+Registration Discounts
+Grant Opportunities
+Venue, Hotel, and Travel
+Schedule
+Technical Sessions
+Cycle 1 Accepted Papers
+Activities
+Poster Session
+Participate
+Call for Papers
+Submission Policies and Instructions
+Reviewing Model
+Ethics Guidelines
+Call for Artifacts
+Enigma Track Call for Participation
+Call for Posters
+Mentorship Event
+Instructions for Presenters and Authors
+Sponsors
+Exhibitor Services
+About
+Symposium Organizers
+Past Symposia
+Conference Policies
+Code of Conduct
+Questions
+Youtube
+Privacy Policy
+Contact Us
+© USENIX
+EIN 13-3055038

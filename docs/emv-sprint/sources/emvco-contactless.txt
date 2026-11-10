@@ -1,0 +1,447 @@
+EMV® Contactless Chip | EMVCo
+About EMVCo
+Trademark Centre
+News & Publications
+Events
+Contact EMVCo
+Open Search Bar
+EMVCo Login
+Type here to search...
+Search Submit
+Close Search Bar
+EMVCo Logo
+Why EMV
+®
+?
+EMV
+®
+Technologies
+More options of
+Document Search
+Approved and Evaluated
+More options of Approved and Evaluated
+Registered
+More options of
+Join Us
+Open/Close Burger Menu
+Card & Mobile
+Laboratory Recognition Process
+Product Approval or Assessment Process
+Recognised Laboratories, Auditors and Qualified Test Tools
+Approved Products
+Acceptance Device
+Laboratory Recognition Process
+Product Approval Process
+Recognised Laboratories, Auditors and Qualified Test Tools
+Approved Products
+3-D Secure
+Laboratory Recognition Process
+Platform Provider Qualification and Recognition
+Product Approval Process
+Recognised Laboratories, Auditors and Test Platform Providers
+Approved Products
+Security Evaluation
+Product Evaluation Process
+Recognised Laboratories
+Evaluated Products
+Level 3
+Qualification Service Provider
+Tools Qualification Process
+Qualified Test Tools
+Overview
+Registration Processes
+Process for designated payment systems and providers to be issued identifiers.
+Registered IDs
+Identifiers for designated payment systems and providers
+For Review
+Public review
+Associate review
+All Specifications
+By Technology
+3-D Secure
+Contact
+Contactless
+Level 3 Testing
+Mobile
+Payment Tokenisation
+QR
+Secure Remote Commerce
+By Type
+Draft Specification
+Draft Specification Bulletins
+Specifications
+Specification Bulletins
+General Bulletin
+What are EMV
+®
+Specifications?
+EMV
+®
+Specifications are technical requirements for designing payment products to work seamlessly and securely everywhere.
+Overview
+EMV
+®
+3-D Secure
+EMV 3DS allows seamless authentication of consumers to prevent card-not-present (CNP) fraud and increase the security of e-commerce payments.
+EMV
+®
+Contact Chip
+EMV Contact Chip supports seamless and secure in-store payments and helps prevent card fraud.
+EMV
+®
+Contactless Chip
+EMV Contactless Chip supports seamless and secure transactions made with contactless chip cards and NFC enabled mobile devices.
+EMV
+®
+Electric Vehicle Open Payments
+As EV adoption accelerates globally, supporting the charging infrastructure to meet growing demand is an urgent priority for industry stakeholders and policymakers across the world.
+EMV
+®
+Level 3 Testing
+EMVCo manages an EMV
+®
+Level 3 (L3) Testing Framework and the qualification process of related EMV L3 test tools.
+EMV
+®
+Mobile
+EMV Mobile supports the growing use of mobile devices for secure and convenient payments.
+EMV
+®
+Payment Tokenisation
+EMV Payment Tokenisation replaces valuable card data with payment tokens to increase the security of mobile and e-commerce transactions.
+EMV
+®
+QR Codes
+EMV QR Codes support consistent, efficient and convenient QR code payments.
+EMV
+®
+Secure Remote Commerce
+EMV SRC simplifies e-commerce checkout to make the payment process quicker, easier and more secure.
+Overview
+EMVCo Associates & Subscribers
+Participating organisations
+Industry Partners & Liaisons
+Technical bodies and associations
+Ways to Participate
+Participation options
+Events
+EMVCo and industry events
+Type here to search...
+Search Submit
+EMVCo Login
+Why EMV
+®
+?
+EMV
+®
+Technologies
+Overview
+EMV
+®
+3-D Secure
+EMV
+®
+Contact Chip
+EMV
+®
+Contactless Chip
+EMV
+®
+Electric Vehicle Open Payments
+EMV
+®
+Level 3 Testing
+EMV
+®
+Mobile
+EMV
+®
+Payment Tokenisation
+EMV
+®
+QR Codes
+EMV
+®
+Secure Remote Commerce
+Document Search
+Approved and Evaluated
+Overview
+Card & Mobile
+Laboratory Recognition Process
+Product Approval or Assessment Process
+Recognised Laboratories, Auditors and Qualified Test Tools
+Approved Products
+Acceptance Device
+Laboratory Recognition Process
+Product Approval Process
+Recognised Laboratories, Auditors and Qualified Test Tools
+Approved Products
+3-D Secure
+Laboratory Recognition Process
+Platform Provider Qualification and Recognition
+Product Approval Process
+Recognised Laboratories, Auditors and Test Platform Providers
+Approved Products
+Security Evaluation
+Product Evaluation Process
+Recognised Laboratories
+Evaluated Products
+Level 3
+Qualification Service Provider
+Tools Qualification Process
+Qualified Test Tools
+Registered
+Registration Processes
+Registered IDs
+Join Us
+About EMVCo
+News
+Trademark Centre
+Knowledge Hub
+Contact EMVCo
+Home
+>
+EMV® Technologies
+>
+EMV® Contactless Chip
+EMV
+®
+Contactless Chip
+EMV
+®
+Contactless Chip supports seamless and secure transactions made with contactless chip cards and NFC enabled mobile devices.
+Quick Resources
+Promoting Cybersecurity in Payments
+20 May 2025
+What is EMV Contactless Chip?
+Specifications
+Benefits
+Testing & Approval
+FAQs
+Resources
+Trademarks
+What is EMV Contactless Chip?
+Contactless transactions are rapidly increasing around the world as part of a broader shift towards touchless payments. EMV Contactless Chip supports in-store payments with contactless chip cards and Near-Field Communication (NFC) enabled mobile devices that do not require physical contact with the acceptance terminal. Consumers wave or tap their device on the terminal to complete the transaction. A one-time use security code is generated for every transaction to safeguard against fraud.
+EMV Contactless Chip is supported by the EMV Chip
+1
+, EMV Contactless
+2
+, and EMV Contactless Kernel Specifications, which together define the requirements for the chip and acceptance terminal to communicate and process contact and contactless transactions seamlessly anywhere in the world.
+EMVCo publishes the EMV Chip and EMV Contactless Specifications and supporting approval and evaluation processes.
+News & Insights
+Oct 15, 2025
+EMV® Insights
+What are EMV
+®
+Level 1 and Level 2 Testing?
+Oct 15, 2025
+EMV® Insights
+What are EMVCo Approvals and Evaluations?
+Oct 15, 2025
+Publications
+An Introduction to EMVCo Approvals and Evaluations for In-Person Payments
+Specifications & Associated Bulletins
+Version:
+v1.0
+Technology:
+Contactless
+Specification Type:
+Specification Bulletins
+SB n°324: Updates to C-4
+Published: 18 Aug 2026
+Public Access
+Technology:
+Chip, Contact, Contactless
+Specification Type:
+General Bulletin
+KL Bulletin  nº30: EMVCo Annual Public Key Lengths Assessment
+Published: 21 Jul 2026
+Public Access
+Version:
+v1.0
+Technology:
+Chip, Contact, Contactless, Level 3 Testing
+Specification Type:
+Specification Bulletins
+EMV
+®
+Level 3 (L3) Technical Bulletin n°321
+Published: 20 Jul 2026
+Public Access
+Version:
+v2.12
+Technology:
+Contactless
+Specification Type:
+Specifications
+Book C-2 Kernel Specification
+Published: 6 Jul 2026
+Public Access
+Version:
+v2.12
+Technology:
+Contactless
+Specification Type:
+Specifications
+Book C-3 Kernel Specification
+Published: 6 Jul 2026
+Public Access
+View all EMV Contactless Chip specifications
+Close Specification Details modal
+Benefits
+Seamless
+EMV Contactless Chip supports seamless and secure contactless acceptance worldwide.
+Enhanced Security
+Uses advanced cryptographic functions for more secure transactions than with traditional magnetic stripe cards.
+Compatibility
+Supports the development of payment products that will work seamlessly and securely anywhere they are used for contactless transactions.
+Consistency
+Enables a consistent contactless payment experience for consumers wherever they are in the world.
+Flexibility
+Flexible to support loyalty programmes, transit ticketing and other offerings not dedicated to payments.
+EMV Contactless Product Approval and Evaluation
+EMVCo facilitates testing, approval and evaluation of EMV Contactless acceptance and payment devices. EMVCo issues type approvals and security evaluation certificates for products that demonstrate sufficient conformance.
+Learn more about Test Tool Qualification Processes and Laboratory Recognition Processes.
+EMVCo Listings
+Approved/ Evaluated Products
+Service Providers
+Registered Kernel IDs
+Qualified Testing Tools
+Recognised EMVCo Laboratories
+Approval and Evaluation Processes
+Card Consumer Device Processes
+NFC Consumer Device Processes
+Acceptance Device Processes
+FAQs
+What is an EMV Contactless Kernel?
+A contactless kernel provides a set of functions for the payment application in the acceptance device to process contactless transactions. An EMV Contactless Kernel is a kernel that has been evaluated and approved as meeting the EMV Contactless Kernel Specification.
+What are the EMVCo Book C-X Specifications?
+Each global payment system has its own specification for a contactless kernel. EMVCo publishes these individual specifications on the EMVCo website as Book C-X Specifications.
+EMVCo recently published the EMV C-8 Book Specification to provide the industry with an EMV Contactless Kernel Specification that can be licensed directly from EMVCo under the same terms as the EMV Contact Chip Specification.
+What are the requirements for placement of the contactless symbol?
+Requirements for placement of the contactless symbol are described in the Contactless Symbol Reproduction Requirements available here.
+What are proximity coupling devices (PCDs)?
+A proximity coupling device is the hardware part of a contactless reader that supports the protocol communication with the consumer device (card or mobile).
+What are proximity integrated circuit cards (PICCs)?
+Proximity integrated circuit cards are contactless smart cards.
+What is the potential impact of quantum threats to EMV Chip-based payments?
+It is important to note that quantum computing is not expected to start posing a threat to the EMV infrastructure until at least 2040.
+Harvest Now Decrypt Later, which aims to steal encrypted data today in the view that it can be decrypted and used for malicious purposes in the future, has driven a requirement in some industries and governments to deploy quantum resistant cryptography. However, this does not apply to EMV Chip transactions, as chip authentication does not require long-term data confidentiality.
+Regardless, EMVCo is taking very seriously the potential threat of quantum computers undermining the security of RSA (Rivest, Shamir and Adleman) and ECC (Elliptic-Curve Cryptography) and is actively monitoring and addressing future threats.
+EMVCo’s dedicated Security Working Group engages with leading quantum computing and security academics, independent consultants, and government bodies. The findings of this work are regularly shared with the EMV community at EMVCo’s Board of Advisor, Technical and User Meetings.
+EMVCo has also published a position statement on ‘Quantum Computing and EMV Chip Cryptography’ that is publicly available
+here
+. It is now exploring quantum computing market requirements that are being released at a global and national level and their applicability to EMV technology.
+EMV Contactless Resources
+EMV Best Practices for Contactless Acceptance at Point-of-Sale
+This document provides guidance on the design, implementation, and installation of devices used by merchants to accept contactless payments.
+View best practices
+EMV Contactless Indicator Reproduction Requirements
+This document includes the requirements for use of the EMV Contactless Indicator on physical cards, mobile phones, other payment and non-payment form factors, and within supporting marketing collateral.
+View requirements
+EMV Contactless Symbol Reproduction Requirements
+This document includes the requirements for use of the EMV Contactless Symbol at point-of-sale terminals and within supporting marketing collateral.
+View requirements
+Trademarks
+Contactless Indicator
+The Contactless Indicator is for use on payment cards and mobile devices to demonstrate that they can be used to make EMV Contactless payments.
+Contactless Symbol
+The Contactless Symbol is for use at the point-of-sale  to signal to consumers that a payment terminal can accept EMV Contactless payments.
+1
+EMV Chip refers to EMV Integrated Circuit Card Specifications for Payment Systems.
+2
+EMV Contactless refers to Book A, B and C-X.
+Get involved
+Interested in collaborating with EMVCo?
+Sign Up
+More than a hundred organisations – including merchants, issuers, acquirers, payment networks, financial institutions, manufacturers, technology providers and testing laboratories – contribute their knowledge and expertise to the development of EMV Specifications.
+Associate
+EMVCo Associates can contribute their knowledge and expertise to shape the development of EMV Specifications.
+Learn more
+Subscriber
+EMVCo Subscribers can receive notice of pending EMV Specification developments and participate in a formal dialogue with EMVCo.
+Learn more
+Public
+All industry participants can review and provide comments on new EMV Specifications and major updates before final publication.
+Learn more
+Newsletter
+Email Address *
+Subscribe
+Follow us
+Visit our X page
+Visit our LinkedIn page
+Visit our YouTube page
+EMV
+®
+Technologies
+EMV
+®
+3-D Secure
+EMV
+®
+Contact Chip
+EMV
+®
+Contactless Chip
+EMV
+®
+Electric Vehicle Open Payments
+EMV
+®
+Level 3 Testing
+EMV
+®
+Mobile
+EMV
+®
+Payment Tokenisation
+EMV
+®
+QR Codes
+EMV
+®
+Secure Remote Commerce
+Specifications
+3-D Secure
+Contact
+Contactless
+Level 3 Testing
+Mobile
+Payment Tokenisation
+QR Codes
+Secure Remote Commerce
+Resources
+Approved & Evaluated
+Registered
+Knowledge Hub
+Industry Collaboration
+EMVCo Associates & Subscribers
+Industry Partners & Liaisons
+Ways to Participate
+Events
+Antitrust Policy
+Privacy Policy
+Accessibility Statement
+Terms of Use
+Sitemap
+Cookie Settings
+EMV
+®
+is a registered trademark in the U.S. and other countries and an unregistered trademark elsewhere.
+The EMV trademark is owned by EMVCo, LLC.
+© Copyright 2026 EMVCo
+Close Login Modal
+EMVCo Login
+Please login below. If you have forgotten your password, please click the
+Lost your password?
+link.
+Email *
+Password *
+Lost your password?
+Log In
+Don't have an account?
+EMVCo Associates, Subscribers and public users of EMVCo.com can create accounts to manage their engagement and participation with EMVCo. Using your EMVCo account, you can monitor queries and responses, and manage your profile.
+Ways to participate
+×
+Complete Question To Visit Link
+Submit

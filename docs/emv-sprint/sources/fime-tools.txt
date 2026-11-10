@@ -1,0 +1,443 @@
+Fime | Payment, Digital Identity & Smart Mobility Testing
+What trust framework is needed for autonomous payments?
+Read the blog
+Businesses we serve
+Our offering
+About us
+Our insights
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+Industries
+Schemes & central banks
+Standards & scheme compliance
+Payment processing
+Network & clearing
+Acceptance technology
+Terminals, SoftPOS & NFC
+Issuance technology
+Card, token & wallet
+Digital identity
+Biometrics & eID
+Smart mobility
+Transit, EV & connected vehicle
+Expertise
+Tokenization
+The foundation of digital payments
+Authentication
+For secure digital experiences
+Digital money
+Where trust meets innovation
+Agentic commerce
+Trust in AI payments
+Quantum resilience
+Build it before it matters most
+Instant payments
+For a real-time economy
+Card payment
+Continuously evolving payments
+Cybersecurity
+Secure connected products
+Credentials
+Accreditations
+EMVCo, PCI SSC, Visa…
+Memberships
+Industry bodies
+References
+Global clients
+OUR INSIGHTS
+Get industry leading insights on the latest trends
+Go deeper
+Consulting
+Testing solutions
+Testing services
+Digital ecosystem strategy
+Define where and how to win
+Technology consulting
+Make the right choices
+Client-side implementation support
+Keep programs on track
+Test & certification advisory
+Accelerate market adoption
+Acquiring testing solutions
+Speed up acquiring certification
+Issuing testing solutions
+Validate cards, tokens, wallets
+Digital identity test tools
+Validate wallets and readers
+Card, terminal, mobile
+Launch trusted payment products
+3-D Secure test platform
+Achieve 3DS compliance faster
+Smart mobility test tools
+Validate fare and ticketing flows
+Host testing solutions
+Prove host readiness early
+Agentic commerce
+Check autonomous transactions
+Telecom test tools
+Test SIM and device flows
+Acquiring
+Speed up acquiring certification
+Issuing
+Validate cards, tokens, wallets
+Smart mobility
+Validate fare and ticketing flows
+Card, terminal, mobile
+Launch trusted payment products
+3-D Secure
+Achieve 3DS compliance faster
+Cybersecurity
+Find vulnerabilities before launch
+Host
+Prove host readiness early
+Digital identity & Biometrics
+Ensure trust via independent testing
+Digital payment
+Ensuring quality, security and trust
+End-to-end expertise
+Discover the innovations shaping the future of payments
+Learn more
+Who we are
+Our story
+Discover our journey
+Our mission
+Making innovation possible
+Our brands
+Fime, Consult Hyperion & more
+Our leadership team
+The people behind the expertise
+Join & connect
+Careers
+Shape the future with us
+Our offices
+Global reach. Local expertise.
+Contact us
+We're hiring
+Join a team of 900+ experts worldwide.
+See open positions
+Learn
+Blog articles
+Case studies
+Podcasts
+Videos
+Go deeper
+eBooks
+White paper
+Scientific paper
+Report
+News & events
+News
+Event
+Fime event
+Webinar
+expertise
+Discover the innovations shaping the future of payments
+Learn more
+Businesses we serve
+Our offering
+About us
+Our insights
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Lionel Grosclaude on agentic commerce: can AI really buy what you mean? June 24, 2026
+Watch the video
+Contact us
+←
+Back
+Industries
+Schemes & central banks
+Payment processing
+Acceptance technology
+Issuance technology
+Digital identity
+Smart mobility
+Expertise
+Tokenization
+Authentication
+Digital money
+Agentic commerce
+Quantum resilience
+Instant payments
+Card payment
+Cybersecurity
+Credentials
+Accreditations
+Memberships
+References
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+←
+Back
+Consulting
+Digital ecosystem strategy
+Technology consulting
+Client-side implementation support
+Test & certification advisory
+Testing solutions
+Acquiring testing solutions
+Issuing testing solutions
+Digital identity test tools
+Card, terminal, mobile
+3-D Secure test platform
+Smart mobility test tools
+Host testing solutions
+Agentic commerce
+Telecom test tools
+Testing services
+Acquiring
+Issuing
+Smart mobility
+Card, terminal, mobile
+3-D Secure
+Cybersecurity
+Host
+Digital identity & Biometrics
+Digital payment
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+←
+Back
+Who we are
+Our story
+Our mission
+Our brands
+Our leadership team
+Join & connect
+Careers
+Our offices
+Contact us
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+←
+Back
+Learn
+Blog articles
+Case studies
+Podcasts
+Videos
+Go deeper
+eBooks
+White paper
+Scientific paper
+Report
+News & events
+News
+Event
+Fime event
+Webinar
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+NEWS
+PAYMENTS
+SMART MOBILITY
+DIGITAL IDENTITY
+Fime acquires Red Alert Labs to accelerate its Digital Trust strategy
+Read the full news
+Fime acquires Red Alert Labs to accelerate its Digital Trust strategy
+Read the full news
+Fime is a global specialist in trusted digital transactions
+Explore our offering
+Fime is a global specialist in trusted digital transactions
+Explore our offering
+Fime is a global specialist in trusted digital transactions
+Explore our offering
+businesses we serve
+Six markets. One 360° partner.
+A complete view across the entire ecosystem we serve.
+Schemes & central banks
+Launch and scale trusted payment schemes with confidence.
+Learn more
+Payment processing
+Process transactions with speed, scale and resilience.
+Learn more
+Acceptance technology
+Deploy secure, multi-brand acceptance everywhere.
+Learn more
+Issuance technology
+Issue cards and credentials with confidence.
+Learn more
+Digital identity
+Build interoperable, trusted identity solutions.
+Learn more
+Smart mobility
+Enable frictionless, interoperable travel.
+Learn more
+OUR offering
+Three ways we support you
+From strategic consulting to testing solutions and execution services, we support you across the full lifecycle.
+Consulting
+Consulting
+We help you understand market shifts, define responses, mitigate risks, and make confident decisions in a rapidly evolving landscape.
+Learn more
+Testing solutions
+Testing solutions
+Accelerate product development with test platforms that support innovation, reduce risk, ensure compliance, and verify technical performance.
+Learn more
+Testing services
+Testing services
+Enable faster market entry through lab-based testing services delivering execution, certification support, reduced risk, and compliant product launches.
+Learn more
+customer journey
+From ambition to adoption at scale
+Combining consulting, testing solutions and services to help ecosystems grow, scale and stay trusted.
+Decide
+National payment strategy
+Define domestic payment strategy, rail strategy, sovereignty and resilience guardrails, wallet strategy, positioning vs IC, regulation enablers.
+Define
+Govern the ecosystem
+Define governance, operating model and rulebook that allow every participant knows how the ecosystem works, complies and scales safely.
+Design
+Shape the solution
+Shape the target architecture, technology choices and interoperability model to turn strategy into reality.
+Deliver
+Build with confidence
+Keep complex initiatives on track with experienced program support, design authority and quality assurance.
+Adopt
+Get everyone onboarded
+Accelerate market readiness through onboarding processes, implementation guidelines, expertise support and ecosystem enablement.
+Test+
+Keep trust proven
+Prove compliance, resilience and trust continuously with managed testing, certification services and assurance capabilities.
+National payment strategy
+Define domestic payment strategy, rail strategy, sovereignty and resilience guardrails, wallet strategy, positioning vs IC, regulation enablers.
+Share your challenge
+Decide
+National payment strategy
+Define domestic payment strategy, rail strategy, sovereignty and resilience guardrails, wallet strategy, positioning vs IC, regulation enablers.
+Share your challenge
+Define
+Govern the ecosystem
+Define governance, operating model and rulebook that allow every participant knows how the ecosystem works, complies and scales safely.
+Share your challenge
+Design
+Shape the solution
+Shape the target architecture, technology choices and interoperability model to turn strategy into reality.
+Share your challenge
+Deliver
+Build with confidence
+Keep complex initiatives on track with experienced program support, design authority and quality assurance.
+Share your challenge
+Adopt
+Get everyone onboarded
+Accelerate market readiness through onboarding processes, implementation guidelines, expertise support and ecosystem enablement.
+Share your challenge
+Test+
+Keep trust proven
+Prove compliance, resilience and trust continuously with managed testing, certification services and assurance capabilities.
+Share your challenge
+Global presence. Local expertise.
+Enabling customers worldwide
+Our footprint covers locations, experts, labs, and customers worldwide, ensuring local expertise and global consistency.
+900+
+Experts & employees
+6
+Development centers
+14
+Fime laboratories
+5000+
+Customers
+24
+Locations
+50+
+Accreditations
+View all locations
+Our insights
+Explore the latest contents
+Explore the latest insights from the world of payments, smart mobility and digital identity.
+Go deeper
+Blog
+What trust framework is needed for autonomous payments?
+News
+TOPPAN Security becomes first company to complete Fime Photo ID data model testing
+Event
+TRUSTECH
+Go deeper
+Event
+Money20/20 Middle East
+August 19, 2026
+Event
+Assurance in practice: how do you actually trust an identity?
+June 30, 2026
+Event
+AAMVA Annual International Conference
+August 27, 2026
+Get in Touch
+Share your challenge
+Get the expertise and support to enable your innovations and provide payment solutions with the highest standards of customer experience.
+Contact us
+Consulting
+Digital ecosystem strategy
+Technology consulting
+Client-side implementation support
+Test & certification advisory
+Testing Solutions
+Acquiring
+Card, terminal, mobile
+Host
+Issuing
+3-D Secure test platform
+Agentic commerce
+Digital identity test tools
+Smart mobility test tools
+Telecom test tools
+Testing services
+Acquiring
+Card, terminal, mobile
+Host testing services
+Issuing
+3-D Secure compliance services
+Digital identity testing services
+Smart mobility testing services
+Security testing services
+Contact
+Locations
+Careers
+Legal
+Copyright © 2026 Fime. All rights reserved.
+marcom@fime.com

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-11-09T23:48:42.974056+00:00",
+  "adbDevices": {
+    "exitCode": 0,
+    "stdout": "List of devices attached",
+    "stderr": ""
+  },
+  "attestation": "ANDROID_REPORTED_ONLY_NOT_RF_VERIFICATION",
+  "physicalHceConfirmed": false,
+  "status": "NO_DEVICE_SELECTED_OR_CONFIRMED"
+}

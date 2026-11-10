@@ -1,0 +1,619 @@
+Testing Solutions - Fime
+What trust framework is needed for autonomous payments?
+Read the blog
+Businesses we serve
+Our offering
+About us
+Our insights
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+Industries
+Schemes & central banks
+Standards & scheme compliance
+Payment processing
+Network & clearing
+Acceptance technology
+Terminals, SoftPOS & NFC
+Issuance technology
+Card, token & wallet
+Digital identity
+Biometrics & eID
+Smart mobility
+Transit, EV & connected vehicle
+Expertise
+Tokenization
+The foundation of digital payments
+Authentication
+For secure digital experiences
+Digital money
+Where trust meets innovation
+Agentic commerce
+Trust in AI payments
+Quantum resilience
+Build it before it matters most
+Instant payments
+For a real-time economy
+Card payment
+Continuously evolving payments
+Cybersecurity
+Secure connected products
+Credentials
+Accreditations
+EMVCo, PCI SSC, Visa…
+Memberships
+Industry bodies
+References
+Global clients
+OUR INSIGHTS
+Get industry leading insights on the latest trends
+Go deeper
+Consulting
+Testing solutions
+Testing services
+Digital ecosystem strategy
+Define where and how to win
+Technology consulting
+Make the right choices
+Client-side implementation support
+Keep programs on track
+Test & certification advisory
+Accelerate market adoption
+Acquiring testing solutions
+Speed up acquiring certification
+Issuing testing solutions
+Validate cards, tokens, wallets
+Digital identity test tools
+Validate wallets and readers
+Card, terminal, mobile
+Launch trusted payment products
+3-D Secure test platform
+Achieve 3DS compliance faster
+Smart mobility test tools
+Validate fare and ticketing flows
+Host testing solutions
+Prove host readiness early
+Agentic commerce
+Check autonomous transactions
+Telecom test tools
+Test SIM and device flows
+Acquiring
+Speed up acquiring certification
+Issuing
+Validate cards, tokens, wallets
+Smart mobility
+Validate fare and ticketing flows
+Card, terminal, mobile
+Launch trusted payment products
+3-D Secure
+Achieve 3DS compliance faster
+Cybersecurity
+Find vulnerabilities before launch
+Host
+Prove host readiness early
+Digital identity & Biometrics
+Ensure trust via independent testing
+Digital payment
+Ensuring quality, security and trust
+End-to-end expertise
+Discover the innovations shaping the future of payments
+Learn more
+Who we are
+Our story
+Discover our journey
+Our mission
+Making innovation possible
+Our brands
+Fime, Consult Hyperion & more
+Our leadership team
+The people behind the expertise
+Join & connect
+Careers
+Shape the future with us
+Our offices
+Global reach. Local expertise.
+Contact us
+We're hiring
+Join a team of 900+ experts worldwide.
+See open positions
+Learn
+Blog articles
+Case studies
+Podcasts
+Videos
+Go deeper
+eBooks
+White paper
+Scientific paper
+Report
+News & events
+News
+Event
+Fime event
+Webinar
+expertise
+Discover the innovations shaping the future of payments
+Learn more
+Businesses we serve
+Our offering
+About us
+Our insights
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Lionel Grosclaude on agentic commerce: can AI really buy what you mean? June 24, 2026
+Watch the video
+Contact us
+←
+Back
+Industries
+Schemes & central banks
+Payment processing
+Acceptance technology
+Issuance technology
+Digital identity
+Smart mobility
+Expertise
+Tokenization
+Authentication
+Digital money
+Agentic commerce
+Quantum resilience
+Instant payments
+Card payment
+Cybersecurity
+Credentials
+Accreditations
+Memberships
+References
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+←
+Back
+Consulting
+Digital ecosystem strategy
+Technology consulting
+Client-side implementation support
+Test & certification advisory
+Testing solutions
+Acquiring testing solutions
+Issuing testing solutions
+Digital identity test tools
+Card, terminal, mobile
+3-D Secure test platform
+Smart mobility test tools
+Host testing solutions
+Agentic commerce
+Telecom test tools
+Testing services
+Acquiring
+Issuing
+Smart mobility
+Card, terminal, mobile
+3-D Secure
+Cybersecurity
+Host
+Digital identity & Biometrics
+Digital payment
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+←
+Back
+Who we are
+Our story
+Our mission
+Our brands
+Our leadership team
+Join & connect
+Careers
+Our offices
+Contact us
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+←
+Back
+Learn
+Blog articles
+Case studies
+Podcasts
+Videos
+Go deeper
+eBooks
+White paper
+Scientific paper
+Report
+News & events
+News
+Event
+Fime event
+Webinar
+Change language:
+EN
+FR
+한국어
+日本語
+繁體
+BR
+中文
+SP
+Contact us
+our offering
+Testing solutions
+Accelerate payment solution validation with comprehensive testing tools, platforms and local laboratory expertise, helping you validate your product and launch with confidence.
+Discover our key offerings
+Acquiring testing solutions
+Card, terminal, mobile testing solutions
+Host testing platforms
+Issuing testing solutions
+EMV 3-D Secure test platform
+Agentic commerce
+Digital identity test tools
+Smart mobility test tools
+Telecom test tools
+Acquiring testing solutions
+From terminals and payment applications to omnichannel acceptance solutions, delivering secure acquiring solutions that meet evolving market needs and accelerate payment innovation.
+Terminal integration test tool (BTT)
+Easy and effective brand testing
+Card Simulator
+Contact and contactless card simulation tool
+Fime Test Cards
+Acquirer and acceptance test cards
+Terminal certification platform (STP)
+Web-based test platform for payment terminal testing
+Terminal test tool (Eval+)
+Level 2 payment terminal compliance test tool
+Terminal test tool (Eval+Flow)
+Automated Level 2 payment kernel testing tool
+MyTest Studio (MTS)
+Test plan and custom test script editing tool for all our cloud-based testing solutions
+MyTest Integration (MTI)
+CI/CD pipeline support for cloud-based testing solutions
+Spy tools
+Card Spy
+Card-terminal communication analysis tool
+Smartspy+
+Contact and contactless transaction spy solution
+Mobile Spy
+Spy solution for contact and contactless device to card communication
+Card, terminal, mobile testing solutions
+Validate cards, terminals and mobile solutions across payment, smart mobility and digital identity ecosystems to achieve compliance and accelerate time to market with confidence.
+Card test tools
+EMVeriCard
+Level 1 contact card testing tool
+Smartspy+
+Contact and contactless transaction spy solution
+Global+
+SE & cloud-based SE (HCE) compliance test tool
+PersevalPro
+Personalization validation tool for EMV
+NFC RF test bench solutions
+NFC conformance testing
+Contactless Test Station III
+NFC validation tester
+Smartcard production testing (MP400)
+Next-generation smartcard testing
+Terminal test tools
+EMVeriPOS
+Level 1 payment terminal contact testing
+Eval+
+Level 2 payment terminal compliance test tool
+Eval+ Flow
+Automated Level 2 payment kernel testing tool
+nexo POI
+Comprehensive nexo testing tool
+Smartspy+
+Contact and contactless transaction spy solution
+NFC RF test bench solutions
+NFC conformance testing
+Contactless Test Station III
+NFC validation tester
+Mobile test tools
+Global+
+SE & cloud-based SE (HCE) compliance test tool
+Mobile Spy
+Spy solution for contact and contactless device to card communication
+Script development tools
+MyTest Process (MTS)
+Test plan and custom test script editing tool for all our web-based testing solutions.
+Automation test tools
+MyTest Integration (MTI)
+CI/CD pipeline support for all our cloud-based testing solutions
+Host testing platforms
+From payment processing platforms to next-generation infrastructures, delivering secure host solutions that meet evolving market needs and accelerate payment innovation.
+Real-time simulator (ASTREX)
+Powerful real-time payments simulator
+Host Testing Solution (HTS)
+Web-based host testing platform to test real-time payments (RTP)
+API test platform (TrustAPI+)
+Enabling a safe and interoperable open API framework
+MyTest Platform (MTP)
+Certification management platform providing complete digitization of certification journeys
+Issuing testing solutions
+From cards and wallets to digital credentials, Fime helps organizations design, deploy and validate secure issuance solutions that meet evolving ecosystem requirements and accelerate innovation.
+EMV card test tool (PerservalPro)
+Personalization validation tool for EMV
+Functional card test tool (Global+)
+SE & cloud-based SE (HCE) compliance test tool
+MyTest Studio (MTS)
+Test plan and custom test script editing tool for all our cloud-based testing solutions.
+MyTest Integration (MTI)
+CI/CD pipeline support for cloud-based testing solutions
+Spy tools
+Card Spy
+Card-terminal communication analysis tool
+Smartspy+
+Contact and contactless transaction spy solution
+Mobile Spy
+Spy solution for contact and contactless device to card communication
+EMV 3-D Secure test platform
+From EMV® 3-D Secure certification to ongoing compliance, Fime helps organizations validate secure authentication solutions that meet evolving payment requirements and enable seamless card-not-present experiences.
+EMV 3-D Secure test platform
+3DS test platform and compliance services
+Agentic commerce
+From autonomous transactions to AI-driven commerce experiences, establish the trust infrastructure required for secure, authorized and auditable agent interactions across evolving payment ecosystems.
+FACT
+Framework for Agentic Commerce Trust
+Digital identity test tools
+From EUDI wallets to digital credentials, enabling organizations to build, test and validate trusted digital identity solutions that achieve conformance and accelerate adoption.
+Digital Identity Application Test Suite
+Build, test, and validate digital identity wallets
+Digital Identity Reader Test Suite
+Build, test, and validate DI reader applications
+Digital Identity Testbed
+Ecosystem Simulator
+EUDI Wallet Test Suite
+Build, test, and validate EUDI wallet applications
+Smart mobility test tools
+From smart tachograph cards to mobile ticketing solutions, enabling organizations to validate secure mobility technologies, achieve regulatory conformance and accelerate deployment.
+Smart Tachograph Card
+Streamline your EU type approval process
+MIFARE4Mobile® Test Suites
+MIFARE4Mobile pre-certification test tool
+Telecom test tools
+From SIM and eSIM validation to 5G conformance testing, verifying interoperability, ensuring compliance and accelerating the deployment of connected technologies.
+3GPP and ETSI Card Test Suites
+Test suites for smart cards, SIM, UICC and eUICC
+5G Conformance Test Platform
+SA or NSA mode conformance verification platform
+eCall eSIM Test Suite
+eCall eSIM testing and verification tool
+eSIM Profile Generator
+GSMA eSIM profiles generator, editor and validator
+Consumer SGP.23 Server Test Suites
+SM-DP+ and SM-DS test suites
+M2M SGP.16 Server Test Suites
+SM-DP and SM-SR test suite
+M2M Server Simulator
+eSIM profile interoperability test tool
+Mobile Card Test Platform
+Test tool for smart cards, UICC, eUICC, USIM and SIM
+Mobile eUICC Profile Tester
+SIM and eSIM profile management and test tool
+Mobile Handset Test Platform
+Fully functional SIM / UICC simulator
+eSIM-in-Device Profile Tester
+Remote card profile testing tool
+Global+
+SE & cloud-based SE (HCE) compliance test tool
+MyTest Studio (MTS)
+Test plan and custom test script editing tool for all our cloud-based testing solutions.
+MyTest Integration (MTI)
+CI/CD pipeline support for cloud-based testing solutions
+SM-DP+ Simulator
+eSIM profile testing tool
+Mobile Spy
+Spy solution for contact and contactless device to card communication
+Acquiring testing solutions
+Terminal integration test tool (BTT)
+Easy and effective brand testing
+Card Simulator
+Contact and contactless card simulation tool
+Fime Test Cards
+Acquirer and acceptance test cards
+Terminal certification platform (STP)
+Web-based test platform for payment terminal testing
+Terminal test tool (Eval+)
+Level 2 payment terminal compliance test tool
+Terminal test tool (Eval+Flow)
+Automated Level 2 payment kernel testing tool
+MyTest Studio (MTS)
+Test plan and custom test script editing tool for all our cloud-based testing solutions
+MyTest Integration (MTI)
+CI/CD pipeline support for cloud-based testing solutions
+Spy tools
+Card Spy
+Card-terminal communication analysis tool
+Smartspy+
+Contact and contactless transaction spy solution
+Mobile Spy
+Spy solution for contact and contactless device to card communication
+Card, terminal, mobile testing solutions
+Card test tools
+EMVeriCard
+Level 1 contact card testing tool
+Smartspy+
+Contact and contactless transaction spy solution
+Global+
+SE & cloud-based SE (HCE) compliance test tool
+PersevalPro
+Personalization validation tool for EMV
+NFC RF test bench solutions
+NFC conformance testing
+Contactless Test Station III
+NFC validation tester
+Smartcard production testing (MP400)
+Next-generation smartcard testing
+Terminal test tools
+EMVeriPOS
+Level 1 payment terminal contact testing
+Eval+
+Level 2 payment terminal compliance test tool
+Eval+ Flow
+Automated Level 2 payment kernel testing tool
+nexo POI
+Comprehensive nexo testing tool
+Smartspy+
+Contact and contactless transaction spy solution
+NFC RF test bench solutions
+NFC conformance testing
+Contactless Test Station III
+NFC validation tester
+Mobile test tools
+Global+
+SE & cloud-based SE (HCE) compliance test tool
+Mobile Spy
+Spy solution for contact and contactless device to card communication
+Script development tools
+MyTest Process (MTS)
+Test plan and custom test script editing tool for all our web-based testing solutions.
+Automation test tools
+MyTest Integration (MTI)
+CI/CD pipeline support for all our cloud-based testing solutions
+Host testing platforms
+Real-time simulator (ASTREX)
+Powerful real-time payments simulator
+Host Testing Solution (HTS)
+Web-based host testing platform to test real-time payments (RTP)
+API test platform (TrustAPI+)
+Enabling a safe and interoperable open API framework
+MyTest Platform (MTP)
+Certification management platform providing complete digitization of certification journeys
+Issuing testing solutions
+EMV card test tool (PerservalPro)
+Personalization validation tool for EMV
+Functional card test tool (Global+)
+SE & cloud-based SE (HCE) compliance test tool
+MyTest Studio (MTS)
+Test plan and custom test script editing tool for all our cloud-based testing solutions.
+MyTest Integration (MTI)
+CI/CD pipeline support for cloud-based testing solutions
+Spy tools
+Card Spy
+Card-terminal communication analysis tool
+Smartspy+
+Contact and contactless transaction spy solution
+Mobile Spy
+Spy solution for contact and contactless device to card communication
+EMV 3-D Secure test platform
+EMV 3-D Secure test platform
+3DS test platform and compliance services
+Agentic commerce
+FACT
+Framework for Agentic Commerce Trust
+Digital identity test tools
+Digital Identity Application Test Suite
+Build, test, and validate digital identity wallets
+Digital Identity Reader Test Suite
+Build, test, and validate DI reader applications
+Digital Identity Testbed
+Ecosystem Simulator
+EUDI Wallet Test Suite
+Build, test, and validate EUDI wallet applications
+Smart mobility test tools
+Smart Tachograph Card
+Streamline your EU type approval process
+MIFARE4Mobile® Test Suites
+MIFARE4Mobile pre-certification test tool
+Telecom test tools
+3GPP and ETSI Card Test Suites
+Test suites for smart cards, SIM, UICC and eUICC
+5G Conformance Test Platform
+SA or NSA mode conformance verification platform
+eCall eSIM Test Suite
+eCall eSIM testing and verification tool
+eSIM Profile Generator
+GSMA eSIM profiles generator, editor and validator
+Consumer SGP.23 Server Test Suites
+SM-DP+ and SM-DS test suites
+M2M SGP.16 Server Test Suites
+SM-DP and SM-SR test suite
+M2M Server Simulator
+eSIM profile interoperability test tool
+Mobile Card Test Platform
+Test tool for smart cards, UICC, eUICC, USIM and SIM
+Mobile eUICC Profile Tester
+SIM and eSIM profile management and test tool
+Mobile Handset Test Platform
+Fully functional SIM / UICC simulator
+eSIM-in-Device Profile Tester
+Remote card profile testing tool
+Global+
+SE & cloud-based SE (HCE) compliance test tool
+MyTest Studio (MTS)
+Test plan and custom test script editing tool for all our cloud-based testing solutions.
+MyTest Integration (MTI)
+CI/CD pipeline support for cloud-based testing solutions
+SM-DP+ Simulator
+eSIM profile testing tool
+Mobile Spy
+Spy solution for contact and contactless device to card communication
+Get in Touch
+Share your challenge
+Get the expertise and support to enable your innovations and provide payment solutions with the highest standards of customer experience.
+Contact us
+Consulting
+Digital ecosystem strategy
+Technology consulting
+Client-side implementation support
+Test & certification advisory
+Testing Solutions
+Acquiring
+Card, terminal, mobile
+Host
+Issuing
+3-D Secure test platform
+Agentic commerce
+Digital identity test tools
+Smart mobility test tools
+Telecom test tools
+Testing services
+Acquiring
+Card, terminal, mobile
+Host testing services
+Issuing
+3-D Secure compliance services
+Digital identity testing services
+Smart mobility testing services
+Security testing services
+Contact
+Locations
+Careers
+Legal
+Copyright © 2026 Fime. All rights reserved.
+marcom@fime.com

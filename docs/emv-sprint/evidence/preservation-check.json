@@ -1,0 +1,8 @@
+{
+  "sameSigningCertificate": true,
+  "sameLabAidXml": true,
+  "applicationId": "lab.nfc",
+  "versionCode": 2,
+  "baselineApkSha256": "fcbc9709fcd0ef203dbb69b49483446a57843fe7eb0d0e2745557cc724738de1",
+  "updatedApkSha256": "151e4baee3703fa1ee706437c8a5cf88e959799c9c3e336cb0e0b278341bc9f3"
+}
