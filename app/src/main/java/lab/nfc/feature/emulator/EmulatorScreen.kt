@@ -39,7 +39,12 @@ Panel("Perfis fictícios de laboratório") {
  profiles.forEach { name -> Row { RadioButton(selected=profile==name,onClick={ vm.select(name) }); Text(name,Modifier.padding(top=12.dp)) } }
  OutlinedTextField(profileName,{ profileName=it },label={ Text("Novo perfil (ASCII, até 32)") },modifier=Modifier.fillMaxWidth())
  Button(onClick={ runCatching { vm.store.addProfile(profileName); vm.select(profileName); profileName="" }.onFailure { vm.message.value="Use letras, números, _ ou - (1–32)" } }) { Text("Criar perfil fictício") }
- Text("AID proprietário: ${LabProtocol.AID}",fontFamily=FontFamily.Monospace)
+ var aid by remember { mutableStateOf(vm.store.selectedAid) }
+ var reject by remember { mutableStateOf(vm.store.rejectLabGetData) }
+ Text("AID proprietário selecionado: $aid",fontFamily=FontFamily.Monospace)
+ LabAids.all.forEach { candidate -> TextButton(onClick={ aid=candidate;vm.store.selectedAid=candidate }) { Text("${if(aid==candidate) "●" else "○"} $candidate") } }
+ Row { Checkbox(checked=reject,onCheckedChange={ reject=it;vm.store.rejectLabGetData=it });Text("Caso negativo fictício: GET DATA retorna 6985") }
+ Text("AID e comportamento são fixados ao iniciar cada sessão; não são credenciais EMV.")
  Text("Requer outro leitor NFC. Apenas armar a sessão não comprova comunicação física.")
  Button(onClick=onHce,enabled=caps.hce && caps.enabled) { Text("Iniciar sessão HCE") }
  OutlinedButton(onClick={ vm.stopHce() }) { Text("Encerrar sessão HCE") }

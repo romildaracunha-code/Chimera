@@ -16,6 +16,12 @@ class LabStore private constructor(context: Context) {
  var profile: String
  get() = prefs.getString("profile","LAB-ALPHA")!!
  set(value) { prefs.edit().putString("profile",value).commit() }
+ var selectedAid: String
+ get() = prefs.getString("selectedAid","F04E46434C414201")!!
+ set(value) { lab.nfc.core.apdu.LabAids.requireLab(value); prefs.edit().putString("selectedAid",value).apply() }
+ var rejectLabGetData: Boolean
+ get() = prefs.getBoolean("rejectLabGetData",false)
+ set(value) { prefs.edit().putBoolean("rejectLabGetData",value).apply() }
  var activeHce: String?
  get() = prefs.getString("activeHce",null)
  set(value) { prefs.edit().putString("activeHce",value).commit() }

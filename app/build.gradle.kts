@@ -1,7 +1,8 @@
 plugins { id("com.android.application"); id("org.jetbrains.kotlin.android"); id("org.jetbrains.kotlin.plugin.compose") }
 android {
  namespace = "lab.nfc"; compileSdk = 35
- defaultConfig { applicationId = "lab.nfc"; minSdk = 26; targetSdk = 35; versionCode = 2; versionName = "1.1-physical"; testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+ defaultConfig { applicationId = "lab.nfc"; minSdk = 26; targetSdk = 35; versionCode = 3; versionName = "3.0-chimera"; testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+ sourceSets.getByName("test").resources.srcDir("src/main/assets")
  buildFeatures { compose = true }
  compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
  kotlinOptions { jvmTarget = "17" }

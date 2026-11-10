@@ -30,18 +30,19 @@ object LabProtocol {
  const val GET_DATA = "00CA000000"
  fun decode(hex: String) = runCatching { when(Command.parse(hex.bytes()).ins) { 0xA4 -> "SELECT AID"; 0xCA -> "GET DATA"; else -> "Instrução desconhecida" } }.getOrDefault("APDU inválido")
 }
-class LabEngine {
+class LabEngine(private val aid: String=LabProtocol.AID, private val rejectGetData: Boolean=false) {
+ init { LabAids.requireLab(aid) }
  private var selected = false
  fun reset() { selected = false }
  fun exchange(raw: ByteArray, profile: String): ByteArray {
- val c = try { Command.parse(raw) } catch(_: IllegalArgumentException) { return "6700".bytes() }
+ val c = try { IsoCommand.parse(raw) } catch(_: IllegalArgumentException) { return "6700".bytes() }
  if(c.cla != 0) return "6E00".bytes()
  return when(c.ins) {
  0xA4 -> {
  selected = false
- when { c.p1 != 4 || c.p2 != 0 -> "6A86".bytes(); c.data.hex() != LabProtocol.AID -> "6A82".bytes(); else -> { selected = true; "9000".bytes() } }
+ when { c.p1 != 4 || c.p2 != 0 -> "6A86".bytes(); c.data.hex() != aid -> "6A82".bytes(); else -> { selected = true; "9000".bytes() } }
  }
- 0xCA -> when { c.p1 != 0 || c.p2 != 0 -> "6A86".bytes(); c.data.isNotEmpty() -> "6700".bytes(); !selected -> "6985".bytes(); else -> {
+ 0xCA -> when { c.p1 != 0 || c.p2 != 0 -> "6A86".bytes(); c.data.isNotEmpty() -> "6700".bytes(); !selected || rejectGetData -> "6985".bytes(); else -> {
  val data = "NFC LAB | FICTITIOUS | $profile".toByteArray(Charsets.US_ASCII)
  if(c.le != null && c.le < data.size) byteArrayOf(0x6C, data.size.toByte()) else data + "9000".bytes()
  } }

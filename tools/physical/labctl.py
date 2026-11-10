@@ -127,7 +127,7 @@ def pcsc(args):
         raise ValueError('Leitor exato não encontrado; use pcsc --list')
     record = {'schemaVersion': 1, 'id': str(uuid.uuid4()), 'startedAt': now(), 'mode': 'PHYSICAL_PCSC_LAB',
               'reader': args.reader, 'credential': 'NFC_LAB_FICTITIOUS', 'environment': 'LAB_PROTOCOL',
-              'aid': 'F04E46434C414201', 'emv': 'NOT_APPLICABLE', 'authorization': 'NOT_REQUESTED',
+              'aid': args.aid, 'emv': 'NOT_APPLICABLE', 'authorization': 'NOT_REQUESTED',
               'settlement': 'NOT_OBSERVED', 'capturePoint': 'PCSC_API_RESPONSE_NOT_ANALOG_RF_MEASUREMENT',
               'exchanges': [], 'errors': []}
     connection = match[0].createConnection()
@@ -136,7 +136,7 @@ def pcsc(args):
         connection.connect()
         record['atr'] = bytes(connection.getATR()).hex().upper()
         for attempt in range(args.attempts):
-            for name, command in [('SELECT_LAB_AID', SELECT), ('GET_LAB_DATA', GET_DATA)]:
+            for name, command in [('SELECT_LAB_AID', bytes.fromhex('00A4040008'+args.aid+'00')), ('GET_LAB_DATA', GET_DATA)]:
                 timestamp, start = now(), time.perf_counter_ns()
                 try:
                     data, sw1, sw2 = connection.transmit(list(command))
@@ -311,7 +311,7 @@ def main(argv=None):
     sub = parser.add_subparsers(dest='action', required=True)
     p = sub.add_parser('inventory-init'); p.add_argument('--out', required=True); p.add_argument('--slots',type=int,default=40); p.set_defaults(fn=inventory)
     p = sub.add_parser('doctor'); p.add_argument('--adb', default='adb'); p.add_argument('--serial'); p.add_argument('--reference', default='PHONE-01'); p.add_argument('--out',required=True); p.set_defaults(fn=doctor)
-    p = sub.add_parser('pcsc'); p.add_argument('--list', action='store_true'); p.add_argument('--reader'); p.add_argument('--out'); p.add_argument('--attempts',type=int,choices=range(1,101),default=5); p.set_defaults(fn=pcsc)
+    p = sub.add_parser('pcsc'); p.add_argument('--aid',choices=['F04E46434C414201','F04E46434C414202','F04E46434C414203'],default='F04E46434C414201'); p.add_argument('--list', action='store_true'); p.add_argument('--reader'); p.add_argument('--out'); p.add_argument('--attempts',type=int,choices=range(1,101),default=5); p.set_defaults(fn=pcsc)
     p = sub.add_parser('new'); p.add_argument('--out',required=True); p.add_argument('--terminal',required=True); p.add_argument('--operator',required=True); p.add_argument('--inventory'); p.add_argument('--phone',default='PHONE-UNKNOWN')
     p.add_argument('--environment',choices=['LAB_PROTOCOL','OFFICIAL_HOMOLOGATION','PRODUCTION_OBSERVATION'],required=True)
     p.add_argument('--environment-ref',required=True); p.add_argument('--credential',choices=['NFC_LAB_FICTITIOUS','OFFICIAL_POSITIVE','OFFICIAL_NEGATIVE','LEGITIMATE'],required=True); p.add_argument('--case'); p.set_defaults(fn=new)

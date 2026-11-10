@@ -7,8 +7,8 @@ data class Exchange(val timestamp: Long, val direction: String, val command: Str
  val status get() = response.takeLast(4)
  fun json() = JSONObject().put("timestamp",timestamp).put("direction",direction).put("command",command).put("response",response).put("durationMs",durationMs).put("durationNanos",durationNanos).put("capturePoint",capturePoint).put("transportError",transportError)
 }
-data class Session(val id: String = UUID.randomUUID().toString(), val date: Long = System.currentTimeMillis(), val device: String, val technology: String, val mode: String, val profile: String, val result: String = "Em andamento", val error: String = "", val notes: String = "", val exchanges: List<Exchange> = emptyList()) {
- fun json() = JSONObject().put("id",id).put("date",date).put("device",device).put("technology",technology).put("mode",mode).put("profile",profile).put("result",result).put("error",error).put("notes",notes).put("exchanges",JSONArray(exchanges.map { it.json() }))
+data class Session(val id: String = UUID.randomUUID().toString(), val date: Long = System.currentTimeMillis(), val device: String, val technology: String, val mode: String, val profile: String, val result: String = "Em andamento", val error: String = "", val notes: String = "", val exchanges: List<Exchange> = emptyList(), val labAid: String = "F04E46434C414201", val labScenario: String = "NORMAL") {
+ fun json() = JSONObject().put("id",id).put("date",date).put("device",device).put("technology",technology).put("mode",mode).put("profile",profile).put("result",result).put("error",error).put("notes",notes).put("exchanges",JSONArray(exchanges.map { it.json() })).put("labAid",labAid).put("labScenario",labScenario)
  companion object {
   fun from(j: JSONObject): Session {
    val array = j.getJSONArray("exchanges")
@@ -16,7 +16,7 @@ data class Session(val id: String = UUID.randomUUID().toString(), val date: Long
     val x = array.getJSONObject(index)
     Exchange(x.getLong("timestamp"), x.getString("direction"), x.getString("command"), x.getString("response"), x.getLong("durationMs"),x.optLong("durationNanos",x.getLong("durationMs")*1_000_000),x.optString("capturePoint","LEGACY_UNSPECIFIED"),x.optString("transportError"))
    }
-   return Session(j.getString("id"), j.getLong("date"), j.getString("device"), j.getString("technology"), j.getString("mode"), j.getString("profile"), j.getString("result"), j.optString("error"), j.optString("notes"), records)
+   return Session(j.getString("id"), j.getLong("date"), j.getString("device"), j.getString("technology"), j.getString("mode"), j.getString("profile"), j.getString("result"), j.optString("error"), j.optString("notes"), records,j.optString("labAid","F04E46434C414201"),j.optString("labScenario","NORMAL"))
   }
  }
 

@@ -1,0 +1,10 @@
+id,kind,revision,researchId,officialReference,expected,dependencies,executionStatus
+LAB-POS,LAB,1,,,SELECT/GET DATA 9000 e dados FICTITIOUS nos dois lados,Android HCE + leitor controlável; contexto físico e traces,NOT_EXECUTED
+LAB-NEG,LAB,1,,,"SELECT 9000, GET DATA 6985; não é falha EMV",HCE configurado REJECT_GET_DATA e leitor controlável,NOT_EXECUTED
+LAB-LINK,LAB,1,,,Erro real de transporte registrado sem inferir autenticação,"Leitor e smartphone próprios, interrupção física autorizada",NOT_EXECUTED
+HOM-POS,OFFICIAL_EMV,1,,,Conforme resultado esperado pelo provedor,"Caso/plano oficial e versão, credenciais/chaves de teste do provedor, SDK L2/L3, traces e host de homologação",BLOCKED_OFFICIAL_CASE_REQUIRED
+HOM-CVM,OFFICIAL_EMV,1,R-A,,Rejeição/resultado exato do caso oficial,"Caso/plano oficial e versão, credenciais/chaves de teste do provedor, SDK L2/L3, traces e host de homologação",BLOCKED_OFFICIAL_CASE_REQUIRED
+HOM-AUTH,OFFICIAL_EMV,1,R-A,,Fail-closed conforme caso oficial; confirmação pelo SDK de teste,"Caso/plano oficial e versão, credenciais/chaves de teste do provedor, SDK L2/L3, traces e host de homologação",BLOCKED_OFFICIAL_CASE_REQUIRED
+HOM-INTEGRITY,OFFICIAL_EMV,1,R-B,,Resultado exato do caso oficial sem degradação indevida de controles,"Caso/plano oficial e versão, credenciais/chaves de teste do provedor, SDK L2/L3, traces e host de homologação",BLOCKED_OFFICIAL_CASE_REQUIRED
+HOM-LIFECYCLE,OFFICIAL_EMV,1,R-C,,Estado da credencial coerente terminal/host,"Caso/plano oficial e versão, credenciais/chaves de teste do provedor, SDK L2/L3, traces e host de homologação",BLOCKED_OFFICIAL_CASE_REQUIRED
+HOM-HOST,OFFICIAL_EMV,1,R-D,,Tela e resultado host correlacionados; sem inferir liquidação,"Caso/plano oficial e versão, credenciais/chaves de teste do provedor, SDK L2/L3, traces e host de homologação",BLOCKED_OFFICIAL_CASE_REQUIRED

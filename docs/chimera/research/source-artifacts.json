@@ -1,0 +1,81 @@
+{
+  "indexedAt": "2026-11-10T03:24:29.587643+00:00",
+  "warning": "Public source snapshots are research inputs, never physical test evidence",
+  "artifacts": [
+    {
+      "file": "PUBLIC_FIXTURE_LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "file": "brazil-2022.html",
+      "bytes": 614619,
+      "sha256": "cf8e85632bfcc7f63495600bed44415d739c4a604b5ff762c3ddddbea133d074"
+    },
+    {
+      "file": "brazil-2022.txt",
+      "bytes": 4884,
+      "sha256": "182bce2de4b87ff97b0cd18c1752ef6086e94d0cab144058919e07a9b81f8c8b"
+    },
+    {
+      "file": "emvrace-sp21.pdf",
+      "bytes": 1426680,
+      "sha256": "a5d33e4da388703f0bded07e2fa088e0aae37e1764ca93a3a54ace316311806a"
+    },
+    {
+      "file": "emvrace-sp21.txt",
+      "bytes": 108630,
+      "sha256": "77a6518d514895fbf66cfe3cfbb8b941df47a830a9dea7dc59e748323f887169"
+    },
+    {
+      "file": "emvrace.html",
+      "bytes": 20609,
+      "sha256": "7782931e4f8b8d8203da0dfba8adf48acd07ce4c740abe11a4dbee0382888617"
+    },
+    {
+      "file": "emvrace.txt",
+      "bytes": 9898,
+      "sha256": "ea0e584c6bba1b035d999a210a922947b6172a8783cfed42913f8559834c6d3c"
+    },
+    {
+      "file": "mastercard-2023.pdf",
+      "bytes": 1097041,
+      "sha256": "c3df93d88acc3866537bd264ead676a63b7647ae7fb18b255065bcb647b520c7"
+    },
+    {
+      "file": "mastercard-2023.txt",
+      "bytes": 90940,
+      "sha256": "4007fd56523f29c3c8fe501348dd91dea7405c4b0f65e1fbe3f034a7e4adac02"
+    },
+    {
+      "file": "more-is-less.html",
+      "bytes": 38862,
+      "sha256": "75aac1127b9f5c6a3a5c7ddc71cdd0db56c2e1b3f2b4d3fd1a2de740f804d02e"
+    },
+    {
+      "file": "more-is-less.pdf",
+      "bytes": 2078035,
+      "sha256": "285a74903d7ce826377c7c874dfd8751cb130c33f3880a1625bc9a368536b07d"
+    },
+    {
+      "file": "more-is-less.txt",
+      "bytes": 151166,
+      "sha256": "d40cccf1157ce45389437ef52f471f2d28460591965fd8852f73131d9abf4539"
+    },
+    {
+      "file": "public-tlv-tests.java",
+      "bytes": 7490,
+      "sha256": "e08fee789bf7e7efe4b4baea2b66f49cff302ed400bb506948e069e37b84f587"
+    },
+    {
+      "file": "zombie.html",
+      "bytes": 27933,
+      "sha256": "039b13414bebb8cea91ef927b035eeeb7764dfb5ff0dd74e6e40b5fbd5fd690a"
+    },
+    {
+      "file": "zombie.txt",
+      "bytes": 11335,
+      "sha256": "58fba21e9e439b543544f8f36f89de4f6cd841408f411a9632003b3e6e20503f"
+    }
+  ]
+}

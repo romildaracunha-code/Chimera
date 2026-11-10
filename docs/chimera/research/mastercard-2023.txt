@@ -1,0 +1,949 @@
+                 Inducing Authentication Failures to Bypass Credit Card PINs
+
+                                    David Basin, Patrick Schaller, and Jorge Toro-Pozo
+                                            Department of Computer Science
+                                                       ETH Zurich
+
+
+
+                           Abstract                                        transaction through a MAC produced by the card on critical
+                                                                           transaction data using a session key, which is derived from
+For credit card transactions using the EMV standard, the in-
+                                                                           a symmetric key shared with the issuer. In the offline case,
+tegrity of transaction information is protected cryptograph-
+                                                                           the terminal validates a card’s RSA signature using a PKI,
+ically by the credit card. Integrity checks by the payment
+                                                                           where the root CA certificate is retrieved from the terminal’s
+terminal use RSA signatures and are part of EMV’s offline
+                                                                           internal database.
+data authentication mechanism. Online integrity checks by
+                                                                              If either of these two authentication mechanisms fails, one
+the card issuer use a keyed MAC. One would expect that fail-
+                                                                           would expect the terminal to abort the transaction. However,
+ures in either mechanism would always result in transaction
+                                                                           this is not always the case. For example, the Mastercard spec-
+failure, but this is not the case as offline authentication failures
+                                                                           ification [15] allows for valid executions where a premature
+do not always result in declined transactions. Consequently,
+                                                                           failure of offline authentication does not require the terminal
+the integrity of transaction data that is not protected by the
+                                                                           to abort or decline the transaction but instead the terminal
+keyed MAC (online) cannot be guaranteed.
+                                                                           ignores all subsequent offline authentication failures during
+   We show how this missing integrity protection can be ex-
+                                                                           the transaction. This design decision is critical as it allows for
+ploited to bypass PIN verification for high-value Mastercard
+                                                                           data to be modified unnoticed when it is only authenticated
+transactions. As a proof-of-concept, we have built an Android
+                                                                           offline.
+app that modifies unprotected card-sourced data, including
+                                                                              In this paper, we describe a novel attack on Mastercard and
+the data relevant for cardholder verification. Using our app,
+                                                                           Maestro cards that exploits such executions without Offline
+we have tricked real-world terminals into downgrading from
+                                                                           Data Authentication (ODA) guarantees. In particular, using
+PIN verification to either no cardholder verification or (pa-
+                                                                           our attack one can modify all data that is not included in
+per) signature verification, for transactions of up to 500 Swiss
+                                                                           the MAC generation for online authorization. This includes
+Francs. Our findings have been disclosed to the vendor with
+                                                                           data that determines the cardholder verification process, such
+the recommendation to decline any transaction where offline
+                                                                           as the Cardholder Verification Method (CVM) List, which
+data authentication fails.
+                                                                           informs the terminal of the CVMs that the card supports.
+                                                                              We explore two modifications of this list that compromise
+1    Introduction                                                          the cardholder verification process:
+
+                                                                           M1 Suppress all cardholder verification capabilities from the
+EMV (Europay, Mastercard, VISA) is the standard protocol
+                                                                              card (i.e. delete the list).
+for modern smartcard payments, with more than 9 billion
+EMV cards in circulation globally. Due to its significance,                M2 Replace the PIN-based methods with the paper signature
+it is not surprising that the protocol has been subjected to                  method.
+deep and continued scrutiny, including recent work where the
+contactless version of the standard was shown to be vulnerable                Either modification makes the terminal wrongfully believe
+to various critical attacks [5, 6, 19, 24].                                that the card does not support PIN verification. As a result,
+   The security of EMV transactions relies on both offline                 a criminal making either modification can use a stolen card
+and online verification of cryptographic data computed by                  to make purchases for large amounts without being asked to
+the payment device (e.g. the credit/debit card, smartphone,                enter the card’s secret PIN.
+or smartwatch) on the transaction data. In the online case,                   Our attack is implemented as a man-in-the-middle (MITM)
+the terminal requests the card issuer’s authorization of the               on top of a relay architecture using two smartphones, as shown
+
+
+                                                                       1
+                     Attacker’s equipment
+
+                         WiFi/mobile
+
+
+        NFC              WiFi/mobile               NFC
+
+
+
+
+Figure 1: Architecture of a relay attack on contactless pay-
+ments. From left to right: the payment terminal, card emulator
+device, Point-Of-Sale (POS) emulator device, and the vicitm’s
+card. The adversary controls the two emulator devices.
+
+
+in Figure 1. In practice, the attacker holds one of the phones
+near the victim’s card. This could be, for example, because
+the victim has lost his card, the attacker has stolen it, or the
+attacker can simply get sufficiently close to the victim. The
+attacker presents the second phone to the terminal and possi-           Figure 2: The Samsung Pay screen displaying the cardholder’s
+bly the cashier. This phone pretends to be running a mobile             signature.
+payment app as depicted in Figure 2. The two phones forward
+the data exchanged between the victim’s card and the termi-
+nal and modify it so that the terminal accepts the payment              that is much simpler to exploit.
+without asking for a PIN, even though the payment amount
+would require it.
+   In addition to exploiting authentication weaknesses via a
+                                                                        Contributions This paper makes the following contribu-
+man-in-the-middle, our attack resulting from the modification
+                                                                        tions. First, we identify a novel attack that renders the PIN use-
+M2 also exploits user interface weaknesses (UI) associated
+                                                                        less for Mastercard-branded cards. Concretely, our attack de-
+with the Paper Signature method. In this method, after a suc-
+                                                                        ceives the terminal into believing that the payment source does
+cessful card-terminal interaction, the cardholder is requested
+                                                                        not support any PIN-based Cardholder Verification Method
+to sign the purchase receipt, which could be either a physi-
+                                                                        (CVM). As a result, the security offered by these CVMs is
+cal receipt or digitally displayed on a touch screen that can
+                                                                        not guaranteed, even for high-value transactions.
+be signed with an electronic pen. The cashier then verifies
+this against the signature on the payment device, which can                Second, we demonstrate that this attack is feasible in prac-
+either be (a) a physical card, in which case the signature is           tice by developing and successfully using live an Android
+on its backside, or, if applicable, (b) an electronic device, in        app that implements our man-in-the-middle attack. We have
+which case the signature is displayed on its screen as shown            conducted numerous PIN-less transactions for amounts above
+in Figure 2. This distinction is highly relevant for our attack,        the CVM-required limit on multiple real-world payment ter-
+as explained next.                                                      minals with different cards. We also present countermeasures
+   Whereas a criminal in possession of a lost or stolen                 that can be deployed on the different components involved
+card cannot forge the (handwritten) signature on it, for a              in the transaction and do not alter the existing execution flow
+smartphone-based payment they can forge the signature by                for Mastercard transactions.
+simply displaying a made-up payment screen with a card-
+holder name and signature of the criminal’s choice. Clearly
+this will pass the cashier’s verification, regardless of the sig-       Organization We provide technical background on the
+nature method used (pen&paper versus digital pen&pad) and               EMV contactless payment protocol in Section 2, focusing on
+whether the cardholder’s ID is required or not. Our attack thus         the Mastercard version. In Section 3, we describe our novel
+not only exploits improperly designed failure modes in the              attack in detail, report on our proof-of-concept implementa-
+EMV protocol, but also user interface weaknesses in digital             tion and experiments, and describe countermeasures. We also
+payment methods.                                                        show how our attack can be found using an slight modifi-
+   In summary, our attack resulting from the modification               cation of our previous formal model of the EMV protocol
+M2 demonstrates how exploits can arise when mechanisms                  and we formally prove the security of our countermeasures.
+designed in one context, such as a physical signature on the            Afterwards, in Section 4, we elaborate on previously discov-
+back of a plastic card, are transported into another context,           ered weaknesses in the EMV standard and make comparisons.
+such as an image of a signature lacking a physical context,             Finally, we draw conclusions in Section 5.
+
+
+                                                                    2
+Ethics and Disclosure We initiated a responsible disclo-                between the issuer, the terminal, and the Integrated Circuit
+sure process with Mastercard on January 10th, 2022. In a                Card (ICC, commonly known as the card). In addition to the
+follow-up meeting with them, we described our findings in               six different payment networks that must be supported, there
+detail and recommended countermeasures to prevent our at-               are issuer-specific data elements that are required, depending
+tack. As requested by Mastercard, we have also shared this              on the ICC’s issuer.
+draft with them. In all the tests we performed, we only used               The Integrated Circuit Card and the terminal communicate
+our own cards. No cardholders, merchants, or issuers have               using a sequence of command-response pairs. Commands are
+been defrauded.                                                         sent by the terminal, processed on the ICC, and they result in
+                                                                        a specific response by the ICC. Commands and responses are
+                                                                        sent as Application Protocol Data Units (APDUs).
+2     Background
+                                                                           Data on the ICC is stored in information items that are
+The EMV ecosystem involves multiple stakeholders. At its                called files and are ordered in a tree structure on the ICC.
+core are payment networks (e.g. Mastercard and VISA),                   The card issuer is responsible for ensuring that the data on
+which provide the infrastructure for payment transactions               the ICC has the correct format. Files can be accessed by the
+from cardholders’ accounts to merchants’ accounts. A finan-             terminal using a SELECT command in combination with the
+cial institute (typically a bank) can become part of this ecosys-       corresponding file name. Records in a file are read using the
+tem by issuing cards that comply with the EMV standards.                READ RECORD command.
+Merchants, selling goods and services, can run payment termi-              From an abstract point of view, a transaction involves the
+nals that implement the EMV standard and that are connected             following steps:
+to the payment networks.                                                  1. Application Selection: The terminal and the ICC agree
+   In order to secure transactions and ensure that only legit-               on an EMV contactless protocol that is implemented as
+imate ones are accepted by the networks, various security                    a so-called kernel on the terminal.
+measures are in place. In this work, we focus on the secu-
+rity properties of the EMV communication protocols and its                2. Synchronisation: The terminal and the ICC negotiate
+elements. To secure communication between the card, the                      options, e.g. the Cardholder Verification Method (CVM)
+payment network, and the card-issuing bank, there is a global,               to be used, and they exchange information required to
+hierarchical Public Key Infrastructure (based on RSA keys)                   successfully complete the transaction, such as the data
+in place. A set of root Certificate Authorities accepted by the              elements requested by the card issuer.
+payment networks provide certificates for card issuers who
+in turn provide certificates stored on the cards they issue. By           3. Cardholder Verification: The terminal verifies that the
+possessing the root Certificate Authorities’ public keys, ter-               person making the purchase is the owner of the card.
+minals can verify the correctness of the cards’ certificates and
+                                                                          4. Authentication and Authorization: The terminal and
+authenticate them as legitimate cards. In addition to asymmet-
+                                                                             card take actions to decide if the transaction should be de-
+ric keys, which are mainly used for offline verification, the
+                                                                             clined at this point, or whether further verification meth-
+cards hold symmetric keys that are shared only with the issu-
+                                                                             ods are required, such as (i) offline data authentication
+ing bank. Last but not least, the legitimate use of each card is
+                                                                             or (ii) online authorization.
+ensured by cardholder verification using a PIN, a handwritten
+signature, or a smartphone.                                                In the following sections, we describe in more details those
+   Another security element of card payment systems is fraud            transaction processing steps that are relevant for our attack.
+detection. This may, for example, involve the behavioral anal-
+ysis of customers and anomaly detection. Such fraud detection           2.1.1   Application Selection
+mechanisms build an additional layer of defence and can in-
+validate technically legitimate transactions. These types of            A terminal starts a transaction by sending a SELECT
+security measures are, however, not in the focus of this work.          2PAY.SYS.DDF01 command for the Dictionary Definition
+   The EMV protocol for contactless transactions extends the            File (DDF), an element in the tree-structured hierarchy of
+card-reader based protocols and is specified in over 1,200              files on the ICC. The response of a legitimate ICC contains
+pages of documentation. In this section we summarize this               the list of supported applications, identified by their AIDs
+protocol, focusing on those elements relevant to our attack. A          (Application Identifiers).
+glossary of EMV acronyms is given at the end of this article.              On the terminal side, the received AID (or list of AIDs)
+                                                                        results in what is called the Kernel Activation. This step could
+                                                                        also be understood as selecting the protocol to be used for the
+2.1    The Protocol
+                                                                        current transaction between the ICC and the terminal.
+EMV supports six provider-specific contactless protocols that              The EMV contactless specification for payment systems,
+define the data elements employed and how data is exchanged             Book A [14], lists the following kernels:
+
+
+                                                                    3
+  • Kernel 2 for Mastercard AIDs,                                            The records read by the terminal include the following data
+                                                                          elements (note that for some records we implicitly assume the
+  • Kernel 3 for VISA AIDs,                                               availability of the corresponding functionality on the ICC):
+  • Kernel 4 for American Express AIDs,                                     • Primary Account Number (PAN).
+  • Kernel 5 for JCB AIDs,                                                  • Card Risk Management Data Object Lists (CDOL1 and
+                                                                              CDOL2): Two lists of transaction-related data objects
+  • Kernel 6 for Discover AIDs, and                                           that the terminal will send in a later step for the ICC to
+  • Kernel 7 for UnionPay AIDs.                                               sign (offline and online verification).
+
+                                                                            • The Cardholder Verification Method (CVM) List.
+   In this paper, we focus on the Mastercard kernel (Kernel
+2, specified in [15]) and depict the communication between                  • PKI-related information: the card’s and the issuer’s PK
+the terminal and the card as a message sequence diagram                       certificate, and the index of the issuing Certificate Au-
+in Figure 3. For an extension of our attack to Maestro debit                  thority (CA).
+cards, note that, on the terminal side, Maestro cards are pro-
+cessed with the same kernel, using different initialization of               At this point, the terminal and the ICC have bootstrapped
+parameters.                                                               the necessary parameter configuration and fixed their structure
+                                                                          as required by the issuer. Also, the terminal has received the
+                                                                          certificates and keys to authenticate the ICC offline. Because
+2.1.2   Synchronisation between Terminal and ICC                          the hash of the security critical records is contained in the
+                                                                          ICC’s certificate, the terminal can verify the integrity of these
+As a result of application selection, the terminal knows where            records.
+to find the information on the ICC necessary to successfully                 For contactless EMV payments, we have not observed the
+complete the transaction. In the following messages, the ter-             authentication of static data by the terminal at this stage of
+minal learns the data elements required by the issuer and                 the protocol. However, the integrity of static data is verified
+provides required information to the card. Furthermore, the               later in the more general procedure of Offline Dynamic Data
+ICC provides information about the admissible Cardholder                  Authentication, which also covers dynamic data related to
+Verification Method and provides public keys and certificates             the transaction, such as the payment amount. Details of the
+used in a later step by the terminal to authenticate the card in          Offline Data Authentication (ODA) process are provided later
+a process called Offline Data Authentication (ODA).                       in Section 2.1.4.
+   As a first step after application selection, the terminal issues
+a SELECT command to select the corresponding Application
+                                                                          2.1.3   Cardholder Verification
+Definition File (ADF) on the ICC. The card responds with
+a File Control Information (FCI) message that includes, for               The purpose of a Cardholder Verification Method (CVM) is to
+example, the card’s language preference and the Processing                ensure that the person presenting the ICC is indeed the person
+Data Object List (PDOL), a list of terminal-resident data ob-             to whom the card was issued. The Mastercard specification
+jects required by the ICC for processing the subsequent GET               for contactless payments [15] requires that the ICC provides
+PROCESSING OPTIONS command. The AID identifies the                        a CVM List. This list defines the CVMs and the conditions
+application on the terminal side, whereas the ADF denotes                 under which the CVM should be applied as defined by the
+the corresponding filename for the application on the ICC.                issuer. The CVMs are:
+   The terminal starts the transaction processing by send-
+ing the aforementioned GET PROCESSING OPTIONS com-                        Online PIN: The terminal sends the encrypted PIN that has
+mand, which includes the data elements requested by the card                  been entered on the terminal’s pad for verification to the
+in the PDOL. The ICC’s response includes the Application                      issuer.
+Interchange Profile (AIP). This specifies the card’s available            On Device CVM: Mobile payment apps such as Google Pay,
+functionality and the Application File Locator (AFL), which                   Samsung Pay, or Apple Pay provide the possibility of
+identifies the files and records on the card to be used for the               authenticating the cardholder on the device. Typically,
+transaction.                                                                  they use a fingerprint reader or face recognition for this
+   Given the ICC’s capabilities, the terminal accesses the re-                purpose.
+quired information on the ICC by using READ RECORD
+commands for the data elements on the card identified by a                Paper Signature: The cardholder signs the purchase receipt
+corresponding Short File Identifier (SFI) and a record num-                   (digital or printed on paper) and the cashier checks the
+ber. There is some flexibility regarding the sequence of these                signature against the signature on the back of the card.
+records in the ICCs.                                                          Modern payment terminals often provide touch screens
+
+
+                                                                      4
+                                      Terminal                                                                  Card
+
+
+
+                                  UN := random()                                        DI := I||pubI        DC := PAN||pubC
+                                                                                        CertI := signprivCA (DI ||h(DI ))
+                                                                                        CertC = signprivI (DC ||h(DC ||Protected Records||AIP))
+
+                                                                SELECT, 2PAY.SYS.DDF01
+
+                                                               AIDMastercard , AIDMaestro , . . .
+
+                                                                       SELECT, AIDx
+
+                                                                  tags & lengths of PDOL
+
+                                                          GET PROCESSING OPTIONS, PDOL
+
+                                                                          AIP, AFL
+
+                                                                   READ RECORD, AFL
+
+                                                 PAN, expDate, tags & lengths of CDOLs, CA PK Index,
+                                                       CVM List, IAC–Denial, CertI , CertC , . . .
+
+
+                 bCDA := AIPB1b1 AND valid(CA PK Index) AND · · ·
+
+                                                              GENERATE AC, bCDA , CDOL1
+
+
+                                                                                          S := KDF(MK, ATC)
+                                                                                          X := construct_AC_input (PDOL, CDOL1)
+                                                                                          AC := MACS (X||AIP||ATC||IAD)
+                                                                                          if bCDA = 1 then
+                                                                                              NC := random()
+                                                                                              TDHC := h(PDOL||CDOL1||CID||ATC||IAD)
+                                                                                              Y := NC||CID||AC||TDHC
+                                                                                              M := signprivC (Y ||h(Y ||UN))
+                                                                                          else
+                                                                                              M := AC
+
+                                                                     CID, ATC, M, IAD
+
+
+          if bCDA = 1 then
+              if verify(CertI ) and verify(CertC ) and verify(M) then
+                  AC := extract_AC_from_SDAD (M)
+                  accept_offline_or_request_online_authz (X, CID, AC, . . .)
+              else
+                  decline_offline()
+          else if (IAC-Denial OR TAC-Denial) AND TVR = 0 then
+               accept_offline_or_request_online_authz (X, CID, AC, . . .)
+          else
+              decline_offline()
+
+
+
+
+Figure 3: Overview of the card-terminal interaction during a Mastercard contactless transaction, where the PDOL and the
+CDOL1 typically include transaction data, such as the Unpredictable Number (UN), the amount, and the Terminal Verification
+Results (TVR). Notation: || is the concatenation operator; h is the SHA-1 hash function; KDF is a key derivation function;
+(privC, pubC), (privI, pubI), and (privCA, pubCA) are the private/public key pairs of the card, the issuer, and the Certificate
+Authority, respectively; bCDA is a flag that indicates whether the terminal requests Combined Dynamic Data Authentication
+(CDA); signk (m) is the signature on m with the key k; MACk (m) is a keyed MAC on m with the key k; and AND and OR are the
+corresponding bitwise operators. Here we have highlighted in red the data objects that the attacker modifies.
+
+                                                                         5
+     for cardholders to sign transactions using their finger or          authentication. As it is the most common method currently
+     digital pens.                                                       in use, we focus on CDA here, where the ICC proceeds as
+                                                                         follows:
+   If the transaction amount exceeds a predefined threshold
+(called the CVM-required limit), the terminal will request                 • Create a random nonce NC.
+verification of the cardholder. The method(s) chosen by the
+terminal depends on the CVM List, which is supplied by the                 • Concatenate the data elements PDOL, CDOL1, Cryp-
+ICC in one of the records read from the application file.                    togram Information Data (CID), Application Transaction
+   Clearly, the different CVMs impose different levels of diffi-             Counter (ATC), and Issuer Application Data (IAD) and
+culty for the illegal use of a card. It is much easier to convince           hash them (using SHA-1) to build the Transaction Data
+the cashier of the legitimacy of a forged signature than to                  Hash Code:
+guess a PIN correctly, especially when the card is locked after
+                                                                                  TDHC = h(PDOL||CDOL1||CID||ATC||IAD).
+three failed attempts. Things get even worse when the signa-
+ture is entered on a terminal’s touch screen, where it often
+seems impossible to determine the signature’s authenticity.                • The TDHC is then further combined with the Applica-
+   In this paper, we show that it is possible to modify the                  tion Cryptogram (AC, described later), the CID, and the
+CVM List provided by the card in a way that the terminal                     nonce NC to build Y = AC||CID||NC||TDHC.
+requests either no CVM at all, or a signature instead of a PIN.            • Finally, Y is concatenated with the hash of the concatena-
+Even worse, the modification of the CVM List does not seem                   tion of Y and the terminal’s Unpredictable Number (UN),
+to be detected by the issuer in the transaction authorization                and then signed with the ICC’s private key to produce
+phase and thus results in a valid transaction.                               the Signed Dynamic Authentication Data:
+
+2.1.4   Authentication and Authorization                                                  SDAD = signprivC (Y ||h(Y ||UN)).
+
+There are two central security mechanisms used to prevent
+                                                                            Note that this signature protects the integrity of all relevant
+misuse of an ICC: Offline Data Authentication (ODA) and
+                                                                         transaction specific data, as well as some static data elements.
+Online Transaction Authorization (OTA). Irregularities in
+                                                                         In addition to the integrity of the data elements protected by
+either of these mechanisms can lead to a transaction being
+                                                                         this signature, the ICC’s certificate not only contains the PAN
+declined.
+                                                                         the card is issued to and the card’s public key, but also static
+   Whereas Offline Data Authentication only involves the ter-
+                                                                         data elements of the ICC, such as the CVM List.
+minal and the card, Online Transaction Authorization also in-
+                                                                            In contrast to offline data authentication, which involves
+volves the card issuer. Both mechanisms implement integrity
+                                                                         the terminal and the ICC, online authorization involves the
+protection for critical data objects (static and transaction spe-
+                                                                         issuer and the ICC. The security of online authorization relies
+cific). While these mechanisms overlap in that they both pro-
+                                                                         on a secret key MK, shared between the issuer and the ICC.
+tect the integrity of some data, there are other data objects that
+                                                                            For each transaction, the ICC and the issuer derive a session
+are only protected by the offline mechanism. This is crucial
+                                                                         key S based on the Application Transaction Counter (ATC)
+for our attack.
+                                                                         and MK. The ICC then proceeds as follows:
+   Offline dynamic data authentication (i.e. a type of ODA) is
+performed by the terminal using digital signatures to identify             • Extract the transaction relevant data elements from
+the ICC and to prove the integrity of critical data elements ex-             PDOL and CDOL1 and concatenate the resulting el-
+changed between the terminal and the ICC. This step requires                 ements together as X.
+the Public Key Infrastructure (PKI) that issues certificates for
+the public keys of the involved entities.                                  • Compute the Application Cryptogram
+   For EMV, there is a list of Certificate Authorities (CAs) ac-
+                                                                                         AC = MACS (X||AIP||ATC||IAD),
+cepted by the terminals that issue certificates for card issuers,
+who in turn issue certificates for each ICC. The card issuer’s                where MAC is a block-cipher-based CBC-MAC using
+certificate, as well as the ICC’s certificate, have been read as              the key S.
+data elements from the card earlier (see Section 2.1.2). They
+are verified using the CA Public Key Index, a data element                  Note that the signed message in the offline dynamic data
+provided by the ICC, which points the terminal to the CA in              authentication case contains the application cryptogram for
+its list of legitimate CAs.                                              the online authorization. However, based on the terminal’s
+   The EMV standard specifies two forms of offline dynamic               decision to perform offline authentication or online authoriza-
+data authentication: Dynamic Data Authentication (DDA)                   tion only, the terminal sends a GENERATE AC command in
+and Combined Dynamic Data Authentication (CDA). The                      which the reference control parameter tells the ICC if CDA is
+ICC announces, in the AIP, its supported forms of offline                required or online authorization only.
+
+
+                                                                     6
+3     The Attack and Countermeasures                                        • the CA Public Key Index.
+
+In this section we describe how to attack contactless cards                  The Mastercard kernel specification [15] (p. 255) states
+running the Mastercard protocol by inducing authentication                that if the supplied CA Public Key Index is not present in the
+failures. We first present the threat model considered and then           terminal’s CA Public Key database, then the terminal shall
+describe our attack. Afterwards we report on our proof-of-                set the ‘CDA Failed’ bit of the Terminal Verification Results
+concept implementation and practical experiments that we                  (TVR). Recall that the TVR is a data object maintained by the
+conducted with different cards and readers. Finally, we briefly           terminal throughout the transaction that holds information on
+discuss countermeasures.                                                  the outcome of verification processes, including Offline Data
+                                                                          Authentication (ODA). Note that this TVR update occurrs be-
+                                                                          fore the terminal issues the GENERATE AC command. This
+3.1      Threat Model                                                     is critical, and is indeed the fundamental design flaw that
+For our attack, we consider the following threat model:                   our attack exploits together with user interface weaknesses in
+                                                                          digital payments.
+    1. The attacker is within the NFC range of the victim’s                  According to the kernel specification (p. 435), if the TVR
+       contactless card.                                                  indicates that CDA has failed and the AIP indicates that the
+    2. The attacker is an active attacker on the NFC channel. In          payment source does not support On Device CVM, then the
+       particular, the attacker can read, block, and inject mes-          terminal shall not request the Signed Dynamic Authentication
+       sages on this channel.                                             Data (SDAD) in the GENERATE AC command. This means
+                                                                          that no ODA is to be performed and therefore all transaction
+    3. The channel between the payment terminal and the card              data whose integrity is only protected by the ODA mechanism
+       issuer is secure in that it provides authenticity and confi-       is vulnerable to adversarial modification.
+       dentiality.                                                           Our man-in-the-middle attack induces this premature ODA
+                                                                          failure mode to modify such unprotected data. It thereby ex-
+    4. The attacker can reproduce the images associated with
+                                                                          ploits the fact that in this mode the terminal will ignore all
+       the graphical user interface of a digital payment app
+                                                                          (offline) cryptographic verification failures during the transac-
+       showing the attacker’s own (handwritten) signature and
+                                                                          tion. More technically, the attack is composed of the following
+       name, if necessary.
+                                                                          three steps:
+    This threat model is realistic. The attacker may access a
+                                                                          S1 Modify the card’s response to the first SELECT com-
+victim’s card if, for example, it is lost or stolen. In addition,
+                                                                             mand by replacing the Application Identifier (AID,
+as shown in previous work [5, 6, 24] and later in Section 3.3,
+                                                                             object with tag 4F or 84) with the Mastercard AID
+it is possible to carry out active man-in-the-middle attacks on
+                                                                             A0000000041010.
+the NFC channel using regular smartphones.
+    The fourth capability of the considered attacker results, in          S2 Modify the terminal’s second SELECT command pay-
+practice, from user interface weaknesses in digital payment                  load by replacing the Mastercard AID with the card’s
+apps. Namely, anyone can easily reproduce images of the UI                   legitimate AID.
+associated with these apps with any signature and name on
+it, which makes Paper Signature an insecure Cardholder Veri-              S3 Modify the card’s responses to the READ RECORD com-
+fication Method (CVM). Note that this CVM was originally                      mands as follows:
+intended for plastic cards, where the cardholder’s name and
+signature cannot be so easily forged.                                               (a) Replace the CA Public Key Index (object with tag
+                                                                                        8F) with an invalid one1 , in our case we use DD.
+3.2      Exploiting Authentication Failures                                     (b) Delete the CVM List (object with tag 8E) or modify
+                                                                                    it by replacing all PIN-based CVMs with the Paper
+As explained in Section 2, during an EMV transaction the                            Signature method.
+payment terminal performs the validation of the card and
+                                                                                    (c) Clear the Issuer Action Code (IAC)-Denial (object
+transaction data using the Offline Data Authentication (ODA)
+                                                                                        with tag 9F0E) by replacing it with all zeroes.
+mechanism. This mechanism employs a PKI where the root
+CA certificate is looked up from the terminal’s database. The                The steps S1 and S2 are relevant only for Maestro cards
+entry in this database is determined from the following data              and are intended to deceive the terminal into executing the
+supplied by the card in the responses to the READ RECORD                  default Mastercard transaction flow. These two steps over-
+commands:                                                                 ride alternative flows, potentially available for Maestro cards,
+    • the Registered Application Provider Identifier, which is               1 CA Public Key data is available at https://www.eftlab.com/
+      derived from the Application Identifier (AID), and                  knowledge-base/243-ca-public-keys.
+
+
+                                                                      7
+which are proprietary and thus unavailable to us. The lack of
+integrity protection for the AID, which makes the Steps S1
+and S2 possible, was first reported in our work [5].
+   Step S3(b) removes all PIN-based CVMs from the available
+choices for the terminal to perform the cardholder verification.
+Note that this step can make either modification M1 or M2,
+as discussed in Section 1. Finally, the effect of Step S3(c) is
+to replace the value computed by the formula:
+
+          (IAC-Denial OR TAC-Denial) AND TVR,               (1)
+
+with the value zero, i.e., having zeros in all bit positions,
+otherwise the transaction is declined offline (recall this from
+Figure 3). This step is obviously only necessary when the card
+does not have the IAC-Denial object already cleared. Note
+that if the terminal has the ‘CDA Failed’ bit of the TAC-Denial
+set at the time of reception of the GENERATE AC response,
+the Terminal Action Analysis would decline the transaction
+offline (see [15], p. 460) since the formula in (1) would not
+equal to zero.                                                                (a) Card emulator                (b) POS emulator
+
+                                                                       Figure 4: Screenshots of our app. The log (partially) displayed
+3.3    Carrying Out the Attack in Practice                             in the POS emulator screen corresponds to a transaction of
+We developed a proof-of-concept Android application to                 500 Swiss Francs (CHF) where we downgraded the CVM
+demonstrate the real-world exploitation of the flaws we iden-          from Online PIN to Paper Signature. Note that the card emu-
+tified in the Mastercard kernel [15]. Our app implements a             lator screen could have been that of Figure 2.
+man-in-the-middle using two Android phones as previously
+shown in Figure 1. The two phones communicate with each
+other using a TCP/IP-based relay channel over WiFi. Our app                We also observe that the Mastercard kernel execution flow
+supports two operation modes: Point-Of-Sale (POS) emulator             is very similar to that of the American Express and JCB ker-
+and card emulator. The POS emulator mode is responsible                nels. This means that our attack should also work for cards of
+for the actual modification of messages. The card emulator             these brands. We did not, however, test this hypothesis due to
+mode runs our custom host-based card emulation service for             our limited access to these cards. In the case of VISA cards,
+Android [3]. Screenshots of our app are displayed in Figure 4.         we tested our attack (with some minor adaptations specific
+    Our proof-of-concept app requires minimal setup. Namely            to this kernel) and the transaction was successful. However,
+the relay channel must be configured and the Near Field Com-           it is unclear whether the induced ODA failures were ignored
+munication (NFC) channel between the POS emulator device               due to the modified CA PK Index or the terminal simply ig-
+and the (victim’s) credit/debit card must be activated. The at-        nored the card’s unverified Signed Dynamic Authentication
+tack then works as follows. Once the card emulator is within           Data (SDAD). This ignore decision by the terminal has been
+the NFC range of the payment terminal, it captures the termi-          reported before, e.g. in [6, 24]. We did not test with the rest of
+nal’s command, relays it to the POS emulator device, which             the EMV cards (i.e. Discover and UnionPay), as we did not
+then modifies it as appropriate and sends it to the card through       have access to any of them.
+the previously activated NFC channel. Once the card replies
+to the command, the POS emulator modifies the response as              3.4    Discussion
+appropriate, relays it to the card emulator, which then deliv-
+ers the (possibly modified) response to the payment terminal.          The root cause of the vulnerability we describe is that the
+This process is repeated for each of the terminal’s commands.          protocol specification allows for the successful completion
+    Table 1 summarizes the transactions that we have per-              of contactless transactions even when the terminal cannot
+formed using our app. These are all real-world, accepted               validate the card’s Public Key certificate. The protocol’s vul-
+transactions where Offline Data Authentication (ODA) failed            nerable execution flow requires pointing the terminal to an
+and each of the cards used has Online PIN as the preferred             invalid index in the root certificate list and the TAC-Denial, a
+CVM. We successfully circumvented the PIN verification in              bit-vector internal to the terminal, being zero (see Section 3.2
+9 transactions, using 5 different cards issued by 2 banks from         for details).
+2 countries. A demo video of the attack being performed for               The EMV specification [13] (p. 115) recommends not set-
+one of these transactions (500 CHF) is available at [1].               ting the TAC-Denial to zero. However, even in cases where
+
+
+                                                                   8
+                                                                   Amount         PIN            CVM
+                       No.    Card                  Merchant
+                                                                    (CHF)       bypassed      downgraded to
+                       1                                 A           83.95
+                              Mastercard Debit                                      Yes       Paper Signature
+                       2                                 B          125.00
+                       3      Mastercard Debit           A          133.75          Yes           No CVM
+                       4                                              1.60
+                              Mastercard Credit          C                         N/A              N/A
+                       5                                              2.10
+                       6      Maestro                    A           75.35         N/A              N/A
+                       7                                              100
+                              Maestro                    D                          Yes       Paper Signature
+                       8                                              500
+                       9      Maestro                    E            120           No             N/A
+                       10     Mastercard Debit           E            120           Yes          No CVM
+                       11                                F            150                        No CVM
+                       12     Maestro                    G            100           Yes       Paper Signature
+                       13                                G            100                        No CVM
+
+Table 1: Thirteen transactions performed using our app. All of these transactions were accepted and subsequently debited from
+the cardholder’s account. The eight cards listed here are all different. Here we have highlighted in bold the amounts above the
+local CVM-required limit (80 CHF) for which we bypassed the PIN. N/A stands for not applicable (e.g. the PIN is not required
+for amounts below the CVM-required limit and thus no bypass applies).
+
+
+our attack failed, the terminal implementations seem not to fol-       tions where the PIN was successfully bypassed. In particular,
+low this recommendation. Settings following the recommen-              neither of the two CVM-relavant data objects supplied by
+dations would have exhibited a different protocol behavior             the terminal, i.e. the Cardholder Verification Method Results
+by the terminal, even for unsuccessful attempts. As a conse-           (CVMR) with value 3F0000 and the Terminal Verification
+quence, every terminal implemented according to the specifi-           Results (TVR) with value 2400008001, indicate a cardholder
+cation and not following the recommendation is vulnerable to           verification failure. Namely, bit 8 of the TVR’s third byte was
+our attack. We suspect that terminal manufacturers do not fol-         not set, implying that cardholder verification was successful,
+low the recommendation to avoid false negatives that would             and the CVMR’s third byte was not set to 01, which would
+lead to the rejection of valid transactions.                           indicate a failed cardholder verification from the terminal.
+   In all of our experiments, we encountered only one pay-             This therefore suggests that the fraud detection system on the
+ment terminal type (used exclusively in public transit) where          issuer’s side instructed the terminal in the Online Transaction
+inducing our early CDA failure resulted in an offline decline          Authorization (OTA) response to use the contact chip reader.
+of the transaction. When inspecting the logs for transactions             Discussions with security engineers and architects from the
+with this terminal type (not included in Table 1), we noticed          card’s issuer confirmed our suspicions. After recent publica-
+that even after being supplied with an invalid CA PK index,            tions of PIN bypass attacks, this issuer has fine-tuned its fraud
+the terminal still requests Combined Dynamic Data Authen-              detection system accordingly and now requests to switch to
+tication (CDA) but aborts the contactless transaction with             the contact chip method if irregularities are detected in the
+an error message on the terminal saying that the card is not           contactless transaction. The issuer did not reveal though what
+valid. A possible explanation for this behavior is that the Pub-       finally triggered their fraud detection system to reject our
+lic Key operations are postponed for efficiency reasons, i.e.          attempted transactions. However, an obvious irregularity is
+the terminal lets the card proceed with the CDA flow before            that the ‘CDA Failed’ bit is set in the Terminal Verification
+checking the correctness of the certificates. This is, however,        Results (TVR).
+not specified in the available documentation.                             We have conducted our experiments with terminals from
+   Our attack did not succeed for the Maestro card used in             multiple manufacturers. Except for the case where the termi-
+Transaction 9 of Table 1. We tried both variants of our at-            nal insisted on CDA completion and aborted the transaction
+tack: the downgrade of CVM from PIN to signature and the               as explained above, for each issuer, the attacks either worked
+complete removal of the CVM list (the signature is a valid             successfully for all of the issuer’s cards (that we had access
+CVM for this card). In both cases, the contactless transaction         to), or they did not work for any of the issuer’s cards, most
+was refused by the terminal. The terminal requested the pay-           probably due to the issuer’s fraud detection system.
+ment to be processed using the regular card reader and then               We close with some observations about the difficulties of
+requested the PIN. The logs for these transactions show no             live testing. Given the number of parties involved and the
+major differences when compared with the logs of the transac-          opacity of their systems, the only compelling evidence that
+
+
+                                                                   9
+attacks, similar to the ones described in this paper, really work        C4 The payment network (e.g. Mastercard) must always de-
+are live tests. Live tests, however, may raise legal question,              cline transactions where the ‘CDA Failed’ bit is set in
+even for experiments like the ones we conducted where no-                   the Terminal Verification Results (TVR).
+body was defrauded. Except for our open discussion with
+Mastercard and inofficial exchanges with a major card issuer,               This list is given in descending order, ordered by the num-
+the stakeholders in the payment ecosystem seem rather inac-              ber of worldwide instances of the underlined party. For ex-
+cessible. We have suffered from three locked-down accounts               ample, there are billions of cards, but only thousands of card
+at a global terminal provider, most probably due to the un-              issuers, thus C3 is ordered after C1. It seems reasonable to
+successful transactions associated with our accounts when                assume that the implementation costs and deployment efforts
+we experimented with their terminals (when we were tuning                for the respective countermeasures are also decreasing with
+our app). Furthermore, this terminal provider seems to have              respect to the list above. In line with this, we note that Master-
+locked some of our cards, since they do not work on this type            card has deployed countermeasures, at their network level, to
+of terminal even for regular payments, but work instead on               the attack we reported last year [5], which would have taken
+the terminals of other manufacturers.                                    several months, if not years, if fixes were instead deployed at
+                                                                         the protocol level (i.e. on cards and terminals).
+3.5    Countermeasures                                                      Countermeasure C1 would (likely) not work if the card
+                                                                         legitimately supports the Paper Signature method, regardless
+The attack described in this paper follows from a combination            of whether it is the preferred method or not. For example,
+of flaws that include the improper design of authentication              the card used for transactions 4 and 5 of Table 1 has a CVM
+failure modes and user interface weaknesses present in smart-            List that indicates Paper Signature as a fallback option to
+phone payments. In this section, we discuss why the fixes                Online PIN. Thus, C1 would not prevent our attack for this
+proposed in previous work do not defend against the attack               card. Hence, the countermeasures C2-C4 are preferred.
+presented here. Afterwards, we present our own fixes and
+                                                                            Countermeasure C2 corresponds to the recommendation in
+comment on deployment efforts.
+                                                                         the EMV specification [13] (p. 115) that we discussed in Sec-
+   In our recent work [5], we reported a PIN bypass on Mas-
+                                                                         tion 3.4. If CDA has failed, the countermeasure would make
+tercard and related kernels and proposed countermeasures,
+                                                                         the formula in (1) equal to a non-zero value, which conse-
+which we verified using the Tamarin verification tool [22].
+                                                                         quently would trigger an (offline) decline. As we have already
+These countermeasures require extending the inputs of crypto-
+                                                                         pointed out, according to our observations, TAC-Denial was
+graphic functions, do not affect the EMV execution flow, and
+                                                                         zero for every terminal we tested with, including those for the
+rely on offline cryptographic checks. While offering strong
+                                                                         transactions in Table 1.
+cryptographic guarantees, these countermeasures do not pre-
+vent the attack we presented here because our attack precisely              Note that countermeasures C2-C4 require that the card and
+exploits those executions where the offline cryptographic                terminal are both capable of performing Combined Dynamic
+checks are not performed.                                                Data Authentication (CDA). C1 is thus the only countermea-
+   Defending against our attack is nevertheless straightfor-             sure applicable in cases where neither party (card or terminal)
+ward, at least conceptually: transactions where Offline Data             supports CDA.
+Authentication (ODA) has failed must not be accepted. This
+can be achieved by at least four different actors that partake
+in the transaction. Next we list four concrete countermeasures           3.6    Formal Analysis
+that these actors can implement, where any single counter-
+measure is alone sufficient to prevent our attack:                       In our previous work [6], we developed a formal model of
+                                                                         the Mastercard contactless protocol and analyzed it using the
+C1 The card must always check for consistency between                    Tamarin prover [22]. In this model, the rule formalizing the
+   its CVM List and the Cardholder Verification Method                   terminal’s behaviour, upon receipt of the records sent by the
+   Results (CVMR) supplied by the terminal. Namely, the                  card, requires a valid signature over the received records. The
+   CVMR’s first two bytes must be equal to a pair (CVM,                  formalization thus models a terminal that would decline any
+   condition) in the card’s CVM List (the encoding of this               transaction where ODA fails.
+   list is described in Section 10.5 of [13]).
+                                                                            The execution trace for the attack that we present in this
+C2 The terminal must always have the ‘CDA Failed’ bit of                 paper is therefore not contained in the execution space of our
+   the Terminal Action Code (TAC)-Denial set.                            previous model [6]. In the following, we therefore explain
+                                                                         how this model can be adopted such that Tamarin finds our
+C3 The card issuer (or bank) must always decline transac-                current attack. Moreover, we discuss how the correctness
+   tions where the ‘CDA Failed’ bit is set in the Terminal               of the countermeasures just presented can be proven in this
+   Verification Results (TVR).                                           model using Tamarin.
+
+
+                                                                    10
+Finding Our Attack Using a Formal Model                                their relation to our work. Table 2 summarizes these attacks
+                                                                       and their underlying security flaws.
+To account for the corner case in the execution flow where
+                                                                          The earliest PIN bypass attack against the EMV payment
+the terminal does not validate the card’s certificate and skips
+                                                                       standard was reported by Murdoch et al. [23]. The authors
+integrity checks of the card records, we slightly modify our
+                                                                       showed that, for transactions with offline PIN verification
+previous model [6]. Our most significant modification is to
+                                                                       (i.e. the correctness of the entered PIN is verified by the
+add a rule that allows the terminal, after having received the
+                                                                       card), a man-in-the-middle attacker can send a “PIN verified”
+card records, to transition into a state where it is ready to
+                                                                       response for any entered PIN, thereby tricking the terminal
+proceed with the GENERATE AC command and afterwards
+                                                                       into accepting any input as correct.
+cardholder verification. Our additional rule models exactly
+                                                                          The underlying flaw that leads to Murdoch et al.’s attack is
+the flow described in the specification, where ODA is skipped
+                                                                       the lack of integrity protection of critical card data. In [16],
+in cases where the terminal cannot find the CA’s certificate
+                                                                       Ferradi et al. analysed about 7,000 fraudulent transactions
+indicated by the card.
+                                                                       and concluded that Murdoch et al.’s PIN bypass was likely
+   Additionally, we have implemented several minor modifi-
+                                                                       used to defraud 600,000 Euros. In our previous work [6], we
+cations to make the new model operational. These include
+                                                                       observed that Murdoch et al.’s attack might still work for
+removing the hard-coded restriction that high-value transac-
+                                                                       some (old) cards that neither support online PIN verification
+tions cannot be processed without any CVM.
+                                                                       nor have integrity protection for the CVM List (e.g. through
+   With our modifications in place, Tamarin finds a valid exe-
+                                                                       the card’s PK certificate).
+cution trace for a high-value, PIN-less transaction between a
+                                                                          Barisani et al. [4] used a card skimmer to attack the EMV
+card whose records include Online PIN as a supported CVM
+                                                                       protocol for contact cards. Similarly to our own attack pre-
+and a terminal that does not perform Offline Data Authentica-
+                                                                       sented here, the authors showed that the CVM List could be
+tion (ODA). The modified model as well as the attack trace
+                                                                       imperceptibly modified by setting the IAC-Denial to zero to
+found by the tool are available at [2].
+                                                                       make the terminal accept transactions where ODA failed. In
+                                                                       contrast to our attack, Barisani et al.’s attack does not induce
+Security Proof for Our Countermeasures                                 ODA failures and thus their attack fails for contactless trans-
+Our attack results from an unsafe fallback of a certificate            actions, according to our experiments and our report in [6].
+validation error in the Mastercard protocol specification. The            Barisani et al.’s attack downgrades the CVM List to Plain-
+fallback tolerates transaction flows with missing integrity            text PIN-only, which then allowed the skimmer device to
+protection of critical data exchanged between the card and             intercept the PIN sent for verification in plain-text to the ICC.
+the terminal. The effects of our four countermeasures are              Even if ODA failures are tolerated, this attack can still be
+conceptually equivalent: transactions where ODA failed must            prevented by setting the Terminal Action Code (TAC)-Denial
+not be accepted.                                                       object to a specific, non-zero value as recommended in the
+   The proofs derived from our original model [6] thus di-             EMV specification [13] (p. 115). Indeed, the IAC and the
+rectly verify the correctness of our countermeasures. Namely,          TAC are used to decide whether to decline transactions with
+if the protocol runs without ODA failures, the security prop-          ODA failures (recall this from Figure 3). Note that this is one
+erties proven in [6] hold. For our purposes, the most relevant         of our own countermeasures, as described in Section 3.5.
+property (see [6], Table II, p. 11) is:                                   For VISA contactless cards, Emms et al. reported in [12]
+                                                                       that cards issued in the UK do not require PIN verification for
+     The Mastercard protocol with CDA guarantees                       foreign-currency transactions. The authors built an Android
+     card and transaction data authentication to pay-                  app that performs VISA transactions with cards in NFC range
+     ment terminals and card issuers.                                  and stores the data, which the authors claim can later be used
+                                                                       to request the funds by a rogue merchant terminal. We observe
+This property guarantees the integrity of critical card and            that the now-deprecated Mag-stripe mode is used during these
+transaction data including the (strongest) CVM supported by            artificial transactions and so this attack no longer works.
+the card. This makes our attack infeasible since the card’s               Although the NFC range is normally limited to a few cen-
+CVM support cannot be downgraded or removed.                           timeters, it can be extended to a much larger range. Namely,
+                                                                       an attacker can use a pair of devices to interconnect a victim’s
+4   Related Work                                                       card with a distant terminal. Numerous attacks of this type,
+                                                                       called relay attacks, have previously been reported.
+The widespread use of the EMV payment standard and the                    The relay attacks reported employ Android devices [17, 20,
+devastating impact of vulnerabilities in the standard itself or        27], or customized hardware and software [10, 26], or com-
+implementations thereof has attracted the interest of security         binations thereof [7, 9]. Apparently, this type of attack is not
+researchers since its launch. In this section, we review some          lucrative for criminals since it only allows purchases with low
+of the related work on attacks against EMV and comment on              amounts; large-value purchases are (presumably) protected
+
+
+                                                                  11
+                                                                                                                          Demo’ed
+    Reported in                     Attack                         Main flaw(s) exploited
+                                                                                                                         in practice
+                                    PIN bypass                     No auth. of the card’s response to offline
+    Murdoch et al. [23]∗                                                                                                     Yes
+                                    for contact transactions       PIN verification requests
+                                    PIN harvest
+    Barisani et al. [4]∗                                           Weak auth. of the CVM List                                No
+                                    for contact transactions
+                                    Card cloning                   Magstripe mode’s small pool
+    Roland & Langer [25]∗                                                                                                    Yes
+                                    via legacy modes               of random numbers
+    [7, 9, 10, 17, 20, 26, 27]      (Passive) Relay                No relay protection                                       Yes
+                                    Harvest of large PIN-less      No PIN required for foreign-currency
+    Emms et al. [12]∗                                                                                                        No
+                                    VISA transactions              contactless transactions
+    Bond et al. [8]∗                Card cloning via pre-play      Weak random generators                                    No
+                                    PIN bypass for VISA cards      No auth. of CVM-related data sent
+    Galloway & Yunusov [19]                                                                                                  Yes
+                                    via relay + MITM               by terminal and card
+                                    PIN bypass for VISA cards      No auth. of CVM-related data sent
+    Basin et al. [6]                                                                                                         Yes
+                                    via relay + MITM               by card
+                                    PIN bypass for Mastercard      No auth. of AIDs + ambiguity in payment
+    Basin et al. [5]∗                                                                                                        Yes
+                                    cards via relay + MITM         network selection + flaws exposed in [6]
+                                    Apple Pay lock bypass          Express transit mode + no auth. of
+    Radu et al. [24]                                                                                                         Yes
+                                    via relay + MITM               CVM-related data sent by terminal and card
+                                    PIN bypass for Mastercard      Improperly designed ODA failure modes
+    This paper                                                                                                               Yes
+                                    cards via relay + MITM         + UI weaknesses in digital wallets
+                                                                        ∗ attack patched or affected protocol version no longer in use
+
+
+                                 Table 2: Summary of reported attacks for the EMV payment system
+
+
+by the card’s secret PIN. However, in combination with a PIN           ferent to the one reported by Galloway et al. in [19]: our
+bypass attack, as presented in this paper, relay attacks may           attack does not modify terminal-sourced data (e.g. the TTQ)
+become worthwhile for criminals. For example, one might                to avoid potential declines as a result of online integrity check
+imagine a malicious merchant who runs a modified terminal              failures. The execution representing the attack that we cur-
+that actually implements a relay in combination with a PIN             rently present in this paper is not included in the execution
+bypass attack to issue a high-value payment at a different             space of our formal model [6] because this model assumes that
+terminal.                                                              cryptographic failures result in the execution being aborted,
+   In [19], Galloway and Yunusov showed how to use a                   as it is typically the case for formal verification approaches.
+Rasperry Pi device as an NFC proxy to explore the EMV                     In our follow-up paper [5], we presented our card brand
+protocol. In addition, by modifying the ‘CVM Required’ bit             mixup attack, which allows an attacker to masquerade non-
+of the terminal’s Terminal Transaction Qualifiers (TTQ) and            VISA cards as VISA cards. As a result, a payment initiated
+the ‘ODCVM Performed’ bit of the corresponding card’s re-              with a Mastercard-branded card is processed using the VISA
+sponse, the authors demonstrated the first PIN bypass attack           kernel in the terminal such that the attack we reported in [6]
+for modern EMV contactless cards.                                      also applies to Mastercard cards. Our brand mixup attack was
+   Another type of attack on EMV is card cloning. For ex-              patched by Mastercard quickly after disclosure.
+ample, back in 2008, Drimer et al. [11] showed that the data              In our attack reported here, we use a weaker form of our
+necessary to clone an EMV card’s magnetic stripe can be                brand mixup attack on Maestro cards. Concretely, we mas-
+extracted from an EMV chip using the contact interface. Sim-           querade Maestro cards as Mastercard cards (see the Steps S1
+ilarly, Galloway provided a proof-of-concept implementa-               and S2 in Section 3.2). The terminal-card interaction is the
+tion [18] that proves that this issue still persisted in 2020.         same for all Mastercard-branded cards (including Maestro),
+Galloway managed to extract all the magnetic stripe data               but masquerading allows for our CVM downgrade attack,
+from the card using an NFC reader.                                     which otherwise is not possible when the payment source is
+   In our previous work [6], we presented a formal model of            a Maestro card as we observed in our early experiments. We
+the EMV protocol. Using our model and the Tamarin veri-                did not find any documentation that would explain differences
+fier [22], we identified a number of weaknesses in the protocol        in CVM processing between Mastercard and Maestro cards.
+that lead to various attacks, including a PIN bypass attack for           The most recent attack on EMV is that of Radu et al. [24].
+VISA contactless cards. This attack is similar but subtly dif-         The authors have shown that it is possible to unlock Apple
+
+
+                                                                  12
+Pay on a (stolen) locked iPhone to make a large purchase.               AIP Application Interchange Profile. 4, 6, 7
+Their attack relies on the works [6, 19], with some adapta-
+tions that are specific to the communication protocol layer             APDUs Application Protocol Data Units. 3
+for smartphone-based payments. This work also analyses the
+impact of relay-resistance protocols (also known as distance            ATC Application Transaction Counter. 6
+bounding protocols) to prevent man-in-the-middle attacks
+that relay messages. Their analysis is conducted using an               CDA Combined Dynamic Data Authentication. 5–11
+extension of our formal model presented in [21].
+                                                                        CDOL Card Risk Management Data Object List. 4, 6
+5   Conclusions
+                                                                        CID Cryptogram Information Data. 6
+We have reported on a novel, critical design flaw in the
+EMV protocol for Mastercard contactless transactions. When              CVM Cardholder Verification Method. 1–4, 6–13
+analysing the Mastercard execution flow, we noted that the
+online transaction authorization serves as a fallback to offline        CVMR Cardholder Verification Method Results. 9, 10
+data authentication failures. We have consequently identified
+an execution where an early offline data authentication fail-           DDA Dynamic Data Authentication. 6
+ure makes the terminal ignore all subsequent failures on the
+PKI-based RSA verification of the card’s static and dynamic             DDF Dictionary Definition File. 3
+data during the transaction. Hence we conclude that all card-
+sourced data that is not authenticated online by the card issuer        FCI File Control Information. 4
+can be subjected to adversarial modification.
+   We have developed a proof-of-concept Android app that                IAC Issuer Action Code. 7, 8, 11
+implements a man-in-the-middle attack that modifies such
+unprotected data. The modified data includes PKI-related                IAD Issuer Application Data. 6
+data, to induce the actual offline authentication failures, and
+cardholder verification-related data, to suppress the card’s            ICC Integrated Circuit Card. 3, 4, 6, 11
+supported CVMs or to downgrade them to one that criminals
+can easily reproduce, such as Paper Signature. Using our app,           ODA Offline Data Authentication. 1, 4, 6–8, 10–12
+we bypassed the PIN for various transactions with different
+Mastercard and Maestro cards on different real-world pay-               ODCVM On Device CVM. 4, 7, 12
+ment terminals. Our experiments clearly demonstrate that the
+identified flaws substantially degrade the cardholders’ secu-           OTA Online Transaction Authorization. 6, 9
+rity.
+   We have recommended concrete actions that can be taken               PAN Primary Account Number. 4, 6
+to prevent our attack in the short term and we have disclosed
+them to Mastercard. In the long term, we recommend thor-                PDOL Processing Data Object List. 4, 6
+oughly reviewing the input data to all cryptographic construc-
+tions of the EMV protocol. We also note that the protocol
+                                                                        RID Registered Application Provider Identifier. 7
+does not specify terminal authentication mechanisms to cards,
+which makes the latter communicate with any NFC-enabled
+                                                                        SDAD Signed Dynamic Authentication Data. 6–8
+device that activates them. This is a shortcoming that under-
+mines the security of the entire EMV system and should also
+                                                                        SFI Short File Identifier. 4
+be revised.
+                                                                        TAC Terminal Action Code. 8, 10, 11
+EMV Acronyms
+                                                                        TDHC Transaction Data Hash Code. 6
+AC Application Cryptogram. 6
+                                                                        TTQ Terminal Transaction Qualifiers. 12
+ADF Application Definition File. 4
+
+AFL Application File Locator. 4                                         TVR Terminal Verification Results. 5, 7, 9, 10
+
+AID Application Identifier. 3, 4, 7, 8, 12                              UN Unpredictable Number. 5, 6
+
+
+                                                                   13
+References                                                                 In Proceedings of the 16th USENIX Security Symposium,
+                                                                           Boston, MA, USA, August 6-10, 2007, 2007.
+ [1] https://emvrace.github.io.
+                                                                      [11] Saar Drimer, Steven J. Murdoch, and Ross J. Anderson.
+ [2] https://github.com/EMVrace/                                           Thinking inside the box: System-level failures of tamper
+     auth-failure-attack.                                                  proofing. In 2008 IEEE Symposium on Security and
+                                                                           Privacy (S&P 2008), 18-21 May 2008, Oakland, Cali-
+ [3] Host-based card emulation overview.      https:
+                                                                           fornia, USA, pages 281–295. IEEE Computer Society,
+     //developer.android.com/guide/topics/
+                                                                           2008.
+     connectivity/nfc/hce. Accessed: August 2020.
+
+ [4] Andrea Barisani, Daniele Bianco, Adam Laurie, and Zac            [12] Martin Emms, Budi Arief, Leo Freitas, Joseph Hannon,
+     Franken. Chip & PIN is definitely broken: Credit Card                 and Aad P. A. van Moorsel. Harvesting high value for-
+     skimming and PIN harvesting in an EMV world. In                       eign currency transactions from EMV contactless credit
+     Defcon, volume 19, 2011.                                              cards without the PIN. In Proceedings of the 2014
+                                                                           ACM SIGSAC Conference on Computer and Commu-
+ [5] David A. Basin, Ralf Sasse, and Jorge Toro-Pozo. Card                 nications Security, Scottsdale, AZ, USA, November 3-7,
+     brand mixup attack: Bypassing the PIN in non-Visa                     2014, pages 716–726, 2014.
+     cards by using them for Visa transactions. In Michael
+     Bailey and Rachel Greenstadt, editors, 30th USENIX               [13] EMVCo.         EMV Integrated Circuit Card
+     Security Symposium, USENIX Security 2021, August 11-                  Specifications for Payment Systems, Book
+     13, 2021, pages 179–194. USENIX Association, 2021.                    3, Application    Specification, Version 4.3.
+                                                                           https://www.emvco.com/wp-content/uploads/
+ [6] David A. Basin, Ralf Sasse, and Jorge Toro-Pozo. The                  documents/EMV_v4.3_Book_3_Application_
+     EMV Standard: Break, Fix, Verify. In 42nd IEEE Sympo-                 Specification_20120607062110791.pdf, Novem-
+     sium on Security and Privacy, SP 2021, San Francisco,                 ber 2011.
+     CA, USA, 24-27 May 2021, pages 1766–1781. IEEE,
+     2021.                                                            [14] EMVCo. EMV Contactless Specifications for Payment
+                                                                           Systems, Book A, Architecture and General Require-
+ [7] Thomas Bocek, Christian Killer, Christos Tsiaras, and                 ments, Version 2.10. Link, March 2021.
+     Burkhard Stiller. An NFC relay attack with off-the-shelf
+     hardware and software. In Rémi Badonnel, Robert Koch,            [15] EMVCo. EMV Contactless Specifications for Payment
+     Aiko Pras, Martin Drasar, and Burkhard Stiller, editors,              Systems, Book C-2, Kernel 2 Specification, Version
+     Management and Security in the Age of Hyperconnec-                    2.10.       https://www.emvco.com/wp-content/
+     tivity - 10th IFIP WG 6.6 International Conference on                 uploads/documents/C-2-Kernel-2-v2.10.pdf,
+     Autonomous Infrastructure, Management, and Security,                  March 2021.
+     AIMS 2016, Munich, Germany, June 20-23, 2016, Pro-
+     ceedings, volume 9701 of Lecture Notes in Computer               [16] Houda Ferradi, Rémi Géraud, David Naccache, and As-
+     Science, pages 71–83. Springer, 2016.                                 sia Tria. When organized crime applies academic re-
+                                                                           sults: a forensic analysis of an in-card listening device.
+ [8] Mike Bond, Omar Choudary, Steven J. Murdoch,                          J. Cryptographic Engineering, 6(1):49–59, 2016.
+     Sergei P. Skorobogatov, and Ross J. Anderson. Chip
+     and skim: Cloning EMV cards with the pre-play attack.            [17] Lishoy Francis, Gerhard P. Hancke, Keith Mayes, and
+     In 2014 IEEE Symposium on Security and Privacy, SP                    Konstantinos Markantonakis. Practical relay attack on
+     2014, Berkeley, CA, USA, May 18-21, 2014, pages 49–                   contactless transactions by using NFC mobile phones.
+     64, 2014.                                                             IACR Cryptology ePrint Archive, 2011:618, 2011.
+
+ [9] Tom Chothia, Flavio D. Garcia, Joeri de Ruiter, Jordi            [18] Leigh-Anne Galloway. It only takes a minute to clone
+     van den Breekel, and Matthew Thompson. Relay cost                     a credit card, thanks to a 50-year-old problem. Link,
+     bounding for contactless EMV payments. In Financial                   2020.
+     Cryptography and Data Security - 19th International
+     Conference, FC 2015, San Juan, Puerto Rico, January              [19] Leigh-Anne Galloway and Tim Yunusov. First contact:
+     26-30, 2015, Revised Selected Papers, pages 189–206,                  New vulnerabilities in contactless payments. In Black
+     2015.                                                                 Hat Europe 2019, 2019.
+
+[10] Saar Drimer and Steven J. Murdoch. Keep your enemies             [20] Eddie Lee. NFC hacking: The easy way. In Defcon,
+     close: Distance bounding against smartcard relay attacks.             volume 20, pages 63–74, 2012.
+
+
+                                                                 14
+[21] Sjouke Mauw, Zach Smith, Jorge Toro-Pozo, and                   [24] Andreea-Ina Radu, Tom Chothia, Christopher J.P. New-
+     Rolando Trujillo-Rasua. Distance-bounding protocols:                 ton, Ioana Boureanu, and Liqun Chen. Practical EMV
+     Verification without time and location. In 2018 IEEE                 relay protection. In 43rd IEEE Symposium on Security
+     Symposium on Security and Privacy, SP 2018, Proceed-                 and Privacy (S&P), 2022.
+     ings, 21-23 May 2018, San Francisco, California, USA,
+     pages 549–566, 2018.                                            [25] Michael Roland and Josef Langer. Cloning credit cards:
+                                                                          A combined pre-play and downgrade attack on EMV
+[22] Simon Meier, Benedikt Schmidt, Cas Cremers, and                      contactless. In 7th USENIX Workshop on Offensive Tech-
+     David A. Basin. The TAMARIN prover for the sym-                      nologies, WOOT ’13, Washington, D.C., USA, August
+     bolic analysis of security protocols. In Computer Aided              13, 2013, 2013.
+     Verification - 25th International Conference, CAV 2013,
+     Saint Petersburg, Russia, July 13-19, 2013. Proceedings,        [26] Haoqi Shan and Jian Yuan. Man in the NFC. In Defcon,
+     pages 696–701, 2013.                                                 volume 25, 2017.
+
+[23] Steven J. Murdoch, Saar Drimer, Ross J. Anderson, and           [27] Jordi van den Breekel. Relaying EMV contactless trans-
+     Mike Bond. Chip and PIN is broken. In 31st IEEE                      actions using off-the-shelf Android devices. In BlackHat
+     Symposium on Security and Privacy, S&P 2010, 16-19                   Asia, Singapore, 2015.
+     May 2010, Berleley/Oakland, California, USA, pages
+     433–446, 2010.
+
+
+
+
+                                                                15
+

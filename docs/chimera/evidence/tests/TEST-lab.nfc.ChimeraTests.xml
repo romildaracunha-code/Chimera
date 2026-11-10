@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lab.nfc.ChimeraTests" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-11-10T03:36:14" hostname="d61db6bbd1f9" time="0.9">
+  <properties/>
+  <testcase name="plannedRunCannotImplyHardwareOrAuthorization" classname="lab.nfc.ChimeraTests" time="0.211"/>
+  <testcase name="redBlueComparisonDoesNotProveMitigationAndRequiresComparableContext" classname="lab.nfc.ChimeraTests" time="0.26"/>
+  <testcase name="canonicalJsonIsPortableAndEvidenceZipContainsVerifiableBytes" classname="lab.nfc.ChimeraTests" time="0.036"/>
+  <testcase name="permissionEmptyAndOversizeAttachmentsDoNotLeaveRecords" classname="lab.nfc.ChimeraTests" time="0.06"/>
+  <testcase name="simulatedOrImportedAnalysisNeverBecomesObservedHardware" classname="lab.nfc.ChimeraTests" time="0.024"/>
+  <testcase name="attachmentsAreConfinedAndTamperingInvalidatesReview" classname="lab.nfc.ChimeraTests" time="0.07"/>
+  <testcase name="journalStateTamperingBecomesReadOnlyAndPreservesOriginal" classname="lab.nfc.ChimeraTests" time="0.009"/>
+  <testcase name="snapshotsSurviveCaseAndInventoryChanges" classname="lab.nfc.ChimeraTests" time="0.018"/>
+  <testcase name="newObservationOrAttachmentInvalidatesPriorReview" classname="lab.nfc.ChimeraTests" time="0.085"/>
+  <testcase name="sdkDeclarationsAreBoundAndContradictionsBlockReview" classname="lab.nfc.ChimeraTests" time="0.034"/>
+  <testcase name="processorAndTerminalDivergenceIsSeparateFromTestPass" classname="lab.nfc.ChimeraTests" time="0.063"/>
+  <testcase name="officialCasesStayBlockedWithoutProviderReference" classname="lab.nfc.ChimeraTests" time="0.012"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,12 @@
+test_duplicate_zip_member_rejected (test_verify.BundleTests.test_duplicate_zip_member_rejected) ... /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/zipfile/__init__.py:1625: UserWarning: Duplicate name: 'manifest.json'
+  return self._open_to_write(zinfo, force_zip64=force_zip64)
+ok
+test_hash_consistency_never_means_physical_authenticity (test_verify.BundleTests.test_hash_consistency_never_means_physical_authenticity) ... ok
+test_portable_unicode_canonicalization (test_verify.BundleTests.test_portable_unicode_canonicalization) ... ok
+test_state_and_journal_tampering (test_verify.BundleTests.test_state_and_journal_tampering) ... ok
+test_zip_reads_without_extracting_and_rejects_changed_artifact (test_verify.BundleTests.test_zip_reads_without_extracting_and_rejects_changed_artifact) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.003s
+
+OK

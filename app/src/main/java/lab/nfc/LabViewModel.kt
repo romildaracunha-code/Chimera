@@ -17,12 +17,12 @@ class LabViewModel(app: Application): AndroidViewModel(app) {
  val busy=MutableStateFlow(false)
  val current=MutableStateFlow<String?>(null)
  fun select(name: String) { profile.value=name; store.profile=name }
- fun newSession(mode: String,technology: String): Session = Session(device="${Build.MANUFACTURER} ${Build.MODEL} / Android ${Build.VERSION.RELEASE}",technology=technology,mode=mode,profile=profile.value)
+ fun newSession(mode: String,technology: String): Session = Session(device="${Build.MANUFACTURER} ${Build.MODEL} / Android ${Build.VERSION.RELEASE}",technology=technology,mode=mode,profile=profile.value,labAid=store.selectedAid,labScenario=if(store.rejectLabGetData) "REJECT_GET_DATA" else "NORMAL")
  fun simulate(repeat: Session?=null) = viewModelScope.launch(Dispatchers.IO) {
  try {
  val s=newSession("SIMULAÇÃO LOCAL", "Lógica APDU; sem rádio NFC").copy(profile=repeat?.profile ?: profile.value); store.save(s); current.value=s.id
- val engine=LabEngine()
- val commands=repeat?.exchanges?.map { it.command }?.ifEmpty { null } ?: listOf(LabProtocol.SELECT,LabProtocol.GET_DATA)
+ val engine=LabEngine(s.labAid,s.labScenario=="REJECT_GET_DATA")
+ val commands=repeat?.exchanges?.map { it.command }?.ifEmpty { null } ?: listOf(LabAids.select(s.labAid),LabProtocol.GET_DATA)
  commands.forEach { hex -> val start=SystemClock.elapsedRealtime(); val response=engine.exchange(hex.bytes(),s.profile); store.append(s.id,Exchange(System.currentTimeMillis(),"Terminal → emulador SIMULADO",hex,response.hex(),SystemClock.elapsedRealtime()-start)) }
  val latest=store.sessions.value.first { it.id==s.id }; store.save(latest.copy(result=if(latest.exchanges.all { it.status=="9000" }) "Concluído" else "Com status de erro")); message.value="Simulação salva; nenhuma transmissão NFC ocorreu."
  } catch(e: Exception) { message.value=e.message ?: "Falha na simulação" }

@@ -1,0 +1,10 @@
+{
+  "integrity": "CONSISTENT",
+  "physicalAuthenticity": "UNVERIFIED_BY_OFFLINE_TOOL",
+  "cryptography": "NOT_VERIFIED",
+  "automaticVulnerabilityOrFixClaim": false,
+  "runCount": 1,
+  "analysisCount": 0,
+  "errors": [],
+  "scope": "Journal/state/bytes only. Stored reviews/results remain operator declarations, not independent hardware proof."
+}

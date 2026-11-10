@@ -30,9 +30,45 @@ import java.util.Date
 import java.util.Locale
 
 import lab.nfc.feature.dashboard.LabApp
+import lab.nfc.feature.chimera.ChimeraViewModel
+import lab.nfc.core.chimera.ArtifactRole
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
 
 class MainActivity: ComponentActivity() {
  private val vm: LabViewModel by viewModels()
+ private val chimera: ChimeraViewModel by viewModels()
+ private var pendingText:String?=null
+ private var pendingFile:java.io.File?=null
+ private var pendingRead:((String)->Unit)?=null
+ private var pendingAttachment:Triple<String,ArtifactRole,Boolean>?=null
+ private val saveChimera=registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+  val uri=result.data?.data;val text=pendingText;val file=pendingFile;pendingText=null;pendingFile=null
+  if(result.resultCode==RESULT_OK && uri!=null) lifecycleScope.launch(Dispatchers.IO) {
+   runCatching { require(text!=null || file!=null) { "Exportação interrompida; gere novamente após rotação" };contentResolver.openOutputStream(uri)?.use { out -> if(file!=null) file.inputStream().use { it.copyTo(out) } else out.write(text!!.toByteArray()) } ?: error("Destino indisponível") }
+    .onSuccess { chimera.message.value="Arquivo exportado; revise antes de compartilhar" }.onFailure { chimera.message.value=it.message ?: "Erro de exportação" }
+  }
+ }
+ private val readChimera=registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+  val callback=pendingRead;pendingRead=null
+  if(uri!=null && callback!=null) lifecycleScope.launch(Dispatchers.IO) {
+   runCatching { contentResolver.openInputStream(uri)?.use { chimera.importAnalysisFile(it) } ?: error("Arquivo indisponível") }
+    .onSuccess { text -> runOnUiThread { callback(text) } }.onFailure { chimera.message.value=it.message ?: "Importação inválida" }
+  }
+ }
+ private val attachChimera=registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+  val request=pendingAttachment;pendingAttachment=null
+  if(uri!=null && request!=null) runCatching {
+   val name=contentResolver.query(uri,arrayOf(android.provider.OpenableColumns.DISPLAY_NAME),null,null,null)?.use { cursor -> if(cursor.moveToFirst()) cursor.getString(0) else "artifact.bin" } ?: "artifact.bin"
+   val stream=contentResolver.openInputStream(uri) ?: error("Anexo indisponível")
+   chimera.attach(stream,name,request.third,request.first,request.second)
+  }.onFailure { chimera.message.value=it.message ?: "Anexo inválido" }
+ }
+ private fun offerExport(name:String,mime:String,text:String?=null,file:java.io.File?=null) { runOnUiThread {
+  pendingText=text;pendingFile=file
+  saveChimera.launch(Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType(mime).putExtra(Intent.EXTRA_TITLE,name))
+ } }
  private lateinit var reader: ReaderController
  private val capability=mutableStateOf(Capabilities(false,false,false,false))
  private var exportText=""
@@ -43,6 +79,11 @@ class MainActivity: ComponentActivity() {
  setContent {
  MaterialTheme(colorScheme=darkColorScheme(primary=Color(0xFF29D8FF),secondary=Color(0xFF418BFF),background=Color(0xFF0B0F16),surface=Color(0xFF151D29))) {
  Surface(Modifier.fillMaxSize()) { LabApp(vm,capability.value,
+ chimera=chimera,
+ onChimeraExport={ name,mime,body -> offerExport(name,mime,body) },
+ onImportText={ callback -> pendingRead=callback;readChimera.launch(arrayOf("text/*","application/json","application/octet-stream")) },
+ onAttach={ id,role,authorized -> pendingAttachment=Triple(id,role,authorized);attachChimera.launch(arrayOf("*/*")) },
+ onEvidenceZip={ chimera.work { val bundle=chimera.evidenceZip();offerExport("chimera-evidence.zip","application/zip",file=bundle);"Pacote verificado preparado" } },
  onReader={ cmd -> runCatching { vm.stopHce(); reader.start(cmd) }.onFailure { vm.message.value=it.message ?: "Erro" } },
  onStopReader={ reader.stop(); vm.message.value="Leitor desativado" },
  onHce={ reader.stop(); if(capability.value.enabled && capability.value.hce) { vm.startHce(); preferHce() } else vm.message.value="HCE requer NFC ligado e suporte HCE" },

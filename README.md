@@ -1,5 +1,20 @@
 # NFC Lab
 
+## NFC Lab V3 — Operação Chimera
+
+[APK V3](deliverables/NFC-Lab-V3-Chimera-debug.apk) · [Projeto completo](deliverables/NFC-Lab-V3-Chimera-project.zip) · [Documentação V3](docs/chimera/README.md) · [Auditoria](docs/chimera/AUDIT.md) · [Validação real e bloqueios](docs/chimera/VALIDATION.md).
+
+Evolução do aplicativo existente: EMV Explorer, Vulnerability Research, Physical Test Lab, Terminal Inventory, Test Case Manager, Security Evidence, Red/Blue Comparison e Technical Reports. Há parser BER-TLV/APDU, corpus público versionado, gestão ISO-DEP/AIDs proprietários, armazenamento separado, evidências verificáveis e relatórios. As interfaces/dados anteriores foram preservados. O baseline Git está na tag `baseline-1.1-pre-chimera`; a versão atual usa a tag `chimera-v3`.
+
+**47 testes JVM e 13 Python aprovados; APK compilado; zero experimentos físicos executados.** A compatibilidade e vulnerabilidades dos equipamentos do usuário não foram validadas. Casos oficiais, SDKs/kit/host e Android físico continuam dependências externas. Hash não comprova autenticidade física e o analisador não valida criptografia nem autorização financeira.
+
+Use o [manual presencial V3](docs/chimera/PHYSICAL_MANUAL.md). O app não implementa relay, cartões financeiros falsos ou aprovação fraudulenta. O pacote completo pode ser extraído em `D:\NFC-Lab`; neste ambiente Linux o projeto permanece em `/workspace/NFC-Lab`. Assinatura da entrega anterior preservada; não desinstalar nem apagar dados para atualizar. Para reconstrução compatível com uma instalação, usar o mesmo keystore; nenhuma chave é empacotada.
+
+## Histórico e documentação das entregas anteriores
+
+As seções 1.0/1.1 abaixo são históricas. Para os limites atuais de APDU estendido, novas telas e evidência, a documentação V3 acima prevalece.
+
+
 ## Sprint físico EMV — versão 1.1
 
 [APK atualizado](deliverables/NFC-Lab-1.1-physical-debug.apk) · [Projeto completo](deliverables/NFC-Lab-1.1-physical-project.zip) · [Roteiro e entregas](docs/emv-sprint/README.md) · [Resultados reais da sprint](docs/emv-sprint/VALIDATION.md).

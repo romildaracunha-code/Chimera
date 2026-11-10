@@ -1,0 +1,110 @@
+[
+  {
+    "id": "LAB-POS",
+    "title": "AID proprietário + GET DATA positivo",
+    "kind": "LAB",
+    "revision": "1",
+    "officialReference": "",
+    "expected": "SELECT/GET DATA 9000 e dados FICTITIOUS nos dois lados",
+    "dependencies": "Android HCE + leitor controlável; contexto físico e traces",
+    "researchId": "",
+    "source": "NFC Lab V3 — plano local, não ID oficial",
+    "status": "READY_LAB"
+  },
+  {
+    "id": "LAB-NEG",
+    "title": "GET DATA negado em perfil fictício",
+    "kind": "LAB",
+    "revision": "1",
+    "officialReference": "",
+    "expected": "SELECT 9000, GET DATA 6985; não é falha EMV",
+    "dependencies": "HCE configurado REJECT_GET_DATA e leitor controlável",
+    "researchId": "",
+    "source": "NFC Lab V3 — plano local, não ID oficial",
+    "status": "READY_LAB"
+  },
+  {
+    "id": "LAB-LINK",
+    "title": "Timeout/interrupção física do protocolo Lab",
+    "kind": "LAB",
+    "revision": "1",
+    "officialReference": "",
+    "expected": "Erro real de transporte registrado sem inferir autenticação",
+    "dependencies": "Leitor e smartphone próprios, interrupção física autorizada",
+    "researchId": "",
+    "source": "NFC Lab V3 — plano local, não ID oficial",
+    "status": "READY_LAB"
+  },
+  {
+    "id": "HOM-POS",
+    "title": "Credencial oficial válida",
+    "kind": "OFFICIAL_EMV",
+    "revision": "1",
+    "officialReference": "",
+    "expected": "Conforme resultado esperado pelo provedor",
+    "dependencies": "Caso/plano oficial e versão, credenciais/chaves de teste do provedor, SDK L2/L3, traces e host de homologação",
+    "researchId": "",
+    "source": "NFC Lab V3 — plano local, não ID oficial",
+    "status": "BLOCKED_OFFICIAL_CASE_REQUIRED"
+  },
+  {
+    "id": "HOM-CVM",
+    "title": "Inconsistência de dados/CVM",
+    "kind": "OFFICIAL_EMV",
+    "revision": "1",
+    "officialReference": "",
+    "expected": "Rejeição/resultado exato do caso oficial",
+    "dependencies": "Caso/plano oficial e versão, credenciais/chaves de teste do provedor, SDK L2/L3, traces e host de homologação",
+    "researchId": "R-A",
+    "source": "NFC Lab V3 — plano local, não ID oficial",
+    "status": "BLOCKED_OFFICIAL_CASE_REQUIRED"
+  },
+  {
+    "id": "HOM-AUTH",
+    "title": "Autenticação criptográfica inválida",
+    "kind": "OFFICIAL_EMV",
+    "revision": "1",
+    "officialReference": "",
+    "expected": "Fail-closed conforme caso oficial; confirmação pelo SDK de teste",
+    "dependencies": "Caso/plano oficial e versão, credenciais/chaves de teste do provedor, SDK L2/L3, traces e host de homologação",
+    "researchId": "R-A",
+    "source": "NFC Lab V3 — plano local, não ID oficial",
+    "status": "BLOCKED_OFFICIAL_CASE_REQUIRED"
+  },
+  {
+    "id": "HOM-INTEGRITY",
+    "title": "Integridade/recursos e estados inesperados",
+    "kind": "OFFICIAL_EMV",
+    "revision": "1",
+    "officialReference": "",
+    "expected": "Resultado exato do caso oficial sem degradação indevida de controles",
+    "dependencies": "Caso/plano oficial e versão, credenciais/chaves de teste do provedor, SDK L2/L3, traces e host de homologação",
+    "researchId": "R-B",
+    "source": "NFC Lab V3 — plano local, não ID oficial",
+    "status": "BLOCKED_OFFICIAL_CASE_REQUIRED"
+  },
+  {
+    "id": "HOM-LIFECYCLE",
+    "title": "Credencial oficial expirada/revogada",
+    "kind": "OFFICIAL_EMV",
+    "revision": "1",
+    "officialReference": "",
+    "expected": "Estado da credencial coerente terminal/host",
+    "dependencies": "Caso/plano oficial e versão, credenciais/chaves de teste do provedor, SDK L2/L3, traces e host de homologação",
+    "researchId": "R-C",
+    "source": "NFC Lab V3 — plano local, não ID oficial",
+    "status": "BLOCKED_OFFICIAL_CASE_REQUIRED"
+  },
+  {
+    "id": "HOM-HOST",
+    "title": "Divergência entre terminal e processador",
+    "kind": "OFFICIAL_EMV",
+    "revision": "1",
+    "officialReference": "",
+    "expected": "Tela e resultado host correlacionados; sem inferir liquidação",
+    "dependencies": "Caso/plano oficial e versão, credenciais/chaves de teste do provedor, SDK L2/L3, traces e host de homologação",
+    "researchId": "R-D",
+    "source": "NFC Lab V3 — plano local, não ID oficial",
+    "status": "BLOCKED_OFFICIAL_CASE_REQUIRED"
+  }
+]

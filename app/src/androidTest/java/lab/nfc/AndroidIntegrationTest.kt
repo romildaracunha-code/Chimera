@@ -70,3 +70,19 @@ class PhysicalStorageIntegrationTest {
   assertEquals(plan.copy(terminalSnapshot=store.devices.value.first { it.internalId==id }),saved); assertEquals(Observation.UNKNOWN,saved.nfc)
  }
 }
+
+@RunWith(AndroidJUnit4::class)
+class ChimeraIntegrationTest {
+ @Test fun publishedFixtureAndEvidenceRoundTripOnAndroidNoHardwareClaim() {
+  val c=ApplicationProvider.getApplicationContext<Context>()
+  val data=org.json.JSONObject(c.assets.open("chimera/public-vectors.json").bufferedReader().use { it.readText() })
+  val report=lab.nfc.core.emv.EmvAnalyzer.analyze(data.getJSONArray("vectors").getJSONObject(0).getString("hex"),lab.nfc.core.emv.InputKind.TLV,lab.nfc.core.emv.DataOrigin.PUBLIC_TEST,data.getString("sourceUrl"))
+  val dir=java.io.File(c.cacheDir,"CHIMERA-SOFTWARE-FIXTURE-"+java.util.UUID.randomUUID());dir.mkdirs()
+  try {
+   val seed=org.json.JSONArray(c.assets.open("chimera/cases.json").bufferedReader().use { it.readText() })
+   val ledger=lab.nfc.core.chimera.ChimeraLedger(dir,seed);ledger.saveAnalysis(report)
+   val reload=lab.nfc.core.chimera.ChimeraLedger(dir,seed)
+   assertNull(reload.integrityError);assertEquals(0,reload.snapshot().getJSONArray("runs").length());assertEquals("PUBLIC_TEST",reload.snapshot().getJSONArray("analyses").getJSONObject(0).getString("origin"))
+  } finally { dir.deleteRecursively() }
+ }
+}

@@ -1,0 +1,83 @@
+# Catálogo de pesquisas — consulta 2026-11-10
+
+Nenhuma vulnerabilidade foi reproduzida neste laboratório. Escopo histórico não comprova vulnerabilidade atual. Nenhum exploit/relay foi implementado. Fontes primárias e dados públicos são analisados sem executar código das pesquisas.
+
+## R-A — EMV Race — CVM, brand mixup e falhas de autenticação
+
+Fonte: https://emvrace.github.io/
+
+**evidenceClass**: PRIMARY_RESEARCH_2021_2023
+
+**summary**: Trabalhos distintos sobre vínculo insuficiente entre verificação do portador, autenticação de dados e seleção/roteamento da aplicação. Não equivalem a quebra de chaves criptográficas.
+
+**conditions**: Configurações Visa contactless estudadas e variantes Mastercard/Maestro específicas, dependentes de kernel, roteamento, CVM e verificação de autenticação. A pesquisa original envolve interposição; relay/transações financeiras não são implementados neste laboratório.
+
+**publishedEvidence**: Artigos S&P 2021, USENIX 2021 e USENIX 2023, modelos formais e demonstrações dos autores; não são resultados deste laboratório.
+
+**mitigations**: Autores relatam que Mastercard implementou e distribuiu defesas contra brand mixup. Não se infere correção global para as demais variantes. Verificar fail-closed, consistência do kernel/roteamento e vínculo autenticado do CVM em suite oficial.
+
+**currentStatus**: Não verificado nos terminais do usuário. Datas de firmware/boletins e escopo de correção precisam de confirmação do fornecedor.
+
+**labCheck**: Revisar traces de casos oficiais de CVM/seleção/autenticação inválida; comparar rejeição local e resposta do host; não reenviar ataques publicados.
+
+**dependencies**: SDK/traces autorizados, kit L2/L3, casos oficiais de CVM/autenticação e host de homologação.
+
+## R-B — More is Less — interação de recursos contactless
+
+Fonte: https://www.usenix.org/conference/usenixsecurity25/presentation/pavlides
+
+**evidenceClass**: PEER_REVIEWED_USENIX_SECURITY_2025
+
+**summary**: Interações entre operação offline, recursos de carteiras móveis/transporte e regras regionais geram lacunas de autenticação e política em combinações estudadas.
+
+**conditions**: Inclui Square Terminal com configuração UK/offline e combinações de cartões/carteiras específicas, além de controles em outros leitores. Não generalizar por bandeira ou marca.
+
+**publishedEvidence**: Artigo, modelos formais e referências a traces/demonstrações sanitizadas. Nenhum código de exploração foi baixado/executado pelo laboratório.
+
+**mitigations**: O artigo inclui declaração Square: remediação da divulgação inicial implantada em dispositivos suscetíveis; achados posteriores e mudanças adicionais discutidos. Validar a versão e política atuais com o fornecedor, sem tratar todos os achados como corrigidos.
+
+**currentStatus**: Escopo por versão/configuração não confirmado neste laboratório.
+
+**labCheck**: Conferir, com casos oficiais, que capacidades e política offline não dispensam autenticação/integridade; revisar divergências entre resultado local e host.
+
+**dependencies**: Versões/políticas regionais, suite oficial, configuração offline autorizada e documentação do host. Sem implementar clonagem ou carteiras falsas.
+
+## R-C — Zombie Cards Back Online — ciclo de vida da credencial
+
+Fonte: https://khwarizmilab.github.io/emvexpiredcards/
+
+**evidenceClass**: PRIMARY_PROJECT_PAGE_PUBLICATION_DETAILS_NOT_INDEPENDENTLY_CONFIRMED
+
+**summary**: Autores relatam divergência entre a validade apresentada ao terminal e o estado da credencial verificado pelo emissor; não afirmam quebra da criptografia do cartão.
+
+**conditions**: A página descreve Visa contactless em configurações específicas com cinco bancos dos EUA; configurações Mastercard, Amex e Discover testadas rejeitaram a alteração. Resultados não são universais.
+
+**publishedEvidence**: Página do projeto com método, demonstração, FAQ e resultados declarados. Não foi localizada ligação estável para PDF primário na página consultada; a referência bibliográfica do site não é confirmação independente de publicação.
+
+**mitigations**: Segundo a página, notificações ocorreram em maio/dezembro de 2025 e não havia mitigação confirmada por Visa/bancos na publicação. Recomendação defensiva: aplicar ciclo de vida da credencial ponta a ponta e correlacionar alertas de validade. Atualização posterior não comprovada.
+
+**currentStatus**: Sem validação em equipamentos atuais; sem CVE informado pelos autores à época.
+
+**labCheck**: Usar exclusivamente casos oficiais de credencial expirada/revogada e conferir trace do terminal e host de homologação; nenhum relay ou alteração de cartão financeiro.
+
+**dependencies**: Kit oficial com caso de ciclo de vida, tenant/host de teste e traces de estado da credencial. Sem material oficial: bloqueado.
+
+## R-D — Relato brasileiro de 2022 — aparente pagamento sem repasse
+
+Fonte: https://www.tecmundo.com.br/seguranca/233341-app-criminoso-engana-maquininha-pagamento-falso.htm
+
+**evidenceClass**: MEDIA_REPORT_NOT_REPRODUCIBLE_PROTOCOL_PROOF
+
+**summary**: Relato jornalístico de APK criminoso e percepção de pagamento no comércio. Não publica traces EMV, firmware, caso oficial ou evidência suficiente para determinar mecanismo e processamento financeiro.
+
+**conditions**: O texto menciona imagens de equipamentos Stone, mas afirma que modelos afetados não foram confirmados; alegações de funcionamento em qualquer terminal não são prova.
+
+**publishedEvidence**: Reportagem de 07/02/2022, atualmente redirecionada ao Estadão/TecMundo; relatos anônimos e comunicado do fornecedor, não dataset técnico reproduzível.
+
+**mitigations**: A reportagem reproduz comunicado Stone de que o problema foi identificado e resolvido. Sem versões/boletim técnico público no material consultado; confirmação por versão deve vir do fornecedor.
+
+**currentStatus**: Mecanismo e aplicabilidade atuais não estabelecidos. Não tratar reescrita de tag ou vídeo como comprovação de autorização.
+
+**labCheck**: Revisar correlação entre tela/comprovante, trace de terminal e autorização do processador em caso oficial positivo/negativo; verificar UX após recusa e ausência de confirmação.
+
+**dependencies**: Fornecedor/adquirente, versão do aplicativo e trace oficial correlacionado; sem APK criminoso, dados vazados ou falsificação de comprovante.

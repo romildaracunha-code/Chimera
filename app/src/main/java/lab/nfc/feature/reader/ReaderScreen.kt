@@ -37,7 +37,7 @@ import lab.nfc.feature.shared.*
 var custom by remember { mutableStateOf(LabProtocol.GET_DATA) }
 Panel("Leitor ISO-DEP autorizado") {
  Text("Use apenas tags próprias ou autorizadas. SELECT do NFC Lab será enviado primeiro; o comando seguinte só é enviado se SELECT retornar 9000.")
- OutlinedTextField(custom,{ custom=it },label={ Text("APDU curto (hexadecimal)") },modifier=Modifier.fillMaxWidth(),textStyle=LocalTextStyle.current.copy(fontFamily=FontFamily.Monospace))
+ OutlinedTextField(custom,{ custom=it },label={ Text("APDU ISO 7816 hex; extensão depende do hardware") },modifier=Modifier.fillMaxWidth(),textStyle=LocalTextStyle.current.copy(fontFamily=FontFamily.Monospace))
  Button(onClick={ onReader(custom) },enabled=caps.enabled && !busy) { Text("Ativar leitor / teste físico") }
  OutlinedButton(onClick=onStopReader) { Text("Desativar leitor") }
  Text("Aproxime o segundo celular com HCE armado. As tecnologias e erros serão salvos; tags sem ISO-DEP também geram histórico.")

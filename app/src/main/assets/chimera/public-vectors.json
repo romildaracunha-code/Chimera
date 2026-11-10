@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 3,
+  "sourceUrl": "https://raw.githubusercontent.com/evsinev/ber-tlv/1d887ab7bb49e617205b3ab5e509f44f96162342/src/test/java/com/payneteasy/tlv/BerTlvParserTest.java",
+  "sourceSha256": "e08fee789bf7e7efe4b4baea2b66f49cff302ed400bb506948e069e37b84f587",
+  "scope": "Published software test fixtures, not physical EMV captures. No PAN/track/keys copied.",
+  "vectors": [
+    {
+      "id": "PUBLIC-testMulti",
+      "origin": "PUBLIC_TEST",
+      "derivation": "Verbatim testMulti public vector; serial-like strings are software fixtures",
+      "hex": "E1359F1E083136303231343337EF12DF0D084D3030302D4D5049DF7F04312D3232EF14DF0D0B4D3030302D544553544F53DF7F03362D35",
+      "rootTag": "E1",
+      "nodeCount": 8
+    },
+    {
+      "id": "PUBLIC-test_empty_length",
+      "origin": "PUBLIC_TEST",
+      "derivation": "Verbatim test_empty_length public vector",
+      "hex": "E3020100",
+      "rootTag": "E3",
+      "nodeCount": 2
+    },
+    {
+      "id": "PUBLIC-metadata-subset",
+      "origin": "PUBLIC_TEST",
+      "derivation": "Non-sensitive TLVs selected verbatim from testParse; not complete capture",
+      "hex": "5004564953415F280206435F2A02064382025C00950540800080009F3303E0B8C89F34035E03009F350122",
+      "rootTag": "50",
+      "nodeCount": 8
+    }
+  ],
+  "sourceCommit": "1d887ab7bb49e617205b3ab5e509f44f96162342"
+}

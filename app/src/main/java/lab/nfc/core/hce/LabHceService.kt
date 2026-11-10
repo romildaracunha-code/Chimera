@@ -7,12 +7,12 @@ import lab.nfc.core.storage.*
 
 class LabHceService: HostApduService() {
  private val persistence=java.util.concurrent.Executors.newSingleThreadExecutor()
- private val engine=LabEngine()
+ private var engine=LabEngine()
  private var sessionId: String?=null
  override fun processCommandApdu(commandApdu: ByteArray, extras: Bundle?): ByteArray {
  val store=LabStore.get(this); val id=store.activeHce ?: return "6985".bytes()
  val session=store.sessions.value.find { it.id==id && it.result=="Em andamento" } ?: return "6985".bytes()
- if(sessionId!=id) { engine.reset(); sessionId=id }
+ if(sessionId!=id) { engine=LabEngine(session.labAid,session.labScenario=="REJECT_GET_DATA");sessionId=id }
  val timestamp=System.currentTimeMillis(); val start=SystemClock.elapsedRealtimeNanos()
  val result=engine.exchange(commandApdu,session.profile)
  val elapsed=SystemClock.elapsedRealtimeNanos()-start

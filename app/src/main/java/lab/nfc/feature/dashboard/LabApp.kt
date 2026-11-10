@@ -39,7 +39,9 @@ import lab.nfc.feature.inspector.*
 import lab.nfc.feature.sessions.*
 import lab.nfc.feature.devices.*
 import lab.nfc.feature.physical.PhysicalScreen
-@Composable fun LabApp(vm: LabViewModel,caps: Capabilities,onReader:(String)->Unit,onStopReader:()->Unit,onHce:()->Unit,onSettings:()->Unit,onExport:(Boolean,Session?)->Unit,onPhysicalExport:(String,String)->Unit) {
+import lab.nfc.feature.chimera.*
+import lab.nfc.core.chimera.ArtifactRole
+@Composable fun LabApp(vm: LabViewModel,caps: Capabilities,onReader:(String)->Unit,onStopReader:()->Unit,onHce:()->Unit,onSettings:()->Unit,onExport:(Boolean,Session?)->Unit,onPhysicalExport:(String,String)->Unit,chimera:ChimeraViewModel,onChimeraExport:(String,String,String)->Unit,onImportText:(((String)->Unit))->Unit,onAttach:(String,ArtifactRole,Boolean)->Unit,onEvidenceZip:()->Unit) {
  var page by rememberSaveablePage()
  val sessions by vm.store.sessions.collectAsStateWithLifecycle()
  val profiles by vm.store.profiles.collectAsStateWithLifecycle()
@@ -49,7 +51,7 @@ import lab.nfc.feature.physical.PhysicalScreen
  val busy by vm.busy.collectAsStateWithLifecycle()
  var selected by remember { mutableStateOf<String?>(null) }
  var compare by remember { mutableStateOf<String?>(null) }
- val pages=listOf("Dashboard","Emulator","Reader","Inspector","Terminal","Sessions","Devices","Physical")
+ val pages=listOf("Dashboard","Emulator","Reader","Inspector","Terminal","Sessions","Devices","Physical")+chimeraPages
  Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) {
  Column(Modifier.padding(16.dp)) {
  Text("NFC LAB",style=MaterialTheme.typography.headlineMedium,color=MaterialTheme.colorScheme.primary)
@@ -58,7 +60,7 @@ import lab.nfc.feature.physical.PhysicalScreen
  ScrollableTabRow(selectedTabIndex=pages.indexOf(page),edgePadding=8.dp) { pages.forEach { title -> Tab(selected=title==page,onClick={ page=title },text={ Text(title) }) } }
  if(message.isNotEmpty()) Text(message,Modifier.padding(12.dp),style=MaterialTheme.typography.bodySmall,color=MaterialTheme.colorScheme.primary)
  LazyColumn(Modifier.weight(1f).fillMaxWidth(),contentPadding=PaddingValues(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
- when(page) {
+ if(page in chimeraPages) { item { ChimeraScreen(page,chimera,vm,onChimeraExport,onImportText,onAttach,onEvidenceZip) } } else when(page) {
  "Dashboard" -> {
  item { Panel("Estado do dispositivo") {
  Text("NFC: ${if(caps.nfc) if(caps.enabled) "ligado" else "desligado" else "ausente"}")

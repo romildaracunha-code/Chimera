@@ -1,95 +1,1372 @@
-More is Less: Extra Features in Contactless Payments Break Security | USENIX
-Back to USENIX
-Sign In
-Conferences
-Attend
-Registration Information
-Registration Discounts
-Grant Opportunities
-Venue, Hotel, and Travel
-Schedule
-Technical Sessions
-Cycle 1 Accepted Papers
-Activities
-Poster Session
-Participate
-Call for Papers
-Submission Policies and Instructions
-Reviewing Model
-Ethics Guidelines
-Call for Artifacts
-Enigma Track Call for Participation
-Call for Posters
-Mentorship Event
-Instructions for Presenters and Authors
-Sponsors
-Exhibitor Services
-About
-Symposium Organizers
-Past Symposia
-Conference Policies
-Code of Conduct
-Questions
-More is Less: Extra Features in Contactless Payments Break Security
-George Pavlides,
-Surrey Centre for Cyber Security, University of Surrey;
-Anna Clee,
-University of Birmingham;
-Ioana Boureanu,
-Surrey Centre for Cyber Security, University of Surrey;
-Tom Chothia,
-University of Birmingham
-The EMV contactless payment system has many independent parties: payment providers, terminal companies, smartphone companies, banks and regulators. EMVCo publishes a 15 book specification that these companies use to operate together. However, many of these parties have independently added additional features, such as Square restricting offline readers to phone transactions only, Apple, Google and Samsung implementing transit modes and Visa and Mastercard complying with regional regulations on high value contactless payments. We investigate these features, and find that these parties have been independently retrofitting and overloading the core EMV specification. Subtle interactions and mismatches between the different companies' additions lead to a range of vulnerabilities, making it possible to bypass restrictions to smartphone only payments, make unauthenticated high value transactions offline, and use a cloned card to make a £25000 transaction offline. To find fixes, we build formal models of the EMV protocol with the new features we investigated and test different possible solutions. We have engaged with EMV stakeholders and worked with the company Square to implement these fixes.
-Open Access Media
-USENIX is committed to Open Access to the research presented at our events. Papers and proceedings are freely available to everyone once the event begins. Any video, audio, and/or slides that are posted after the event are also free and open to everyone.
-Support USENIX
-and our commitment to Open Access.
-BibTeX
-@inproceedings {307996,
-author = {George Pavlides and Anna Clee and Ioana Boureanu and Tom Chothia},
-title = {More is Less: Extra Features in Contactless Payments Break Security},
-booktitle = {34th USENIX Security Symposium (USENIX Security 25)},
-year = {2025},
-isbn = {978-1-939133-52-6},
-address = {Seattle, WA},
-pages = {7977--7996},
-url = {https://www.usenix.org/conference/usenixsecurity25/presentation/pavlides},
-publisher = {USENIX Association},
-month = aug
-}
-Download
-Pavlides PDF
-Pavlides (Prepublication) PDF
-Attend
-Registration Information
-Registration Discounts
-Grant Opportunities
-Venue, Hotel, and Travel
-Schedule
-Technical Sessions
-Cycle 1 Accepted Papers
-Activities
-Poster Session
-Participate
-Call for Papers
-Submission Policies and Instructions
-Reviewing Model
-Ethics Guidelines
-Call for Artifacts
-Enigma Track Call for Participation
-Call for Posters
-Mentorship Event
-Instructions for Presenters and Authors
-Sponsors
-Exhibitor Services
-About
-Symposium Organizers
-Past Symposia
-Conference Policies
-Code of Conduct
-Questions
-Youtube
-Privacy Policy
-Contact Us
-© USENIX
-EIN 13-3055038
+          More is Less: Extra Features in
+       Contactless Payments Break Security
+  George Pavlides, Surrey Centre for Cyber Security, University of Surrey;
+ Anna Clee, University of Birmingham; Ioana Boureanu, Surrey Centre for
+Cyber Security, University of Surrey; Tom Chothia, University of Birmingham
+    https://www.usenix.org/conference/usenixsecurity25/presentation/pavlides
+
+
+
+
+      This paper is included in the Proceedings of the
+             34th USENIX Security Symposium.
+                  August 13–15, 2025 • Seattle, WA, USA
+                               978-1-939133-52-6
+
+
+                    Open access to the Proceedings of the
+           34th USENIX Security Symposium is sponsored by USENIX.
+          More is Less: Extra Features in Contactless Payments Break Security
+
+                              George Pavlides                                              Anna Clee
+           Surrey Centre for Cyber Security, University of Surrey                   University of Birmingham
+                              Ioana Boureanu                                              Tom Chothia
+           Surrey Centre for Cyber Security, University of Surrey                   University of Birmingham
+
+
+                         Abstract                                    We look at how the existing EMV framework has been
+   The EMV contactless payment system has many indepen-           used to allow for new features that are not fully in the EMV
+dent parties: payment providers, terminal companies, smart-       specifications, but rather retroactively fitted in or overloaded.
+phone companies, banks and regulators. EMVCo publishes            By looking at an offline terminal, we are also able to distin-
+a 15 book specification that these companies use to operate       guish between checks made by the terminal and the backend.
+together. However, many of these parties have independently       Through testing to understand their behaviour, building for-
+added additional features, such as Square restricting offline     mal models to include this found behaviour and checking
+readers to phone transactions only, Apple, Google and Sam-        how these extra features interact with one another, we find
+sung implementing transit modes and Visa and Mastercard           numerous attacks and flaws caused by these extra features.
+complying with regional regulations on high value contact-           Extra Features: Cardholder verification methods, Tran-
+less payments. We investigate these features, and find that       sit, Tap and PIN, and Offline Readers Mobile-phone pay-
+these parties have been independently retrofitting and over-      ments have replaced PIN authentication with a Consumer
+loading the core EMV specification. Subtle interactions and       Device Cardholder Verification Method (CDCVM) that uses
+mismatches between the different companies’ additions lead        a fingerprint or faceID. Visa define their implementation in
+to a range of vulnerabilities, making it possible to bypass       the EMV specification, with a flag in the protocol that indi-
+restrictions to smartphone only payments, make unauthenti-        cates if CDCVM has been performed. Mastercard does not
+cated high value transactions offline, and use a cloned card      include details of their implementation in the EVM specifica-
+to make a £25000 transaction offline. To find fixes, we build     tion. Past work found that Mastercard checked the CDCVM
+formal models of the EMV protocol with the new features we        status using an undocumented proprietary field in the proto-
+investigated and test different possible solutions. We have en-   col [52]. We find that this is a backend check by Mastercard,
+gaged with EMV stakeholders and worked with the company           and hence this security check is absent for offline terminals,
+Square to implement these fixes.                                  which contributes to our attacks.
+                                                                     Transit mode payments have been designed by Apple,
+                                                                  Google and Samsung as a fast way to pay low values on
+1   Introduction                                                  transport systems without the delay of unlocking a phone.
+                                                                  How different phones detect transit readers is not publicly
+No other payment network comes near the scale or processing       documented. Past work found that Apple use a system called
+ability of EMV1 . Its standardisation body, EMVCo, has            Apple Enhanced Contactless Polling [52]. We look at how
+issued EMV specifications stretching across 15 books2 . In        this feature is implemented on GooglePay and find that, for
+the last three years the market of payment readers doubled        Visa, it looks for a field in the Terminal Transaction Quali-
+in size to $33.5 billion3 with providers such as Square and       fiers (TTQ) that indicates that the terminal supports “offline
+SumUp creating new, portable EMV terminals for the general        authentication for online authorizations”. The EMV spec-
+public. EMV companies have added a range of new features,         ification defines this as a general flag that can be used by
+full details of which are only found in private, proprietary      any reader that may go offline. We find that some Square
+documents available only to those with operating licences, if     shop terminals use this flag as defined in the specification. So
+at all. Recent attacks, reverse-engineering work and formal       Google’s decision to overload the meaning of this field as a
+analyses (e.g., [40, 42, 44, 45, 52]) of EMV uncovered some       way to detect transit readers means that GooglePay can be
+details of these closed EMV specifications, and show that, as     used on offline Square readers without any customer authenti-
+features are added, the number of attack vectors increases.       cation, bypassing the need to unlock the screen.
+
+
+
+USENIX Association                                                                   34th USENIX Security Symposium          7977
+   Regulators in certain countries, such as the UK Payment         backend could make and seeing what is consistent with the
+Services4 require that cards are inserted into the terminal for    behaviour we observed from terminals. Square has now
+PIN verification. Meanwhile, in most of the EU, “Tap-and-          implemented our recommended fixes.
+PIN” allows contactless plastic cards to use a PIN. The EMV
+                                                                   Contributions:
+specification does not explain how “Tap-and-PIN” and “non-
+                                                                     • We investigate and explain how a range of out of specifi-
+Tap-and-PIN” differ. We uncover how Visa and Mastercard
+                                                                       cation EMV features work.
+have implemented these regulations, finding that Mastercard
+                                                                     • We find a range of attacks against these features.
+uses an undocumented, backend check, and that it is possible
+                                                                     • We show that these flaws are a systemic issue often due
+to bypass these regulations on Visa, performing a Tap-and-
+                                                                       to interactions between undocumented ad-hoc features.
+PIN transaction with a non Tap-and-PIN card.
+                                                                     • We suggest and formally verify protocol fixes, some of
+   Offline capable terminals can accept EMV payments when
+                                                                       these have already been implemented by Square.
+not connected to the Internet, and later, when the terminal
+reconnects, the payment information is sent to the bank for
+approval. Due to different business rules in different coun-       2   Background & Related Work
+tries, whether plastic cards are allowed in contactless offline
+transactions varies. For the US Square Terminal this is al-        We now present main EMV protocols and features, with em-
+lowed 5 , but in the UK only mobile wallets are allowed during     phasis on online vs. offline EMV, and customer validation.
+offline transactions. This might help reduce fraud because a       Appendix G contains a list of EMV acronyms.
+mobile wallet can perform CDCVM, authenticating the user.
+We investigate how Square restricts terminals to mobile wal-
+lets, and find that this is based on detecting the presence of     2.1 EMV Parties & Online/Offline Executions
+the proprietary Value Added Services (VAS) loyalty card            The EMV protocols are payment protocols designed to secure
+system, which is implemented on smart phones. We show              and authenticate the transaction, but also to keep everything
+that this can be bypassed to get plastic cards accepted offline,   interoperable, allowing for many variations of set up. There
+by replaying a phone’s response to VAS. Combined with the          are four main parties: payment devices which can be tra-
+undocumented way in which Mastercard checks for CDCVM,             ditional bank-cards, that we refer to as plastic cards, and
+this makes it possible to perform an over-the-limit (OTL) at-      mobile devices which are phones, smartwatches, etc. running
+tack against offline Mastercard, which is rejected later when      the protocol via a mobile-payment app such as ApplePay,
+the terminal goes online (after a thief may have left a shop       GooglePay or SamsungPay with a card or several registered
+with their fraudulent purchase).                                   on this app. We will refer to these generally as the payment
+   The above features and regulations are not considered in        device. An essential difference between the two types is that
+the EMV specifications. By relying on retrofitting and over-       mobile devices have Consumer Device Cardholder Verifica-
+loading for accommodating features and regulations, EMV            tion Method(s) (CDCVM) (e.g., via a PIN, a fingerprint or
+stakeholders open new attack vectors without understanding         FaceID verified by the device), whereas this verification of
+the overall effect on the whole system. We look at a handful       cardholders cannot be done by plastic cards themselves, so
+of these extra features, and find numerous attacks, showing        instead can be performed by the next party, the reader. Points
+this is a systemic oversight. The use of ad-hoc, proprietary ex-   of Sale (PoS), referred to as (EMV) readers or terminals can
+tensions means that EMV loses the security it gained through       perform authentication of the cardholder by requesting a PIN
+carefully designing the protocols in the core specification.       be inputted to the reader. Then, there are the banks that issue
+   We proposed fixes for the attacks we found by considering       the cards to be used via the payment device; we refer to these
+all the features from the different companies together, which      simply as the Bank 6 . Finally, there are the payment networks,
+we did using a formal model. The use of formal models,             represented by the card providers, e.g., Visa, Mastercard.
+checked with the Tamarin prover, gives us some confidence             Every card has cryptographic data assigned to it upon is-
+that we have avoided the kind of design mistakes we found in       suance, which proves it is a valid card from its Bank. This
+the features. Building formal models forces us to write a rule     includes a symmetric key KM shared with the Bank, a private-
+for every message, which ensures that we have considered           public key pair and a bank-signed digital certificate on the
+how every field in every message is processed. While we did        public key. This public key is retrieved by the terminal dur-
+not discover the attacks presented here as a result of running     ing the protocol execution, whichever the protocol type is
+the Tamarin prover, we did spot many of the attacks while          (Visa, Mastercard, etc.). During the protocol, the payment de-
+building the formal models due to the rigorous, complete           vice packages into what is called an Application Cryptogram
+consideration of the protocol that this requires. There are no     (AC) its view of the transaction. This includes a field called
+public details on the backend checks made on EMV transac-          the Issuer Application Data (IAD), which has proprietary
+tions, so we used the formal model to help us reverse engineer     descriptions consumed by the bank that issued the card and
+the backend system by testing different possible checks the        the payment network. The IAD is also a backend tool that de-
+
+
+
+7978    34th USENIX Security Symposium                                                                      USENIX Association
+scribes7 which type of payment device did the transaction, in      2.2 On-Device Customer Validation (CDCVM)
+which conditions (e.g., transit), if CDCVM was used, etc. The
+Application Cryptogram (AC) is a MAC that only the bank            EMV transactions with contactless cards remain entirely con-
+can verify, and is used when the bank determines whether to        tactless (needing no cardholder input) given the following
+approve a transaction. The terminal can be either: online (i.e.,   spending limits are not exceeded: a limit per transaction (e.g.,
+connected to the Internet), offline (i.e., disconnected from the   £100 in the UK) and/or cumulative limits (e.g. £200). If
+Internet), or –as some PoS onboard transport vehicles would        either is exceeded, then the transaction generally requires
+be – offline for online (i.e., likely having an Internet con-      Cardholder Verification (CV) mechanism.
+nection, but performing a transaction as if they were offline         The terminal gets from the payment device information
+just in case they lose connectivity). During the protocol, the     about the CV Method(s) (CVM(s)) it supports, as well as
+terminal sends to the payment device its online/offline nature.    the conditions in which these rules apply. For plastic cards,
+                                                                   the CVM is generally such that the terminal requests the
+   Offline PoS. If the terminal is offline, elements of the
+                                                                   card’s Personal Identification Number (PIN) be input into the
+transaction as seen by the payment device are packaged by
+                                                                   terminal; for online readers, this PIN is sent inside the AC
+the payment device into the Signed Dynamic Application
+                                                                   to the bank for verification, whereas for offline readers it is
+Data (SDAD) – a signature by the card which the terminal
+                                                                   checked against the card’s persistent memory. In contrast to
+can verify. The payment device will send the SDAD and
+                                                                   this, on mobile devices, CV can be done by what is called
+the AC to the terminal for both the Visa and the Mastercard
+                                                                   Consumer Device Cardholder Verification Method (CDCVM),
+protocols. The offline terminal must verify this SDAD and
+                                                                   e.g., the user’s fingerprint or face is scanned by a mobile app.
+other data sent by the payment device during the protocol
+                                                                   So, in a CVM negotiation between the payment device and
+(e.g., expiry date) and accept or decline the payment based
+                                                                   the terminal, a contactless payment above the contactless limit
+on this information. We describe how the certificates and
+                                                                   may be accepted by a terminal without the terminal doing any
+SDAD are decoded in the appendix, and give examples of
+                                                                   CV, as the CV was delegated to the payment device.
+their contents. This verification step ensures that the payment
+device’s impression of the protocol’s execution (e.g., a nonce
+exchange) is in line with that of the terminal. If the terminal    2.3    The Visa & Mastercard Protocols
+is offline, the protocol finishes between the payment device
+and the terminal at this point; if the terminal’s checks are       Visa’s Protocol. This protocol, with the EMV fields most
+successful, the cardholder leaves the merchant’s premises          relevant to this paper explained, is depicted in Figure 1. First,
+and be deemed to have paid for goods or services.                  the payment device (on behalf of the card) and the terminal
+    When the offline terminal reconnects to the Internet (which    depicted in the figure as the reader, negotiate if they are
+may be days after the transactions), the terminal sends the        to run Visa, Mastercard, etc. via the “SELECT” messages.
+ACs of all offline transactions to the corresponding banks,        Then, the data needed for the transaction is requested by
+accompanied by data describing the transaction. The bank           the payment device in the Processing Options Data Object
+(and the payment networks) do checks on the AC and the             List (PDOL) (e.g., amount to pay, a nonce generated by the
+terminal information, and examine whether there are funds in       terminal denoted UN, etc.). The terminal sends this data in the
+the bank account of the card or fraudulent activity linked to      Get Processing Options (GPO) message, a field of note in this
+it, before authorising/declining the payment.                      is the TTQ. The TTQ informs the payment device whether the
+                                                                   terminal is online, offline or ‘offline for online’ and whether
+   Online PoS. If the terminal is online, for Visa, the payment    a Cardholder Verification Method (CVM) is required for this
+device will not send it the SDAD, but only the AC. For both        transaction (e.g., because it is over the contactless limit).
+Mastercard and Visa, the AC will be forwarded by the terminal          The payment device replies to the GPO message with a
+to the Bank in real time; the online terminal will authorise the   series of EMV fields and data, of which we mention: the
+payment if the bank and payment network approved it.               Card Transaction Qualifiers (CTQ) – a field saying how the
+   “Offline for Online” PoS. Readers with a transport Mer-         payment device can comply with the TTQ requirements (e.g.,
+chant Category Code (MCC) advertise to be “offline for on-         if it did on-device authentication (CDCVM) or not when the
+line”. In this mode, readers may be connected to the Internet      TTQ asked for it); the Application Interchange Profile (AIP) –
+or not. The payment device sends to these readers the SDAD         a field describing the capability of the payment device (e.g., if
+and the AC, but the terminal is not mandated to check the          it is capable of on-device authentication or not, which mobile
+SDAD, if it is online and can verify the AC with the backend.      phones are likely to be, whereas “plastic” cards are not); and a
+Depending on the connection and configuration of the reader,       nonce NC carrying the randomness the payment device adds to
+from here on, it may behave like an online terminal or like an     the cryptographic data (i.e., the AC, SDAD) in this particular
+offline reader: i.e., forward the AC to the Bank in real time or   execution. Next, the terminal requests data from the payment
+not, receive payment-authorisation results from the bank or        device (RECORDS), which includes the certificates of the
+make its own decisions w.r.t. payment authorisation.               card, these are checked by the terminal. The payment device
+
+
+
+USENIX Association                                                                    34th USENIX Security Symposium          7979
+                                                     AIP includes
+                                                     “I can/cannot do user
+                                                    authentication”
+                                                                                         CTQ includes
+              Bank
+                                                                                          “CV= customer-validation performable
+                                                                                         at PoS”
+                     TTQ includes                                                          or
+                     •   EMV mode vs DDA mode                                            “CDCVM =on-device authentication
+                       ( will contact the bank/no                                        performed”
+                         SDAD vs send me SDAD)
+                                                                                         The CTQ is also inside SDAD.
+                     •   CV = customer validation
+                         required
+                                                                                                           IAD includes
+                     •   offline for online (I will                                                        ◼ Format (plastic, mobile),
+                         contact the bank but send                                                         ◼ Transaction details such as the
+                         me SDAD) // transport                                                              CVR (Card Verification Results),
+                         readers                                                                            which is a copy of CDVCM bits of the
+                                                                                                            CTQ.
+
+                            MCC =                                                                          The IAD is available to the PoS, and to
+                            “I am a food store”                                                            the banks via the AC.
+                           …
+                           4111 (local commuter
+                           transport) or
+                           4131 (bus lines)
+
+
+                           AC (… IAD), … ATC, MCC, …
+                                                                                               The ICC = integrate-circuit certificate/ card
+                           Authorisation …                                                     certificate includes the AIP
+
+
+
+
+  Figure 1: Visa’s PayWave Protocol. (Most-relevant EMV fields in bold face and explained; optional messages in brackets).
+
+
+sends the requested data including the AC and, if offline or                 information), and the CVM List. The latter is comparable
+offline for online, the SDAD too. The AC contains lots of                    in purpose to the CTQ in Visa, declaring payment device’s
+transaction data to depict the payment device’s view of the                  different CV abilities.
+exchange. See Fig. 1 for all that is contained in the AC. Worth                 The terminal will pick one of the CVMs advertised by the
+highlighting is the IAD: copies of parts of the CTQ (notably                 payment device and return its choice to the payment device
+a field called Card Verification Results (CVR) which says if                 as the CVM Result. The SDAD in Mastercard contains more
+the payment device performed on-device authentication or                     EMV Fields than in Visa: e.g., the SDAD now includes the
+not) appear in a part of the AC called the IAD, which the                    full Card Risk Management Data Object List 1 (CDOL1) data
+banks should check. We decoded SDADs (see Appendix D),                       and the AC. For Mastercard, the AIP, which indicates the
+and found that the SDAD contains the Card Authentication                     payment device’s capabilities, is inside the authenticated Inte-
+Related Data (CARD), holding the card’s nonce and a copy                     grated Circuit Card Certificate (ICCc). Mastercard-compliant
+of the CTQ. This should be verified, offline, by the terminal.               readers always check the certificates and the SDAD, and if
+   Finally, the terminal sends via the secure channel the details            these are correct, they send (when online) the payment device-
+of the transaction to the bank and payment networks (e.g.,                   issued AC, containing the payment device-issued IAD and
+Visa). This includes but is not limited to details of the terminal           its own transaction data to the issuing bank and the payment
+e.g., Merchant Location, Merchant Category Code (MCC)                        network. The bank will verify the AC, and the payment net-
+denoting if the terminal is a retail shop or a transport terminal            work (e.g, Visa, Mastercard) will verify the IAD. If these are
+(e.g., MCC 5732 is for electronics stores, 4111 is for local                 correct, the payment will be authorised (online).
+transport), etc. for anti-fraud checks and fee charging [56].                   Transit Mode for Mobile Contactless EMV. “Transit
+   Mastercard’s Protocol. We diagrammatically give Master-                   mode” is a way in which mobile payment devices and applica-
+card’s protocol, called PayPass, in Figure 8 (in Appendix F,                 tions (e.g., ApplePay, SamsungPay, GooglePay) can operate
+due to space), detailing particularly the elements most perti-               during contactless EMV transactions, without complying to
+nent here, and differences from the Visa protocol. Some of                   standard CDCVM rules, in order to increase user-friendliness.
+the EMV fields Mastercard has are in common with Visa’s                      To facilitate usability when passing through a transport barrier,
+protocol (e.g., Application File Locator (AFL) – the index of                e.g., in the London Underground, the CDCVM requirement
+all the static “records” available on the payment device, the                is bypassed when the mobile payment device identifies it is
+AIP – the payment device’s capabilities), but these fields are               transacting with a “transport terminal”. The mobile device
+consumed in a different order to Visa’s protocol. There are                  allows a payment without the device being unlocked, and
+also differences to Visa. For instance, the terminal uses the                without the user performing CDCVM validation, i.e., input
+AFL to request what are called “Track 2” (the user’s account                 their payment app PIN, present their FaceID/fingerprint.
+
+
+
+7980    34th USENIX Security Symposium                                                                                                   USENIX Association
+Figure 2: Our Methodology for Offline-EMV Attacks (arrows form a relay-based MiM attack; red arrows carry active-MiM
+changes; parts in the dashed box – optional)
+
+
+2.4    Related Work                                                3     Threat Model & Attacks’ Methodology
+Galloway et al. [49] were the first to bypass the contactless-     3.1    EMV and Proprietary Regulations
+limit authentication by setting the “CVM required bit” in the
+TTQ to 0, and the “CDCVM bit” in the CTQ to 1; this was            Regulations on Payment Devices and Readers. There are
+done against UK cards. A Galloway-like attack was also             many restrictions in payment regulations8 . Some payment
+performed on Swiss contactless cards by [42]; business rules       devices do not work with certain readers or in specific con-
+differentiating UK cards from Swiss ones were essential, but       ditions (e.g., SamsungPay on some transport readers). And,
+this was not known at the time; Radu et al. [52] realised it       terminals accept specific cards and devices (e.g., no Amex,
+and dubbed the Swiss behaviour “Tap-and-PIN”. We finally           no SamsungPay): e.g., Square’s website says that, in Europe,
+uncover what this in EMV is and how this works.                    the Square Terminal works offline, contactless, only with the
+   Yunusov et al. [57] [55] extended the Galloway attack, by       mobile-wallets ApplePay and GooglePay, using CDCVM9 ,
+using a compromised terminal, which is out of our scope.           not with plastic cards or other devices/wallets. Retailers can
+Radu et al. [52] also extended the Galloway attack to make         set a limit for offline payments, of their choice; the Square
+an iPhone think it is in transit mode and thus incorrectly does    Terminal can be set to a maximum of £25,000 offline.
+payments without user-authentication. They also described             Regulations on Terminals, Banks and the Payment Ser-
+details of the proprietary IAD. For Mastercard, the reader         vice and networks. EMV enforces transaction limits for
+also gets an authenticated copy of the IAD inside the SDAD.        contactless payments without user authentication, varying by
+For both Visa and Mastercard, the IAD is sent by the payment       region (e.g., £100 in the UK, C150 in the EU). Implementa-
+device to the terminal in the clear, and the issuer gets the IAD   tion of EMV beyond this limit differs by country. In most of
+authenticated inside the AC. So, issuers can reliably check        Europe, PINs can be entered without inserting the card into
+the IAD for its inner CDCVM data and operation modes               the terminal, while in the UK, transactions over these limits
+(e.g., if the payment was performed in transit mode or not,        require inserting the card, moving from the contactless to the
+and even if it was done with an ApplePay, a SamsungPay, a          contact protocol. More details are in Section 4.2.
+GooglePay, etc.), as well as check it against the MCC and
+other transaction data sent by the payment device and the
+terminal. This has not occurred in prior CDCVM- or transport-
+                                                                   3.2    Threat Model, Attacks’ Phases & Victims
+mode based online attacks by [42, 49, 52]. We find this is still   We consider, honest payment devices, terminals, banks and
+not the case, even when our attacks modify more EMV data.          payment networks. Corrupting a payment device or bank is
+   Recently, Basin et al. [41] experimented with making an in-     considered hard and the EMV system provides no protection
+correct Mastercard transaction by altering the card-certificate    against this. While the terminals are built to be tamper-proof
+validation process on the terminal. An attack we present           they may be corrupted but this can be traced back to the
+against SamsungPay and Square is similar in nature.                owner10 . We consider a Dolev-Yao [47], Man-in-the-Middle
+   There is also a history in the formal analysis of EMV.          (MiM) protocol attacker, which can replay and alter messages,
+Formal Dolev-Yao [47] models of EMV in verification tools          while controlling the communication between the card and
+such as ProVerif [43] or Tamarin [51] include [42, 45, 46, 52].    the terminal, for any possible combination of sessions, but
+In this work, we enhance the models of [52] in line with the       without performing cryptographic attacks against the signa-
+attacks and countermeasures advanced herein.                       ture/MACing primitives used in the protocols. The attacker
+
+
+
+USENIX Association                                                                   34th USENIX Security Symposium        7981
+has access to an honest payment device and terminal, and           available in the UK without having a registered company.
+could also have and use a stolen payment device.                   Tap-and-PIN functionality: SumUp Air (one registered in Ro-
+    We say a transaction is correct if all EMV requirements        mania and one in the UK), SumUp Solo (registered in the UK),
+and regulations are observed. An EMV attack is a series            Square Reader (registered in the UK) and Square Terminal
+of actions by our attacker that result in an incorrect EMV         (registered in the UK). The aforementioned terminals are man-
+transaction being authorised. Working with offline readers,        ufactured by popular terminal companies and are available
+we say that an offline-EMV attacks has two phases:                 to the general public without having a registered company.
+1. reader-offline phase – the transaction is incorrect but au-     We believe that four readers over two distinct providers and
+thorised whilst the reader is offline;                             countries are enough to understand and conclude how the
+2. online-checks phase – the transaction is incorrect, and it      Tap-and-PIN functionality is enforced.
+is also authorised when the reader goes online.                       Much of this work is similarly to [49, 52], on relay-based
+Importantly, both phases of offline-EMV attacks are them-          MiM. The main difference is that, since we work with offline
+selves attacks in their own rights, since payment authorisa-       readers, some of our MiM have two phases; this is shown
+tions take place when they should not.                             in Figure 2. This figure also shows that, in some attacks
+    There are several dimensions to our attacks: i.e., the vic-    (ATTACK 1-4), we use the full MiM, whereas in others (AT-
+tims , the underlying cause (e.g., non-compliance to specifi-      TACK 10), we utilise a Host-based Card Emulation (HCE).
+cation, or even flaw in the specification), if it is EMV-wide      A similar figure for comparison for online-EMV attacks, is
+or company-specific, etc. All of these are summarised in           given in Figure 7 in the appendix.
+Figure 5. There are several such dimensions that charac-              Note. In all our attacks, the shop assistant will see our
+terise ours attacks. One full characterisation, which is also      phone (payment device emulator) paying at a terminal, so it
+backed by our formal models (see Sections 5 and 8) is given        will all look like an inconspicuous, normal mobile payment.
+by the following three dimensions: 1) breach of regulations
+(relating to Tap-and-PIN or offline payments); 2) “free lunch”
+nature (when the transaction is accepted offline, and rejected     4     Testing Features Centered on Plastic Cards
+when the terminal goes online, so the attacker gets a “free
+lunch” where they have received goods/services without pay-        In this section, we look at how Square stops offline payments
+ing, leaving the merchant out of pocket); 3) “over-the-limit”      from plastic cards and how Visa and Mastercard stop some
+illicit payment, offline or online, (when an un-authorised con-    plastic cards from doing Tap-and-PIN transactions, leading
+tactless payment is accepted for any amount, especially over       to 4 attacks. Neither of these features is detailed in the EMV
+the contactless limit). Each of our attacks falls in one, two or   specification, so our work is informed by experiments and
+all of these categories.                                           past work as shown in the mind-map in Figure 3.
+
+
+3.3    Our Tools and Methodology                                   4.1    Offline restrictions to smart phones
+We used a series of well-established RFID and EMV toolk-           The Feature: The first functionality we look at is the Square
+its. We used a Proxmark3 RDv411 , a programmable toolkit           Terminal’s restriction of offline, contactless transactions to
+with EMV/RFID antennas, to: (1) sniff our transactions to          only work with mobile phones, blocking plastic cards. We
+get so-called “EMV traces”, to understand protocols better         note that, the EMV specification does not define how to
+(e.g., in Section 6); (2) emulate an EMV reader against a vic-     differentiate between plastic and mobile payments.
+tim payment device (Section 4 and Section 6). We built and            Our Experiments and Results: To investigate Square
+used Android-based payment device emulators (Section 4             Terminal’s distinction, we captured a trace of a successful
+and Section 6). We used both of these, alongside numer-            iPhone transaction and a failed plastic card attempt. The failed
+ous cards (Visa and Mastercard, issued in various countries),      transaction revealed the Square Terminal sent a “SELECT
+mobile-wallets on phones (various OSs and models of Sam-           OSE.VAS.01” message instead of the standard “SELECT
+sung, Nokia, Apple), readers (SumUp Air 12 , SumUp Solo13 ,        2PAY.SYS.DDF01”. We discovered this is part of the VAS
+Square Reader14 , Square Terminal15 registered in the UK           protocol, which we then explored.
+and in Romania) to do reverse engineering (e.g., Section 4.2,         Analysis: “Value Added Services17 ” (VAS), also known as
+Section 6, Section 7) and mount attacks (Sections 4 and 6).        “Smart Tap18 ” by Google, is a proprietary protocol for adding
+Choice of Terminals. The terminals used for each of the            loyalty cards to mobile wallets. Official documentation is
+main EMV functionalities investigated are summarised below,        only available under NDA. However, reverse engineering
+along with the motivation behind choosing them.                    efforts by Grayson Martin19 and Kormax20 , and information
+Offline functionality: Square Terminal (registered in the UK).     from SpringCard21 and ID TECH22 , provide some details.
+Square is one of the most widely used terminal providers           Using these sources, we describe the protocol, with details in
+16 and Square Terminal is the only offline-capable terminal        Appendix C, though it is not central to our research.
+
+
+
+7982    34th USENIX Security Symposium                                                                      USENIX Association
+                                                                                                         ATTACK 2: non-Tap-and-PIN
+                                                                                                         Visa card accepted over the
+                                                         EXPERIMENTS: Square
+                                                         Terminal, offline, does not
+                                                                                                          limit tap-and-PIN Section
+                                                                                                                      IV.B
+                                                                                                                                                              Plastic Cards
+                                                           check CTQ in SDAD
+
+           RELATED WORK:
+                                                               Section IV.C                                                                                      Results
+         Over-the-limit attacks on                                                                                        ATTACK 3:
+                   Visa                                                                                            Square Terminal wrongly
+                    [40]                                                                                           accepts plastic VISA over                           NEW CONCEPT EMV:
+                Section II                                     NEW CONCEPT EMV:                                     the limit (later rejected                          For MC: no good way to
+                                                                Visa devices encode                                  online) Section IV.C                             check if CDCVM auth has
+                                                             Tap-and-PIN requirement                                                                                  been done offline, only in
+                                                              in the CTQ Section IV.B                                                                                 proprietary IAD Section V
+                   EXPERIMENTS: How is it
+                   decided if Tap and PIN is
+                   done or not? Section IV.B
+                                                              NEW CONCEPT EMV:
+                                                             MC process Tap-and-PIN
+                                                                                                                                        FORMAL MODEL
+                                                               requirement at the
+                                                                                                                                           Section V
+                                                              backend Section IV.B
+       EXPERIMENTS: Tests on
+       the Square Terminal, UK
+        specifications/firmware,
+              Section IV.A                     NEW CONCEPT SQUARE:
+                                               Square Terminal, offline, is
+                                                                                                                                                                      FIXES FOR OFFLINE
+                                               using VAS to detect mobile
+                                                                                                                                                                     EMV IN GENERAL CASE
+                                                applications Section IV.A                                                                   ATTACK 4:
+                                                                                           ATTACK 1: Square                                                                Section V.A
+        RELATED WORK:                                                                                                                Square Terminal wrongly
+         VAS details from                                                               Terminal wrongly accepts
+                                                                                                                                        accepts plastic MC
+        github, Section IV.A                                                           plastic VISA and MC under
+                                                                                                                                    over the limit (later rejected
+                                                                                          the limit Section IV.A
+                                                                                                                                       online) Section IV.D
+
+
+                 RELATED WORK:
+                                                                      EXPERIMENTS: Square
+                On MC only the IAD
+                                                                     Terminal, offline, does not
+              encodes if authentication
+                                                                     check the CVR inside the
+            (CDCVM) done. [52], Section
+                                                                      IAD for MC Section IV.D
+                       II.C.b
+
+
+
+
+                                                 Figure 3: Mind-map of the Main Results from Sections 4 and 5
+
+
+   The plastic card responded to the Square Terminal’s “SE-                                                  understand and parse the messages, Square’s use of just the
+LECT OSE.VAS.01” with an ISO 7816 error, indicating the                                                      first exchange of VAS messages to detect a smart phone is
+service was unavailable, ending the transaction. In success-                                                 novel, as is our attack against this.
+ful iPhone transactions, the phone sent its VAS capabilities.
+Since the Square Terminal did not consume the data sent in
+VAS, and VAS is only supported on smartphones, we specu-                                                     4.2          Tap-and-PIN vs Non-Tap-and-PIN Cards
+lated it used “VAS SELECT” to identify mobile wallets.
+   To test this, we recorded a legitimate VAS response from                                                  The Feature: Section 2.2 explained that over-the-limit con-
+an iPhone (with a Visa card) and added it to our relay-based                                                 tactless transactions with plastic cards require PIN validation.
+MiM attack in Figure 2: concretely, our card-emulator sent                                                   However, PIN validation for contactless EMV varies geo-
+this VAS reply to the Square Terminal, while we relayed the                                                  graphically due to different rules and protocols. In countries
+rest from the plastic card, leading to our first attack:                                                     like Spain, France, and Germany, over-the-limit transactions
+                                                                                                             remain contactless, with the PIN entered without card in-
+ ATTACK 1: We can bypass Square’s restriction offline to                                                     sertion (“Tap-and-PIN”, as coined by Radu et al [52]). In
+ only mobile devices, by replaying a recorded VAS response,                                                  the UK and Singapore, over-the-limit transactions require
+ then relaying messages from a plastic card.                                                                 card insertion and PIN entry, known as contact/chip-and-PIN
+   Discussions: ATTACK 1 succeeds during the “reader-                                                        (“non-Tap-and-PIN”, as coined by Radu et al [52]).
+offline phase”. When the Square Terminal goes online, under-                                                    Our Experiments: We aimed to understand and poten-
+the-limit (UTL) payments are approved, indicating no addi-                                                   tially bypass these geographic restrictions. To carry out the
+tional checks to prevent plastic card use.                                                                   experiments, we used Tap-and-PIN cards from Romania,
+   While not particularly dangerous we rate this as a low                                                    Turkey, Germany and France, and non-Tap-and-PIN cards
+impact attack, since plastic cards can make online payments.                                                 from the UK. We also used the terminals mentioned in Sec-
+However, we note that it breaches Square Terminal intent                                                     tion 3.3 in online-mode. The reader registered in Romania
+to block offline plastic-card transactions in certain regions,                                               does Tap-and-PIN and the readers registered in the UK do not
+necessary to comply with financial regulations23 ; so, Square                                                do Tap-and-PIN. First, we sniffed and analysed EMV traces
+Terminal does not adhere robustly to regulations that are there                                              produced by combinations of readers and card types.
+to mitigate the added risk of offline payments, which typically                                                 Results and Analysis for Mastercard Tap-and-PIN: We
+require user authentication (e.g., CDCVM).                                                                   found that all Mastercard cards performed Tap-and-PIN with
+   While the past work on reverse engineering VAS helps us                                                   the Romanian reader, but none did with the UK readers. In-
+
+
+
+USENIX Association                                                                                                                              34th USENIX Security Symposium                     7983
+specting traces showed that the only differences where in           the TTQ (because they were working in the UK with non-
+fields unrelated to Tap-and-PIN, which we would expect to be        Tap-and-PIN cards), whereas Basin et al. [42] do not need to
+different between traces (i.e., the nonce, time, AC & SDAD).        clear this bit (because they were working in Switzerland with
+   From EMV specification, two EMV fields, Terminal Veri-           a Tap-and-PIN card).
+fication Results (TVR) and Cardholder Verification Method
+(CVM) results, could indicate if Tap-and-PIN is required. The
+TVR field reflects the terminal’s transaction status, while the     4.3    Offline Over-the-Limit Visa Transactions
+CVM fields shows the verification method used.                      The Feature: This is offline mode for Visa, specifically the
+   Looking at traces, in a Tap-and-PIN transaction, the fact        transaction/card data Visa includes in the SDADs, such as to
+that a PIN is entered is reflected in the TVR and CVM results.      know what attacks can be caught by an offline reader.
+However, we experimented with these fields and found that              Our Experiments & Analysis: We experimented with
+the card does not refuse to complete an over-the-limit transac-     combining ATTACKs 1 and 2, and separately with a Tap-and-
+tion, even when the TVR and CVM results indicate no PIN             PIN capable plastic card, to try to get the Square Terminal to
+was entered. So, Mastercard does the checks for Tap-and-PIN         do an over-the-limit Tap-and-PIN transaction offline, however,
+purely at the backend, and not on the card. This will also          after finishing the exchange of messages, the terminal always
+be a contributing factor to us being able to mount an offline-      rejected the transaction, without bringing up the PIN interface.
+EMV, over-the-limit attack for Mastercard (i.e., ATTACK 4),         Therefore, we conclude that the Square Terminal has been
+discussed later in Section 4.3.                                     programmed to always reject Tap-and-PIN in offline mode.
+   Results and Analysis for Visa Tap-and-PIN: Unlike Mas-              We tried combining our ATTACK 1 VAS-replay-relay with
+tercard, non-Tap-and-PIN Visa cards would not perform high-         the over-the-limit, online attack of Galloway and Yunusov
+value Tap-and-PIN transactions with the Romanian EMV                [49], in order to do unauthenticated high value Visa transac-
+reader. Past research suggested non-Tap-and-PIN cards only          tions offline. Galloway and Yunusov concluded that their
+do contactless transactions below the limit [48], but we found      TTQ-CTQ-flipping attack only works for Visa online, as of-
+this was false: if the “CVM required” flag is set in TTQ, the       fline Visa adds CTQ-date signed inside the SDAD. How-
+cards reply with a 6984 error code (“referenced data reversibly     ever, our investigation of the SDAD (detailed in Appendix D)
+blocked24 ”), rather than providing a payment AC.                   shows that the SDAD actually includes a copy of the CTQ that
+   We then used our online-MiM method (see Figure 7) to             is included in the Card Authentication Related Data (CARD)
+unset the “CVM required” flag. Comparing the traces of the          field. So, we experimented, in offline mode, with changing
+Tap-and-PIN cards and the non-Tap-and-PIN cards (with this          the CTQ and leaving the CARD field untouched, as follows.
+“CVM required” flag unset), we found a difference in the CTQ           1. Reader-Offline Phase. We set the Square Terminal in
+field. The Tap-and-PIN cards set the bit called “Online PIN         offline-mode and set it up for a high-value transaction. Then,
+required” (Byte 1 Bit 8), while the non-Tap-and-PIN cards           we run the MiM-relay script between a plastic card and the
+do not. So, we set our relay to clear the “CVM required” bit        Square Terminal updating it to unset the “CVM required" bit
+inside the TTQ, and also set the “Online PIN required” bit in       of TTQ (byte 2, bit 7) and set the “CDCVM performed" bit
+the CTQ. In this case, the reader asks for a contactless PIN        in CTQ (byte 2, bit 8). This caused the transaction to appear
+from the “non-Tap-and-PIN” card and completes an over-the-          as if it was verified on a mobile device, and makes the offline-
+limit transaction as Tap-and-PIN. So, we mount this:                mode Square Terminal accept the high-value payments with
+ ATTACK 2: For Visa and all online EMV terminals, we can            plastic cards, without any sort of verification26 .
+ perform a Tap-and-PIN transaction with a non-Tap-and-PIN              2. Online-Checks Phase. When the Square Terminal goes
+ card, by setting “Online PIN required” flag (bit 8 of byte         online, the payment is rejected and the transaction is recorded
+ 1) in the CTQ, and unsetting “CVM required” flag (bit 7 in         as declined on the Square server-side log.
+ byte 2) in the TTQ.                                                 ATTACK 3: For Visa, we can make the Square Terminal
+  Discussions. ATTACK 225 breaks Visa’s security model by            accept a plastic contactless card offline for over-the-limit
+enabling Tap-and-PIN, though requiring the attacker’s knowl-         transactions, by performing ATTACK 1 where its relay is
+edge of the PIN makes it less useful. Still, like ATTACK 1, it       enhanced to a MiM flipping bits in the “CVM required” flag
+violates regulations and bypasses card payment restrictions,         in the TTQ (byte 2, bit 7) and “CDCVM performed” flag
+that issuers must abide to in order to do business.                  in the CTQ (byte 2, bit 8).
+   To the best of our knowledge this is the first work to explain      Discussions. We consider this a “free-lunch attack” be-
+how readers distinguish cards that should and should not do         cause it allows an attacker to leave with high-value goods
+Tap-and-PIN. Our findings also clarify discrepancies in two         before the merchant connects to the Internet to see the rejec-
+past over-the-limit Visa attacks which were down to lack            tion27 . The Square system offers no way for the merchant
+of understanding of Tap-and-PIN workings: Yunusov and               to recover the lost money or follow up with the cardholder.
+Galloway [49] required clearing the ‘CVM required’ flag in          Although the merchant might not be technically liable, re-
+
+
+
+7984    34th USENIX Security Symposium                                                                       USENIX Association
+claiming the money is difficult.                                  2. Distinguishing between Plastic and Mobile. We modelled
+   ATTACK 3 combines the Galloway and Yunusov over-the-           VAS exchanges, as a way to differentiate between mobile
+limit attack [49] with our ATTACK 1. The key novelty is that,     phones and plastic cards, as seen on the Square Terminal.
+unlike Galloway and Yunusov’s online attack, ATTACK 3 is          3. Tap-and-PIN. As we found that Mastercard only controlled
+offline, and so bypasses online checks. This attack is most       Tap-and-PIN transactions online, at the backend, we did not
+likely due to an implementation error on Square Terminals:        model this in our offline-EMV model. For Visa, we added a
+not checking that the CTQ and its copy in the CARD field are      PIN number for each card, and Tap-and-PIN cards that set the
+equal, given the CARD field is signed in the SDAD.                CTQ to “Online PIN required” (Byte 1 Bit 8). On receiving
+                                                                  this, the reader would ask for a PIN that is either provided
+                                                                  on a secure channel from the card, or on a public channel
+4.4    Offline Over-the-Limit MC Transactions
+                                                                  from the attacker. A fresh name is used as the PIN number
+Our analysis in Section 4.2 showed that, for over-the-limit       meaning that the attacker cannot guess it.
+transactions with Mastercard, Tap-and-PIN checks are han-            In line with our attacker model we do not consider com-
+dled online by the backend system. Unlike Visa, Mastercard’s      prised terminals, payment devices or banks. All of the model
+protections are enforced during this backend process, making      files are available on our repository and have detailed com-
+it difficult for an offline terminal to perform these checks.     ments explaining how the models work.
+   To test this, we used our VAS-replay-relay technique (AT-         Correctness Properties. In line with our attacker model,
+TACK 1) to relay an over-the-limit transaction from the offline   discussed in Section 3.2, we use three types of lemma to
+Square Terminal to a plastic Mastercard, which was accepted       check the correctness of the protocols. First, “over the limit”
+offline. This indicates the offline Square Terminal does not      attacks, that ask Tamarin to look for the existence of a pro-
+check the CVR in the IAD within the SDAD for Mastercard.          tocol trace in which the terminal or the bank accept a high
+The transaction is rejected when the terminal goes online,        value transaction, from an unauthenticated payment device
+however, by this point, an attacker with a stolen card could      (a plastic card or a locked phone). Second, for the regulation
+have already left a shop with high value goods.                   checks, we write lemmas that ask Tamarin to test if a plastic
+ ATTACK 4: For Mastercard, we can make the Square                 card can be accepted offline and if non-Tap-and-PIN cards can
+ Terminal accept a plastic contactless card offline for over-     be made to do Tap-and-PIN. Third, we check for “free lunch”
+ the-limit transactions, by just doing ATTACK 1.                  attacks by asking Tamarin to find traces that are accepted by
+                                                                  the offline reader but then rejected by the bank.
+   Discussions. To our knowledge, this is the only over-the-         Understanding Our Mastercard Over-the-Limit AT-
+limit attack against Mastercard based on protocol specifica-      TACK 4. We used Tamarin to create an over-the-limit trace
+tions. While previous research found Mastercard’s protocol        accepted by the reader but rejected by the backend. The
+more secure than Visa’s, that work looked at online transac-      trace shows: 1. The faked VAS message mimics phone inter-
+tions. By examining the features discussed in the last section,   action. 2. The plastic-card’s AIP lacks CDCVM support, so
+we discovered that Mastercard’s user authentication checks        the terminal selects “No CVM performed.” 3. The terminal
+are performed by backend systems, only accessible to online       checks and accepts the SDAD. 4. The backend rejects the
+terminals, therefore compromising Mastercard’s protocol           transaction due to the absence of CDCVM. The formal model
+security for offline transactions.                                confirms that this attack would be caught by the bank, when
+                                                                  the terminal goes online. Backend checks are not detailed in
+5     Formal Modelling & Recommendations for                      EMV specifications. We tested the model with/without vari-
+      Plastic-Cards Attacks                                       ous backend checks. The lack of IAD check at the backend
+                                                                  matches the Square Terminal’s behaviour in our ATTACK 4.
+To ascertain how to best fix ATTACKS 1-4, we extend the
+most recent of these models [52], which uses the Tamarin          5.1    Fixing Offline EMV for Plastic Cards
+prover for cryptographic protocols [53], together with our
+new findings. Tamarin lets us model protocol using multi-set      5.1.1 Fixing Visa Offline. For Visa, Byte 2, Bit 8 of the CTQ
+rewriting rules and will attempt to automatically prove or find   field sent from the payment device to the reader indicates if
+counter examples to lemma based on actions of the protocol.       CDCVM authentication has been used, i.e., a phone is being
+We direct the reader to the Tamarin manual [54] for more          used. When Visa is used in offline mode, this field is included
+details and examples.                                             in the signed SDAD and so its integrity can be checked by the
+   We enhanced the EMV models in [52] as follows:                 reader (as per Section 2). So, making the offline reader check
+1. Modelling offline readers. Reader sends the SDAD to the        Byte 2, Bit 8 is set inside the CTQ, inside the SDAD, is a good
+bank via two rules (not one). First, the reader checks the        way to stop these attacks, ensuring that only authenticated
+SDAD. To allow for clear offline mode, the transaction is sent    phones are used in offline mode. The formal model confirms
+to the bank in a second rule.                                     this, so, it is our recommended solution for Visa.
+
+
+
+USENIX Association                                                                  34th USENIX Security Symposium         7985
+    5.1.2. Fixing Mastercard Offline. Mastercard does not           2024, ATTACKS 1, 3, 4 were resolved. Square implemented
+have a publicly defined field equivalent to Visa’s CTQ. So,         our recommendation, rewarding us with a USD5000 bounty.
+we consider three possible fixes.                                   See Figure 5 below for a summary of disclosures and imple-
+    a. Using the IAD. The IAD field encodes the device type         mented fixes per attack.
+and indicates if the user was authenticated. For Mastercard,
+it is signed in the SDAD, allowing offline terminals to verify
+it. We tested whether verifying this information would stop         6   Testing Features Centred on Mobile Devices
+ATTACK 4 by requiring that offline readers only accept trans-
+actions with signed IADs indicating CDCVM was performed.            After Square fixed the issues described above, we shifted
+Tamarin confirms this stops the attack. However, since the          our research to mobile/CDCVM-capable devices. Using our
+IAD is proprietary data meant for the card issuer, it may not       MiMs as per Figure 2 and tests on various terminals online
+be easily or reliably used by third-party EMV manufacturers.        and offline, we identified 6 attacks and 2 problems with
+I.e., our analysis shows that if Mastercard formalised the IAD      mobile payments. Figure 4 summarises our findings, showing
+and added it to the core EMV specification, many of these           how they fit into the EMV ecosystem.
+issues could be fixed easily.
+    b. Using the “ICC verifies PIN” CVM Result. The                 6.1 Screen Unlock, In-Wallet CDCVM & Tran-
+CVM List and CVM Result in the Mastercard protocol seem
+like logical places to enforce offline user authentication. We
+                                                                        sit/Transport Mode Findings and Attacks
+tested the effect of the offline Square Terminal always setting     The Features. This is “mobile(-wallet) customer validation”,
+the CVM Result to “010002: Plaintext PIN verification per-          which has seen recent changes28 in 2023/2024. Mobile de-
+formed by ICC (the device)”, but Tamarin shows this does not        vices typically unlock via PIN, pattern, or fingerprint, with
+stop the attack, as plastic cards allow this without user authen-   mobile wallets requiring additional authentication, like a fin-
+tication. Testing the effect of stopping cards from responding      gerprint, FaceID, or PIN. When near an active EMV reader,
+to this CVM Result also failed when offline readers use “No         the phone’s NFC and mobile wallet activates. It is the user
+CVM performed". However, combining both changes stops               authentication inside the wallet (e.g., inside ApplePay) that
+the attack, though it would require extensive updates to both       should set the “CVM perfomed” bit in the sense of the EMV
+cards and offline readers, taking years to implement.               protocol. However, some vendors use the screen unlocking to
+    c. Checking CDCVM supported in the AIP. The AIP                 mean “CVM performed”. Transport mode, another feature,
+field sent from the card to the terminal includes a flag (byte 1,   sees further alterations around this, with in-wallet authentica-
+bit 2), indicating if the device supports CDCVM, signaling          tion and screen unlock, sometimes, bypassed entirely.
+it is a phone, as standard plastic cards cannot do CDCVM.
+We tested making the Square Terminal check this bit in the
+ICC/card certificate. Tamarin confirms this stops plastic-card      6.1.1   GooglePay
+ATTACKS 1-4, and we recommended this fix to Square. How-
+                                                                    In GooglePay, to make any-amount payments, screen un-
+ever, locked phones in transit mode also indicate CDCVM
+                                                                    locking (and not in-wallet authentication) is needed for non-
+support without always authenticating the user. To ensure this
+                                                                    transport transactions. Once the phone has been unlocked
+fix works, we need to explore offline EMV transactions with
+                                                                    recently, no further in-wallet authentication is required.
+locked phones, discussed in Section 6.
+                                                                     PROBLEM 5: For screen-unlocked phones using Google-
+                                                                     Pay with Visa, Mastercard, we can make the EMV termi-
+5.2    Responsible Disclosure for ATTACKS 1-4                        nals (offline and online), as well as banks and payment
+We informed Visa of relevant issues in ATTACKS 1-3. About            networks accept over-the-limit transactions, relayed, with-
+ATTACK 2, Visa said that UK regulations would soon change            out any other MiM actions. This makes unlocked phones
+to permit such Tap-and-PIN payment in the UK too, so they            with GooglePay more vulnerable to any-value relays than
+would not issue a fix yet.                                           ApplePay (which unlocked does still need in-wallet authen-
+   We informed Mastercard of our illicit over-the-limit trans-       tication), for both Visa and Mastercard, and even more vul-
+actions with plastic Mastercards (ATTACK 4), that this may           nerable than plastic cards (where a PIN-verification may be
+be a wider problem, but that Square was engaged in their fix.        triggered if limits are attained).
+   We also notified Square of ATTACKS 1-4. For ATTACK 1,               Our Experiments: For transport retailers like train gates,
+we recommend they check the AIP in the Integrated Circuit           GooglePay’s transport mode allows payments with the default
+Card (ICC) Certificate to detect mobile/CDCVM-capable de-           contactless card. If “no verification" is enabled in Google-
+vices. Square paused UK contactless offline payments while          Profile settings, payments can be made without screen un-
+fixing ATTACK 1, and worked closely with us, to check fixes         locking or in-wallet authentication, on a lit-up screen, poten-
+before wide deployment. From October 2023 to February               tially for any amount. We found that Square Terminal’s new
+
+
+
+7986    34th USENIX Security Symposium                                                                       USENIX Association
+                                                                               PROBLEM 6: GooglePay-Visa
+                                      PROBLEM 5: Relayed payments
+                                      without authentication, unlocked         with locked screen payments
+                                                                                 on Square Terminal (UTL
+                                                                                                                      ATTACK 7: OTL payments with
+                                                                                                                            locked phones
+                                                                                                                      GooglePay-Visa (transit, OTL,
+                                                                                                                                                              Phones
+                                      phones: GooglePay-Visa. (OTL
+
+            RELATED WORK:
+                                                   online)
+                                               Section VI.A.1
+                                                                                          offline)
+                                                                                       Section VI.C.2
+                                                                                                                                online)
+                                                                                                                             Section VI.A.1                   Results
+            Relayed Payments
+                  [45]                                                                                                                                        ATTACK 11: Payments UTL +
+                Section II                                                                                                       CONCEPT SQUARE:                 OTL unlocked phone
+                                                             RELATED WORK:                                                        Square Terminal UK         SamsungPay-Visa (non-transit,
+                                                               Transit-mode                            CONCEPT                firmware, offline, accepts           UTL, OTL offline)
+                                                                  attacks                            GOOGLEPay:                  ApplePay, GooglePay
+           RELATED WORK:                                                                                                                                             Section VI.D
+                                                                    [52]                             locked screen                       only
+          Over-the-limit attacks                                 Section II                            allowed for                  Section VI.A.1
+                 on Visa                                                                             no-CDCVM in
+                 [40,49]                                                                              transit mode                                                 CONCEPT SamsungPay:
+                                     CONCEPT
+               Section II                                                                            Section VI.A.1                                                Phone may continue with
+                                     GOOGLE:                                  CONCEPT                                          EXPERIMENTS: Square                 non-zero transactions in
+                                      Unlocked                                 SQUARE:                                          Terminal does accept                    transit mode
+                                     screen ==                           Square Terminal UK                                    Samsung Pay, Visa if the                 Section VI.D.
+                                      CDCVM                               firmware, offline,         EXPERIMENTS:                last two records are
+                                     performed                               “transit” TTQ           Square Terminal,                   dropped
+                                    Section VI.A.1                           Section VI.A          offline, not checking             Section VI.D
+                                                                                                    the SDAD for Visa
+                                                                                                        Section VI.B                                         ATTACK 12: payments without
+                      ATTACK 8:                                                                                                 EXPERIMENTS: Square          authentication, locked phone,
+            Payments OTL without wallet                                                                                          Terminal does not check      SamsungPay-Visa (transit,
+          authentication, unlocked phones:                          ATTACK 9                                                                                           OTL offline)
+                                                                                                                                the IAD for Visa to decide
+          ApplePay-Visa (non-transit, OTL,              ApplePay-Visa locked phones                                                                                   Section VI.D.
+                                                                                                                                      if it is Visa with
+                        online)                           (transit, OTL+ UTL, online)
+                                                                                                    CONCEPTS EMV:                SamsungPay, ApplePay
+                    Section VI.A.2                               Section VI.A.2
+                                                                                                     CVM lists, MCC,                    Section VI.D
+                                                                                                     IAD in SDAD for                                                   NO attacks re
+                                                                                                           MC                       FORMAL MODEL                  transit-mode, re OTL, re
+                                                                                                        Section II                    Section VII.A                     CVM against
+                                                       ATTACK 10:                                                                                                    GooglePay-MC or
+                                                 Visa payments WITHOUT                                                                                                ApplePay-MC or
+                                                                                     EXPERIMENTS: SDAD
+                                                     CARD PRESENT                                                                                                    SamsungPay-MC
+                                                                                    for MC checked offline by
+                                                       Section VI.B                                                                                                     Section VI.D
+                                                                                         Square Terminal                         RECOMMENDATONS
+                                                                                        Sections IV and VI                       FOR EMV Section VI.B
+
+
+
+
+                                             Figure 4: Mind-map of the Main Results from Sections 6 and 7
+
+
+firmware (shipped after patching ATTACK 1) is advertis-                                                  cluding traces30 sniffed in the wild), GooglePay sets CDVCM-
+ing, a TTQ with the “Offline Data Authentication for Online                                              done in the Visa CTQ when it runs in transport mode; Also,
+Authorizations" bit set (bit 1, byte 1).                                                                 the CVR in IAD, the CTQ in the SDAD in the trace of
+   Results: We found that a screen-locked GooglePay is using                                             ATTACK 731 show CDCVM done. ATTACK 7 should be
+only this bit in the TTQ to identify a request for a transport                                           stopped: offline, by the Square Terminal(via the SDAD);
+transaction and activate its transport mode. This leads to:                                              and/or online, by the payment networks (via the IAD).
+ PROBLEM 6: Screen-locked phones using GooglePay
+ with Visa pay by the Square Terminal (offline) for under-                                               6.1.2         ApplePay
+ the-limit transactions without any authentication, due to the
+                                                                                                         For ApplePay, a locked phone requires screen unlocking for
+ Square Terminal’s “offline for online” TTQ, and banks and
+                                                                                                         EMV transactions. On top, if recently unlocked, a double-tap
+ payment networks later accept it (online).
+                                                                                                         may suffice for full in-wallet authentication, depending on
+   Analysis. The problem, video-ed here29 , lies in that                                                 settings, country, and amount, as shown here32 .
+GooglePay with Visa identifies transport in a weak way, just                                                Our Experiments: We bypass the double-tap or authenti-
+via the TTQ, without even looking at the MCC. It is unfortu-                                             cation using a MiM attack with TTQ/CTQ-flipping, similar
+nate that the Square Terminal advertises an “offline for online”                                         to ATTACK 3, but without VAS-response replay (given we
+TTQ when it is completely offline. Worse, when the reader                                                are on mobile phones):
+goes online, banks/payment networks do not stop this attack,
+                                                                                                             ATTACK 8: For screen-unlocked phones using ApplePay
+e.g., via checking the MCC sent by Square.
+                                                                                                             with Visa, we can make the Square Terminal (offline), and
+   Our Experiments: We lift this to an over-the-limit attack:                                                banks and payment networks (online) accept over-the-limit
+ ATTACK 7: We can make screen-locked phones using                                                            transactions without ApplePay-wallet authorisation, by un-
+ GooglePay with Visa pay at a Square Terminal (offline), for                                                 setting/setting the same TTQ/CTQ flags as in ATTACK 7.
+ over-the-limit transactions without any authentication, by                                                 Analysis: Like with ATTACK 7, the Square Terminal fails
+ unsetting “CVM required” flag in the TTQ (byte 2, bit 7),                                               to check the CTQ in the SDAD and the payment networks do
+ and setting “CDCVM performed” flag in the CTQ (byte 2,                                                  not check the CVR in the IAD, both of which will stop the
+ bit 8), à la ATTACK 3. Banks and payment networks later                                                 attack Radu et al. [52] found that Apple Enhanced Contactless
+ accept the transaction (online).                                                                        Polling (ECP), US patent US11200557B233 is used to enter
+   Analysis: Due to the Square Terminal’s TTQ, GooglePay                                                 transit mode for Apple, when the screen is locked.
+thinks it is in transport mode. By looking at our traces (in-                                               Our Experiments: We now attempt to lift ATTACK 8 to
+
+
+
+USENIX Association                                                                                                                        34th USENIX Security Symposium                      7987
+transit-mode attacks, using the methods in [52]:                     “42031E031F03". This constitutes a list of three possible
+ ATTACK 9: For screen-locked phones using ApplePay                   verification methods for the reader to choose from, with 4203
+ with Visa, we can make the Square Terminal (offline), banks         meaning “Enciphered PIN verified online, if terminal sup-
+ and payment networks (online) accept over-the-limit trans-          ports”, 1E03 meaning “Signature, if terminal supports” and
+ actions without ApplePay-wallet authorisation; we replay            1F03 meaning “No CVM required, if terminal supports”. The
+ Apple ECP bytes and change the Square Terminal’s MCC                EMV specification describes these options and states that the
+ to a transport one, while –for over-the-limit– we also flip         reader should pick one and return its choice, as the CVM
+ the CDCVM-relevant TTQ/CTQ flags, à la ATTACK 3.                    Result, to the payment device.
+                                                                        Some phones, at the start of the CVM List, also have the
+   Analysis: As per [52]’s attacks, there are lacks of backend       option: 4201 denoting “Enciphered PIN verified online, if
+checks of the TTQ against the MCC to see if the terminal is          unattended cash”. For plastic cards, the CVM List most com-
+that of a transport merchant.                                        monly seen is “02031E031F03” 36 , which means the same as
+   Discussions: It is the first time this is done offline, which     the above “42031E031F03” CVM List seen on phones.
+was deemed improbable by [52], assuming the SDAD checks                 We experimented with plastic Mastercard cards, ApplePay
+would be duly done.                                                  and GooglePay, whilst locked and unlocked, and with the
+                                                                     Square Terminal, both online and offline, as well as a terminal
+6.2     No-Card-present Attack                                       pretending to be transport/transit mode (i.e., sending ECP
+                                                                     bytes before EMV transactions, to signal a transport operator).
+The Feature: This is online readers which offer on-request              Results: Table 1 shows the CVM result selected by the
+offline capability, in compliance with different regulatory          reader in each case. In some cases, the CVM Result is se-
+areas (e.g., the EU, the UK, the US).                                lected from the CVM List as expected, e.g., for over-the-limit,
+   Our Experiments: Via ATTACKS 7-9, we found that, in               online, the reader attempts online PIN verification. However,
+fact, the Square Terminal’s new firmware did not verify any          the offline Square Terminal does not select a CVM from the
+data stored in the SDAD. So, we built a card emulator that           list and instead uses the 3F00 code to warn the device that
+replays a sniffed Visa-card’s certificates, and responds             no CVM has been performed, the same behaviour has been
+with fake EMV-format messages, including fake SDADs.                 observed in transit readers. Non-Tap-and-PIN cards could
+ ATTACK 10: We can make the Square Terminal accept                   end the transaction , but –as per Section 4.2– they do not.
+ offline any-value Visa payments, without any bank-issued               We found that locked ApplePay or GooglePay would end
+ card being present in the transaction. Online, these payments       the transaction if given the CVM Result ‘010002’ by the
+ are declined due to missing valid cryptographic data.               reader. This makes sense, since this CVM Result tells the
+                                                                     device to authenticate the user, and a locked phone has not.
+     Analysis: This amounts to us fabricating imaginary cards
+                                                                        The CVM Result chosen by the offline Square Terminal
+ out of thin air, and using these fake cards to pay in shops.
+                                                                     for mobile phones also tells the device that it must perform
+Again, the Square Terminal allows merchants to set limits on
+                                                                     CVM itself, i.e., “Plaintext PIN verification performed by
+ offline payments, up to a maximum of £25,000; the default
+                                                                     ICC”. This was not an option given in the CVM List.
+ limit is £100. We filmed our ATTACK 10 for £25,00034 .
+                                                                        Analysis: The experiments above confirm that, in line with
+    Discussions: In the disclosure process, we found out that
+                                                                     the Mastercard specification, the reader selects the CVM Re-
+ US Visa cards do not send SDADs for transactions with ter-
+                                                                     sult “Plaintext PIN verification performed by ICC”, whenever
+ minals that have TTQs with “offline for online" bit set. Visa
+                                                                     the AIP on the card indicates that on device cardholder verifi-
+ US should adhere to the EMV specification and send SDADs,
+                                                                     cation is supported (Byte 1 Bit 2). Following the above, we
+ in those cases; UK/EU Visa cards do send SDADs in such
+                                                                     experiment with Square Terminal and conclude:
+ cases. Square Terminal offline, should send a TTQ with the
+‘offline’ bit set, as in its previous firmware, and –in all cases–    STATEMENT: We are unable to do any CDCVM-based
+ check the SDADs and, if not sent, reject the transaction.            and/or transport-based attacks for mobile-wallets (Apple-
+                                                                      Pay, GooglePay, SamsungPay) using Mastercard against the
+7      Mastercard: Mobile & Its CVM Results                           Square Terminal (offline), due to the way CVM options are
+                                                                      treated in Mastercard’s protocol and the Square Terminal
+The Feature: The feature analysed here is over-the-limit              checking offline the Mastercard SDAD.
+checks by Mastercard. The attacks on mobile phones above                Discussions: Mastercard’s protocol handles CVM options
+are all against Visa. To do similar over-the-limit attacks           better than Visa, authenticating all CVM-related fields inside
+against Mastercard, we need to understand how the CVM op-            the SDAD. And, the terminal needing to check all CVM-
+tions work for the Mastercard protocol, from the perspective         related fields in the SDAD, as it must check the SDAD to
+of both the card/phone payment devices and of terminals.             extract the AC, unlike with Visa.
+   Our Experiments: We ran experiments and noticed that
+the CVM List on most Mastercard payment devices35 is
+
+
+
+7988    34th USENIX Security Symposium                                                                        USENIX Association
+                                              Novelty/ Reliance on prior work                        Attack Characterisation*:      Root cause: Flawed technical                    Payment       Payment      Authorisati Victims            Scope: EMV-      Impact** (via Who can fix / Fixed or not
+                                                                                                     Breach of Regulation,          specification, non-compliance with              method        network      on when                        wide vs.         scope, victim,
+                                                                                                     Free-lunch, OTL (over-         technical specification, bad                                               the reader                     Company          payment
+                                                                                                     the-limit)                     implementation                                                             goes online                                     method)
+
+                                              Novel. No one looked at offline readers trying to      Regulation: Square to          - flawed specification: Square wrongly          Plastic       Visa         Rejected    Cardholder: if     Square           low           - Square: to use AIP (indicative of CDCVM
+                                              distinguish plastic cards from other devices           block plastic offline in the   creates a specification, whereby it it to                                  online      their card was                                    capability, authenticated in card cert)
+                                 ATTACK 1
+                                                                                                     UK                             use VAS to identify CDCVM-capable                             Mastercard               stolen                                            - disclosed in October 2023;
+                                                                                                                                    devices                                                                                                                                  - fixed + bounty received
+                                              Novel. First to study 'non-tap-n-pin' cards; prior     Regulation: UK Payment         - flawed specification: Visa specifies to       Plastic       Visa         Accepted    Cardholder: if     EMV-wide         high          - EMV/Visa: to securely signal non-tap-n-pin cards
+                                              work focused on 'tap-n-pin' cards (e.g., [49,52]);     Services does not allow        use a bit in the CTQ to encode (*non*-)                                    online      their card was                                    (e.g., via AIP);
+
+
+
+
+USENIX Association
+                                 ATTACK 2
+                                              they missed this distinction entirely.                 tap-n-pin cards in the UK      TAP-n-PIN                                                                              stolen                                            - attenuated by UK Payment Services -- to phase
+                                                                                                                                                                                                                                                                             out non-tap-n-pin cards
+                                              Novel - re the offline aspects. As per ATTACK 1        Regulation: Square to          - flawed specification: see ATTACK 1       Plastic            Visa         Rejected    Merchant (free-    Square           medium        - Square - re ATTACK 1
+                                                                                                     block plastic offline in the   - bad implementation: Square failed to                                     online      lunch attack)
+                                              Incremental - re the over-the-limit aspects for        UK                             check offline SDAD against illicit CTQ (as                                             +
+                                 ATTACK 3     Visa [40,49,52]. But, [49] thought offline readers                                    admitted in disclosure)                                                                Cardholder: if
+                                              stop this, via SDAD checks; we refute this.            OTL                                                                                                                   their card was
+                                                                                                                                                                                                                           stolen
+                                                                                                     Freelunch
+                                              Novel. As per ATTACK 1                                 OTL                            - non-compliance with Mastercard           Plastic            Mastercard Rejected      Merchant (free-    All offline      high          - Square - re ATTACK 1
+                                                                                                                                    specification: Mastercard's over-the-limit                               online        lunch attack)      terminals                      - EMV/Mastercard specifications: to introduce
+                                              Novel. First to study over-the-limit authentication in Freelunch                      customer authentication can only be                                                     +                 (demonstrated                  offline checks for customer authentication (for
+                                              Mastercard online+offline.                                                            checked online, not offline, so Mastercard                                             Cardholder: if     on Square)                     plastic cards)
+                                 ATTACK 4
+                                                                                                                                    plastic cards should not be used offline,                                              their card was                                    - disclosed in October 2023;
+                                                                                                                                    for OTL; Square infringes that                                                         stolen                                            - Fixed only for Square terminals + Mastercard
+                                                                                                                                    - flawed specification: see ATTACK 1                                                                      Mastercard                     stated that they wanted Square to fix this and
+                                                                                                                                                                                                                                                                             nothing else.
+                                              Novel. Testing the new settings for transport-mode UTL/OTL                            - flawed specification: Google lacks        GooglePay,      Visa           Accepted    Cardholder.        GooglePay        medium        - Google: to check, e.g., MCC, etc., + ask for some
+                                              for Google.                                                                           sufficient EMV field checks to confirm      locked, transit                online      phone has not                                     form of user input or alert them in case of payment,
+                                                                                                                                    transport terminals.                        mode, no                                   been stolen, and   Visa                           for transport mode
+                                              Incremental. We simplify over-the-limit, transit                                      - flawed specification: Square's 2024       auth/CDCVM                                 it is locked.                                     - Square: to send TTQ with the "offline for online
+                                 ATTACK 7     attacks for Visa shown in [52], for the Square                                        firmware wrongly sets the "offline for      at all                                                                                       bit" unset, for offline terminals
+                                              Terminal offline, as well as for some Google                                          online" TTQ bit for offline terminals.                                                                                                   - Visa: to check online the CDCVM bits inside the
+                                              settings                                                                              - non-compliance with specification:                                                                                                     AC, as well as the MCCs.
+                                                                                                                                    VISA's backends should verify the AC for                                                                                                 - disclosed + not fixed. Square liaising with
+                                                                                                                                    transport-specific details.                                                                                                              parties around this.
+                                              Incremental - re the over-the-limit aspects for Visa OTL                              - bad specification: payment allowed        ApplePay        Visa           Accepted    Cardholder:          ApplePay       weak          - ApplePay: to notify the user when a payment is
+                                              in [40,49]; we change them from plastic to                                            on an unlocked iPhone without further       unlocked, no                   online      Their phone has                                   made.
+                                              unlocked phones                                                                       prompting to the user for authentication in auth/CDCVM                                 not been stollen, Visa                            - Visa: to check online the CDCVM bits inside the
+                                 ATTACK 8                                                                                           the ApplePay;                               in-wallet                                  all is needed is                                  AC
+                                                                                                                                    - non-compliance with specification:                                                   that it is unlocked.                              - undisclosed to Apple and Visa, since it falls
+                                                                                                                                    VISA's backends should check the AC for                                                                                                  under [49], which remains unfixed since 2022.
+                                                                                                                                    all relevant details                                                                                                                     - disclosed to Square, as part of ATTACK 9
+                                              Incremental - re the over-the-limit, transit attacks   OTL                            - non-compliance with specification:            ApplePay,      Visa        Accepted    Cardholder:          ApplePay       medium        - ApplePay - to notify the user when a payment is
+                                              for Visa shown in [52]. We simplify, for the Square                                   VISA's backend should check the AC for          screen locked,             online      Their phone has                                   made + to bind the ApplePolling (used with
+                                              Terminal offline, where we do not need to modify                                      all transport + authentication details          transit mode,                          not been stollen, Visa                            transport PoS) into the EMV stack
+                                              the TTQ.                                                                                                                              no                                     all is needed is                                  - Visa - should check online the CDCVM bits inside
+                                 ATTACK 9                                                                                                                                           auth/CDCVM                             that it is unlocked.                              the AC, as well as the MCC
+                                                                                                                                                                                    at all                                                                                   - undisclosed to Apple, Visa, since it falls under
+                                                                                                                                                                                                                                                                             the same problems disclosed by [49] in 2022 which
+                                                                                                                                                                                                                                                                             remain unfixed;
+                                                                                                                                                                                                                                                                             - disclosed to Square
+                                              Novel - we created a card emulator that replay old OTL                                - non-compliance with specification:            Any           Visa         Rejected    Merchant (free-    Square           high          - Square: to implement the EMV specification: (a)
+                                              EMV transactions                                                                      Square does not check Visa's SDADs, if                                     online      lunch attack)                                     check the SDAD at all times; (b) use TTQs strictly
+                                                                                                 Freelunch                          their terminal is set in 'offline for online'                                                             Visa                           for offline readers when applicable.
+                                                                                                                                    mode (as admitted in disclosure)                                                                                                         - Visa: US Visa cards to send SDADs for
+                                                                                                                                                                                                                                                                             transactions with PoS with TTQs ('offline for online'
+                                 ATTACK 10                                                                                                                                                                                                                                   bit set). UK/EU Visa cards do send SDADs in such
+                                                                                                                                                                                                                                                                             cases.
+                                                                                                                                                                                                                                                                             - disclosed in May 2024;
+                                                                                                                                                                                                                                                                             - not yet fixed; Square is working with Visa US
+                                                                                                                                                                                                                                                                             around this
+                                                                                                                                                                                                                                                                             - bounty received
+                                              Novel - we made SamsungPay be illicitly                Regulation: Square to          - bad implementation: Square accepts            Samsung Pay, Visa          Rejected    Merchant (free-    Square           medium        - Square: to implement the EMV specification and
+                                              accepted offline by Square in the UK, by dropping      block SamsungPay in the        Visa payments when not all the records          unlocked /                 online      lunch attack)                                     check the SDAD at all times; the error here may be
+                                              some cards records                                     UK, offline                    are present (as admitted in disclosure)         locked, no                             +                  Visa                           linked to the US-Visa cards problem above
+                                 ATTACKS
+                                                                                                                                                                                    auth/CDCVM                             Cardholder --                                     - disclosed in May 2024
+                                 11/12
+                                                                                                     OTL                                                                            in wallet                              with phone                                        - not yet fixed
+                                                                                                                                                                                                                           locked/unlocked
+                                                                                                     Freelunch
+
+
+
+
+34th USENIX Security Symposium
+                                 * Note: There are several dimensions that can be used as full characterisations of our attacks. This three-dimensional one was used also in the formal models; each attack falls in at least one of these three categories.
+                                 ** Note: The full impact is shown via all columns, but that forms several preorders over our attacks and it is therefore hard to include in a simple way in the table.
+
+
+
+
+7989
+                                                                                                                            Figure 5: All Our Attacks’ Dimensions at A Glance
+7.1    SamsungPay & the Square Terminal                            to support our new findings on mobile-wallets in Section 6 ,
+                                                                   and check our suggested fixes with the new mobile features
+Our tests with various SamsungPay devices revealed the fol-
+                                                                   we discovered. We do not model the records-dropping AT-
+lowing behavior: in non-transport mode, even if the phone
+                                                                   TACKS 11-12 for SamsungPay, as this may be purely an
+is unlocked, mobile-wallet customer validation is required
+                                                                   implementation flaw; we are discussing with Square.
+for any transaction, which can be accessed from the locked
+                                                                      Fixing Offline EMV for Mobile Wallets: Our model
+screen. In transport mode, SamsungPay allows transactions
+                                                                   leads to the following recommendations. Checking the Visa
+through a locked screen without authentication, but only for
+                                                                   SDAD is obligatory. Checking CDCVM authentication done
+zero-value transactions. In this mode, SamsungPay does not
+                                                                   bit in the CTQ stops the SDAD from locked iPhones being
+use proprietary protocols and, like GooglePay, relies on stan-
+                                                                   accepted offline. However the attacks on GooglePay, based
+dard EMV fields such as TTQs and MCCs.
+                                                                   on Square’s use of the “offline for online" TTQ flag and
+   Feature: Square stipulates to accept only ApplePay and
+                                                                   GooglePay interpreting this as a transit reader, remain. If
+GooglePay (i.e., implicitly, not other mobile-wallets), offline,
+                                                                   Square switched to requesting a fully offline transaction in the
+in the UK.
+                                                                   TTQ, this issue would be fixed. Google could also consider
+   Our Experiment: We confirmed this via payment at-
+                                                                   revising detecting transport mode solely based on the TTQ
+tempts: i.e., SamsungPay is rejected in the UK37 . So, akin
+                                                                   bits. We do not model the SamsungPay attacks, since we do
+to ATTACKS 1-4 on illicit plastic, we asked ourselves if we
+                                                                   not fully understand their workings. However, offline/online
+can make Square Terminal accept SamsungPay against its
+                                                                   terminals should never accept a transaction if they cannot
+specifications. And, we already knew from Section 7 that
+                                                                   check ICCc. And, SamsungPay in case of a warning on its
+CDCVM- or transport-based attacks for Mastercard are im-
+                                                                   payment device should not send a valid AC.
+possible because the terminal checks Mastercard’s SDAD.
+                                                                      Model Statistics: On a 64GB, 16-core MacBookPro M3,
+But, in Visa’s case, we have:
+                                                                   our Visa model takes 29 minutes to check. We split the Mas-
+ ATTACKS 11 & 12: By unsetting the “CVM Required”                  tercard model into separate files for ApplePay and GooglePay,
+ flag in the TTQ (byte 2, bit 7), and setting the “CDCVM           each of which takes around 6 minutes to run.
+ performed” (bit 8 in byte 2) in the CTQ, and dropping the            Responsible Disclosure for Mobile: We disclosed our
+ last two (out of four) records of the payment device, we          findings and recommendations to Square and Google, but not
+ make the Square Terminal accept over-the-limit transactions       to Apple, as ATTACKS 8-9 are variations of known Apple
+ offline from unlocked /locked phones using SamsungPay             Pay-Visa issues that Visa is reportedly fixing. Google has not
+ and Visa in normal/“Transport” mode, which is against the         responded yet. Square has been very responsive, working to
+ Square Terminal UK requirements. The Square Terminal              implement the SDAD, CTQ, and ICC-based recommenda-
+ accepts this offline, despite a warning on payment device         tions, and considering changes to their TTQ. Also, Square
+ from SamsungPay. The bank and payment networks reject             told us that business rules and deviations from specifications
+ this, when the reader goes online.                                in the US might be causing these issues: some Visa-based
+    Analysis: In ATTACK 12, the payment device mistak-             devices do not respond to certain TTQs nor send the SDAD,
+enly enters transit mode due to the Square Terminal’s TTQ,         highlighting inconsistencies in the EMV ecosystem. For a
+showing a warning (since it expects only zero values in tran-      summary on this, please refer to Figure 5.
+sit/transport mode), but not stopping the transaction. In AT-
+TACK 11, outside transit mode, the phone shows no error.           9   Conclusions
+Our method is to drop the last two records containing the
+“public-key remainder”, preventing the Square Terminal from        Examining a series of aspects (plastic cards, mobile, transit
+verifying the ICCc and SDAD; wrongly, Square Terminal              modes, offline terminals), we were able to shed light on a
+accepts the transaction afterwards. During ATTACKS 11-             number of un-disclosed EMV-payment behaviours, especially
+12, we also found that the Square Terminal does not use            those linked to add-on, mobile-centric features. Some of
+IADs to distinguish between ApplePay, GooglePay and                these lead to security shortcomings, of various types. We
+SamsungPay.                                                        followed responsible-disclosure processes, as discussed, and
+   Discussions: This attack may be a wider issue for Square,       a statement by Square is included in the following “Ethical
+and may relate to ATTACK 10 (Visa-US non-compliance), but          Considerations” section. Overall, we were only able to find
+we only used this technique for this Samsung-based attack.         and fix these issues because we investigated and reverse engi-
+                                                                   neered the proprietary features built by a range of companies.
+8     Formal Modelling & Recommendations Cen-                      Individual companies may not have the ability to do this and,
+      tred on Mobile Devices                                       we argue, should not be expected to. Rather, EMV stakehold-
+                                                                   ers should communicate their features with EMVCo and have
+As in Section 5, we used formal modelling in Tamarin, and          them added to the public EMV specification.
+enhanced our models in Section 5 and the models from [52]
+
+
+
+7990    34th USENIX Security Symposium                                                                      USENIX Association
+Ethical Considerations.                                            Open-Science Considerations.
+Attacks, Reproducibility and Ethics. In terms of EMV read-         Our code (Sections 4, 6), formal models (Sections 5, 7), EMV
+ers, we used:                                                      traces (i.e., EMV transactions – Sections 4, 6) and videos (Sec-
+– several Square Terminals, under UK firmware. We used             tions 4, 6) are at https://archive.softwareheritage.
+them for contactless EMV payments, both offline and online.        org/browse/origin/directory/?origin_url=https:
+Offline, in the UK, the Square Terminal is supposed to accept      //gitlab.com/anonym_123/anon_payments/.
+contactlessly only GooglePay and ApplePay38 .                         We are committed to the principles of open science. Our
+– one online SumUp Air39 configured for Romania, one on-           research involve the generation of code, and related materials,
+line SumUp Air configured for the UK, one online SumUp             and we disclose it all at this stage, for reproducibility purposes.
+Solo configured for the UK and one online Square Reader            We will continue to have it available, in free-to-use licences,
+configured for the UK. As such, they deal with PIN-checking        after publication.
+for contactless cards differently.                                    In fact, we will ensure that all our findings and methodolo-
+   All plastic cards, mobile devices and readers/PoS we used       gies are thoroughly documented and openly shared through
+are not comprised and registered to us (i.e., we do not vic-       the publication in various format, on open repositories as well.
+timise retailers or the general public). We use no personal        By doing so, we aim to contribute with new insights to the
+data, or sensitive data, other than ours.                          community and facilitate further research and discussion in
+   We present 10 attacks and 2 “problems”. Some of them            the field.
+stem from similar problems (e.g., poor checking of a Visa
+field called “SDAD”), some are unrelated to this (e.g., on
+                                                                   References
+GooglePay’s transport mode), some are on plastic cards, some
+on mobile, they have different victims, levels of complexity,       1. https://www.emvco.com/knowledge-hub/emv-chip-growth-
+etc. To appreciate these aspects earlier on, we refer the reader       continues-globally
+to Figure 5, to an overview table of all our attacks.               2. https://www.emvco.com/specifications/
+   Statement by Parties Involved in the Responsible Disclo-
+                                                                    3. https://www.fortunebusinessinsights.com/point-of-sale-
+sure. The only EMV party involved who gave us a statement              pos-market-106336
+to include is Square. This is as follows: “At Square, pro-
+                                                                    4. https://www.wearepay.uk/what-we-do/payment-systems/
+tecting the security of our seller community is our highest
+priority. We recognize the important contributions that the se-     5. https://squareup.com/us/en/point-of-sale/software
+curity research community can make when it comes to finding         6. There are other banks involved, called acquiring banks or acquirers, but
+potential bugs and we have offered a bug bounty program to             since we are not concerned with them, we can make this general
+the security research community since 2014.                         7. https://paymentcardtools.com/emv-tag-decoders/iad
+   We have collaborated with this research team since their
+                                                                    8. https://www.jpmorgan.com/payments/client-resource-
+discovery and responsible disclosure of their initial findings
+                                                                       center/country-specific-payment-regulations
+via our bug bounty program outlined in the following paper.
+This collaboration involved replicating the issue using the         9. https://squareup.com/help/gb/en/article/7777-process-
+                                                                       card-payments-with-offline-mode
+conditions detailed by the team (see Section 4) and working
+closely with the research team in the testing phase of the         10. https://www.regions.com/insights/small-business/
+                                                                       operations/types-of-pos-fraud-how-to-prevent-them
+security update we designed for this condition.
+   We can confirm that a security update for the researchers’      11. https://proxmark.com/
+initial disclosure has since been deployed to all susceptible      12. https://www.sumup.com/en-gb/air-contactless-card-
+Square devices. And while we remain actively engaged with              reader/
+our network partners on the security of the payments ecosys-       13. https://www.sumup.com/en-gb/solo-card-reader/
+tem, we do not believe the additional findings represent an
+                                                                   14. https://squareup.com/us/en/hardware/contactless-chip-
+increased risk to sellers and buyers transacting with offline          reader
+payments at this time.
+                                                                   15. https://squareup.com/us/en/hardware/terminal
+   We would like to thank these researchers for their vigilance
+in identifying and responsibly disclosing their findings, as       16. https://squareup.com/gb/en/about
+well as their collaboration in testing the security update we      17. https://support.apple.com/en-gb/guide/security/
+developed for their initial disclosure”.                               secbd55491ad/web
+                                                                   18. https://developers.google.com/wallet/smart-tap/
+                                                                       introduction/overview
+                                                                   19. https://gist.github.com/gm3197
+
+
+
+
+USENIX Association                                                                       34th USENIX Security Symposium                 7991
+20. https://github.com/kormax/apple-vas                              mobile/traces_and_videos/attack7-googleLocked/offline_
+                                                                     OTL_transit_attack7.txt .
+21. https://docs.springcard.com/apis/NET/AppleVAS/index.
+    html                                                          32. ApplePay     requires    actions   and    authentication  in
+                                                                      the   wallet    to    pay;     see   here   https://archive.
+22. https://atlassian.idtechproducts.com/confluence/                  softwareheritage.org/browse/content/sha1_git:
+    download/attachments/30479625/Apple%20VAS%20in%                   f86b957ad5f589722de8866054f0cccea9596084/?origin_
+    20ViVOpay%20Devices%20User%20Guide.pdf?api=v2                     url=https://gitlab.com/anonym_123/anon_payments/
+23. https://www.wearepay.uk/what-we-do/payment-systems/               &path=9484e7ae7a6c345c0993943a6fbbfb049f1fbe79/
+                                                                      attacks_mobile/traces_and_videos/helper_understanding/
+24. For        trace      see               https://archive.          understanding_googleTransport/applePay_does_not_enter_
+    softwareheritage.org/browse/content/sha1_git:                     transport_mode_an_pays_with_auth_on_Square_despite_to_
+    959fa33464a368b19448b828533fef13003fd7cd/?origin_                 TTQ.mp4.
+    url=https://gitlab.com/anonym_123/anon_payments/
+    &path=attacks_plastic/traces/attack2-tapNPin/visa_            33. See Apple’s ECP here: https://patents.google.com/patent/
+    otl_tapnpin_rejected.txt                                          US11200557B2/en   and   https://github.com/kormax/apple-
+                                                                      enhanced-contactless-polling
+25. See   “Tap-and-PIN”   attack  traces  here:     https://
+    archive.softwareheritage.org/browse/directory/                34. Paying   £25,000  with   an    emulated  imaginary  card
+    9484e7ae7a6c345c0993943a6fbbfb049f1fbe79/?origin_                 by    an  offline Square   Terminal:    https://archive.
+    url=https://gitlab.com/anonym_123/anon_payments/&path=            softwareheritage.org/browse/content/sha1_git:
+    attacks_plastic/traces/attack2-tapNPin.                           bded48b2aedcb8d12f9a6f82aa55b75607c0ce23/?origin_
+                                                                      url=https://gitlab.com/anonym_123/anon_payments/&path=
+26. For        trace      see               https://archive.          9484e7ae7a6c345c0993943a6fbbfb049f1fbe79/attacks_
+    softwareheritage.org/browse/content/sha1_git:                     mobile/traces_and_videos/attack10-noCard/paying25k_
+    388445a4173bba858b616f550dce250cfbb61eb0/?origin_                 withNoCard.mp4.
+    url=https://gitlab.com/anonym_123/anon_payments/&path=
+    9484e7ae7a6c345c0993943a6fbbfb049f1fbe79/attacks_             35. For       trace,       see              https://archive.
+    plastic/traces/attack3-Visa/visa_otl_plastic_CDCVM_               softwareheritage.org/browse/content/sha1_git:
+    trick.txt                                                         d9c476682da86609897dc0496e78d7e61269fc0d/?origin_
+                                                                      url=https://gitlab.com/anonym_123/anon_payments/&path=
+27. See traces for the plastic-Visa offline attack, ATTACK 3,         9484e7ae7a6c345c0993943a6fbbfb049f1fbe79/attacks_
+    here:       https://archive.softwareheritage.org/browse/          plastic/traces/helper_understanding/traces_CVMResults/
+    revision/b118c5afb57162ae910a68a4ae1f580bdd112e73/                MCapplephonelockedonlineUTL.txt
+    ?origin_url=https://gitlab.com/anonym_123/anon_
+    payments/&path=attacks_plastic/traces/attack3-                36. For        trace      see               https://archive.
+    Visa&revision=b118c5afb57162ae910a68a4ae1f580bdd112e73 .          softwareheritage.org/browse/content/sha1_git:
+                                                                      722096b0bef02298a1272396da95a6e6aef72090/?origin_
+28. See, e.g., https://9to5google.com/2024/04/04/google-wallet-       url=https://gitlab.com/anonym_123/anon_payments/&path=
+    verification/                                                     attacks_plastic/traces/helper_understanding/traces_
+                                                                      CVMResults/MCplasticonlineproxsniff.txt
+29. GooglePay     entering    transport-mode    just    based
+    on    TTQ;     video    evidence:        https://archive.     37. https://archive.softwareheritage.org/browse/content/
+    softwareheritage.org/browse/content/sha1_git:                     sha1_git:224b744281a6ce64e9df20b7d09a9cdd78452801/
+    b9361f5dca554a4f67f9deda4fd15df68285f07c/?origin_                 ?origin_url=https://gitlab.com/
+    url=https://gitlab.com/anonym_123/anon_payments/                  anonym_123/anon_payments/&path=
+    &path=9484e7ae7a6c345c0993943a6fbbfb049f1fbe79/                   9484e7ae7a6c345c0993943a6fbbfb049f1fbe79/attacks_
+    attacks_mobile/traces_and_videos/helper_                          mobile/traces_and_videos/helper_understanding/
+    understanding/understanding_googleTransport/                      understanding_samsungPay_onSquare/noSamsungPay-
+    googlePay_enters_transport_mode_and_pays_without_                 accepted-normally-on-square.mp4
+    auth_on_Square_due_to_TTQ.mp4       and  https://archive.
+    softwareheritage.org/browse/content/sha1_git:                 38. https://squareup.com/help/gb/en/article/7777-process-
+    fdefa307169b78b1c0450ac86ec03fa632bd4ba3/?origin_                 card-payments-with-offline-mode
+    url=https://gitlab.com/anonym_123/anon_payments/              39. https://www.sumup.com/en-gb/air-contactless-card-
+    &path=9484e7ae7a6c345c0993943a6fbbfb049f1fbe79/                   reader/
+    attacks_mobile/traces_and_videos/helper_understanding/
+    understanding_googleTransport/googlePay_does_not_enter_
+    transport_with_onlineSumUp_as_TTQ_not_like_Square.mp4
+30. See our sniffed GooglePay paying Transport for London here:
+    https://archive.softwareheritage.org/browse/directory/        [40] David Basin, Ralf Sasse, and Jorge Toro-Pozo. Card
+    9484e7ae7a6c345c0993943a6fbbfb049f1fbe79/?origin_url=
+    https://gitlab.com/anonym_123/anon_payments/&path=
+                                                                       brand mixup attack: Bypassing the PIN in non-visa
+    attacks_mobile/traces_and_videos/helper_understanding/             cards by using them for visa transactions. In 30th
+    understanding_googleTransport .                                    USENIX Security Symposium, 2021.
+31. See   the   ATTACK7    trace  here:     https://archive.
+    softwareheritage.org/browse/content/sha1_git:
+                                                                  [41] David Basin, Patrick Schaller, and Jorge Toro-Pozo.
+    b71527bcc5dccf20c9fd224fde1568726e57c7e9/?origin_                  Inducing authentication failures to bypass credit card
+    url=https://gitlab.com/anonym_123/anon_payments/&path=             PINs. In 32nd USENIX Security Symposium (USENIX
+    9484e7ae7a6c345c0993943a6fbbfb049f1fbe79/attacks_
+
+
+
+
+7992   34th USENIX Security Symposium                                                                      USENIX Association
+     Security 23), pages 3065–3079, Anaheim, CA, August           [55] Aleksei Stennikov Timur Yunusov, Artem Ivachev. New
+     2023. USENIX Association.                                         vulnerabilities in public transport schemes for apple pay,
+                                                                       samsung pay, gpay. White Paper, 2021.
+[42] David A. Basin, Ralf Sasse, and Jorge Toro-Pozo. The
+     EMV standard: Break, fix, verify. In Security and Pri-       [56] Visa. Visa merchant data standards manual, 2019.
+     vacy (SP), 2021.
+                                                                  [57] Timur Yunusov. Hand in your pocket without you notic-
+[43] Bruno Blanchet, Ben Smyth, Vincent Cheval, and Marc               ing: Current state of mobile wallet security. Black Hat
+     Sylvestre. ProVerif 2.00: Automatic cryptographic pro-            Europe, 2021.
+     tocol verifier, user manual and tutorial, 2018.
+[44] Ioana Boureanu, Tom Chothia, Alexandre Debant, and           A     Online vs Offline EMV, At a Glance
+     Stéphanie Delaune. Security Analysis and Implementa-
+     tion of Relay-Resistant Contactless Payments. In Com-
+     puter and Communications Security (CCS), 2020.
+[45] Tom Chothia, Flavio D. Garcia, Joeri de Ruiter, Jordi
+     van den Breekel, and Matthew Thompson. Relay cost
+     bounding for contactless EMV payments. In Financial
+     Cryptography (FC), LNCS, 2015.
+[46] J. de Ruiter and E. Poll. Formal analysis of the emv
+     protocol suite. In Theory of Security and Applications -
+     Joint Workshop, TOSCA, 2011.
+[47] D. Dolev and A. Yao. On the Security of Public-Key
+     Protocols. IEEE Transactionson Information Theory 29,
+     29(2), 1983.
+[48] Martin Emms, Budi Arief, Nicholas Little, and Aad
+     van Moorsel. Risks of offline verify pin on contactless
+     cards. In Ahmad-Reza Sadeghi, editor, Financial Cryp-
+     tography and Data Security, pages 313–321, Berlin,
+     Heidelberg, 2013. Springer Berlin Heidelberg.
+[49] L.-A. Galloway and T. Yunusov. First contact: New
+     vulnerabilities in contactless payments. In Black Hat
+     Europe, 2019.
+[50] ISO. 7816-4: 2020 – Identification cards – Integrated cir-
+     cuit cards Part 4: Organization, security and commands
+     for interchange. Standard, International Organization
+     for Standardization, 2020.
+[51] S. Meier, B. Schmidt, C. Cremers, and D. A. Basin.
+     The tamarin prover for the symbolic analysis of secu-
+     rity protocols. In Computer Aided Verification - 25th
+     International Conference, CAV, 2013.
+[52] Andreea-Ina Radu, Tom Chothia, Christopher J.P. New-
+     ton, Ioana Boureanu, and Liqun Chen. Practical emv
+     relay protection. In 2022 IEEE Symposium on Security
+     and Privacy (SP), pages 1737–1756, 2022.
+[53] The Tamarin Team. Tamarin-Prover Manual. Security                Figure 6: Online & Offline EMV in Visa & Mastercard
+     Protocol Analysis in the Symbolic Model. 9 2021.
+[54] The Tamarin Team. Tamarin prover manual. The
+     Tamarin Team, 2024.
+
+
+
+USENIX Association                                                                  34th USENIX Security Symposium         7993
+B   More on Our Methodology                                C    The VAS Protocol – Details
+                                                           The first step is for the reader to select the VAS app, by send-
+                                                           ing the “SELECT OSE.VAS.01” message to the phone. The
+                                                           phone replies with a TLV message, which uses different tag
+                                                           meanings to EMV. The tags we have seen are: 50: applica-
+                                                           tion name e.g., ‘ApplePay’, 9F21: version e.g., 0100, 9F23
+                                                           capabilities e.g., VAS supported, and 9F24 to provide a nonce.
+                                                              The reader then issues a GET DATA command. This com-
+                                                           mand includes the pass type ID, a nonce, terminal capabilities
+                                                           and optionally a URL. The phone then generates an ephemeral
+                                                           ECDH key and uses the ANSI X9.63 SHA 256 key derivation
+                                                           function to combine this with the long term key and nonces
+                                                           to make a session key. The pass data is then encrypted with
+                                                           AES128 GCM and sent to the reader with the ephemeral key.
+
+                                                           D    Decoding the SDAD
+                                                           To the best of our knowledge, past papers have refered to
+                                                           the EMV specification for this, however the specification
+                                                           documents are quite vague, so some guess work has been
+                                                           used. In this section we decode the certificates and the SDAD,
+                                                           so we can clearly demonstrate what exactly is authenticated.
+                                                              The card holds two certificates: 1) the Issuer’s; 2). the
+                                                           ICC’s (card’s). During the transaction it may also generate the
+                                                           signed SDAD. Each of these are a single block of RSA. The
+                                                           reader holds the public key certificates of the issuers, which
+                                                           are publicly available, e.g., https://www.eftlab.com/
+                                                           knowledge-base/list-of-ca-public-keys and the card
+                                                           indicates which key was used to sign the Issuer Certificate in
+                                                           the Key Index field sent by the card. The reader applies RSA
+                                                           to decrypt this Issuer Certificate, e.g.,
+
+                                                           Issuer Certificate from Visa card:
+                                                             Cert Header: 6a
+                                                             Certificate Format: 02
+                                                             Leftmost PAN digits: 483205ff
+                                                             Cert Expiration Date: 1223
+                                                             Cert Serial Number: 037691
+                                                             Hash Algorithm Indicator: 01
+                                                             Issuer Public Key Algorithm Indicator: 01
+                                                             Issuer Public Key Length: b0
+                                                             Issuer Public Key Exponent Length: 01
+                                                             Leftmost Bytes of the Issuer Public Key:
+                                                             b7122d435423228412c77896488bee7056f81109
+                                                             ... 1f7e89cfabf64928f31
+                                                             Hash: 0d4bfa9a3c98a03dc57c1e4c6af34ed71d
+                                                             1ee98d
+                                                             Trailing byte: bc
+                                                           Hashed data is the ICC cert data expect
+                                                           header, hash and trailing byte + ICC
+Figure 7: Our Methodology for Online-EMV Attacks (arrows   Public Key Expo
+form a relay-based MiM attack; red arrows – active MiMs)
+                                                             We found the hashed data by trial and error. Mastercard
+                                                           contain more data in the hash, i.e., the ICC cert data, ICC
+                                                           Public Key Exponent, all of the second record and the AIP.
+
+
+
+7994   34th USENIX Security Symposium                                                               USENIX Association
+   As the signature can be no longer than the key, the Issuer             F   Diagram of Mastercard’s Protocol with Rel-
+Certificate only contains the leftmost bytes of the key used for              evant Details Highlighted
+the ICC Certificate. The right most bytes are sent in the clear
+in READ RECORDS. Putting these bytes together makes
+it possible to decrypt the ICC Certificate as well, which is
+similar to the one above.
+   The SDAD is shorter than the ICC or Issuer Certificate so                                                     CVM List includes
+the entire SDAD key fits inside the ICC Certificate. Using
+                                                                                                                  “CVM= customer-validation methods”
+this we can decrypt the SDAD:                                                                                     if the device support PIN, or CDCVM,
+                                                                                                                 or signature, all all….
+
+SDAD:
+  Cert Header: 6a
+  Certificate Format: 95
+  Hash Algorithm Indicator: 01
+  ICC Dynamic Data Length (hex): 03                                                                               CVM Result
+                                                                                                                 instructs the card what type of
+  ICC Dynamic Data (ATC): 0200b4                                                                                 customer validations the reader
+  Padding: bbbbbbbbbbbb...bbbbbbbbb                                                                              expects; inline with the CVM List and
+                                                                                                                 the reader’s abilities….
+  Hash: 733f8f64b5a2e9f0b9147282e398050121
+  adb47a
+  Trailing byte: bc
+Hashed data is the UN, Amount, Currency and
+CARD data
+
+We found that Visa included less data in the SDAD than some                                                       CDOL1 includes the reader’s
+                                                                                                                 expected CVM Result is in the
+previous authors have claimed. However, the card data, in                                                        SDAD….
+
+the hash, does contain the CTQ, so the reader can check the
+integrity of this field. The Mastercard SDAD contains more
+information, including the card records and the IAD.
+                                                                          Figure 8: Mastercard’s PayPassProtocol (Most-relevant EMV
+E    Decoding CVM Results                                                 fields in bold face and explained).
+
+
+                            Offline   Offline   Online   Online
+                            UTL       OTL       UTL      OTL
+ Plastic Card (offline)     3F0001    3F0001    1F0302   020300
+ Apple/Google         Pay   010002    010002    3F0002   010002
+ (locked or unlocked)
+
+(a) 3F0001: No CVM performed; No CVM performed; Failed (or no CVM
+  Condition Code satisfied); (b) 1F0302: No CVM required; If terminal
+supports the CVM, Successful; (c) 3F0002: No CVM performed; No CVM
+  performed; Successful; (d) 020300: Enciphered PIN verified online; If
+    terminal supports the CVM; Unknown; (e) 010002: Plaintext PIN
+     verification performed by ICC; No CVM performed; Successful
+
+
+      Table 1: CVM Results with the Square Terminal
+
+
+
+
+USENIX Association                                                                         34th USENIX Security Symposium              7995
+G      Relevant EMV Fields and Bits
+
+    AC       Application Cryptogram                A cryptogram generated by the card and used by the Issuer to confirm the legitimacy of
+                                                   the transaction.
+    AFL      Application File Locator              A list of application data records stored on the card. This is used to indicate to the terminal
+                                                   what data should be used when processing the transaction.
+    AID      Application Identifier                An Application Identifier uniquely labels an Europay, Mastercard, and Visa (EMV) appli-
+                                                   cation. A card reports to a reader the AIDs programmed into it, and the reader will select
+                                                   a supported one to process a transaction.
+    AIP      Application Interchange Profile       This indicates to the terminal what processing should be done for the transaction.
+    ATC      Application Transaction Counter       A counter stored on the card and incremented for each transaction. The Issuer monitors
+                                                   this value which should always increase.
+ CDCVM       Consumer Device CVM                   The authentication method used on the consumer’s own device for cardholder verification.
+  CDOL       Card Risk Management Data Object      This list specifies the data to be used when generating the AC.
+             List
+    CID      Cryptogram Information Data           This data is returned by the card as part of the response to the Generate AC command. It
+                                                   is used to indicate the type of cryptogram and the actions to be taken by the terminal.
+    CTQ      Card Transaction Qualifier            This is set on the card when it is issued and is used to control what actions the terminal
+                                                   should take during a transaction.
+     CV      Cardholder Verification               Verifying that it is the legitimate cardholder who is making the transaction.
+    CVMs     Cardholder Verification Methods       These are used to verify that the right cardholder is present during the payment.
+    CVR      Card Verification Results             Data returned to the Issuer as part of the IAD.
+     FCI     File Control Information              This is a template that gives information about the data fields that follow. The FCI is not
+                                                   specific to EMV, it is part of the Level 2 specification (ISO/IEC 7816-4 [50]).
+ GEN AC      Generate AC                           The instruction to generate the application cryptogram.
+  GPO        Get Processing Options                A command sent to the card with the requested PDOL data to retrieve transaction specific
+                                                   application data (AFL and IAD).
+    IAC      Issuer Action Code                    This specifies what action the Issuer wants to be taken based on the TVR. Possible actions
+                                                   are: default, denial and online.
+  IAD        Issuer Application Data               Proprietary application data to be used in the transaction.
+  ICC        Issuer Country Code                   Indicates the country of the card issuer.
+  MCC        Merchant Category Code                An ISO 18245 code used to classify the business type.
+ PDOL        Processing options Data Object List   A list of data sent to the card for it to use when processing the transaction.
+ SDAD        Signed Dynamic Application Data       A digital signature on the data used for DDA, or SDA.
+ Track 2     User’s account information on the     The location of the user’s data on the card.
+             card
+    TRID     Token Requestor ID                    ID which uniquely identifies the pairing of Token Requester with the Token Service
+                                                   Provider.
+    TRM      Terminal Risk Management              The processes carried out on the terminal to protect from fraud.
+    TTQ      Terminal Transaction Qualifier        Data fixed on the terminal detailing its abilities and requirements.
+    TVR      Terminal Verification Results         This 5 byte result contains flags that show the result of the different processing functions
+                                                   that have been carried out as part of the transaction.
+    UN       Unpredictable Number                  A nonce used as part of a transaction. Both the terminal and the card use nonces.
+
+
+
+ Relevant EMV field          Relevant EMV flag in this field                                                               Position in field
+ AIP                         On device cardholder verification supported                                                   Byte 1, Bit 2
+                             Online PIN Required                                                                           Byte 1, Bit 8
+ CTQ
+                             CDCVM performed                                                                               Byte 2, Bit 8
+                             Offline Data Authentication for Online Authorizations supported                               Byte 1, Bit 1
+ TTQ
+                             CVM required                                                                                  Byte 2, Bit 7
+
+                                        Table 3: Relevant EMV fields, flags and their position.
+
+
+
+
+7996     34th USENIX Security Symposium                                                                                 USENIX Association
+

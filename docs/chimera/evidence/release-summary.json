@@ -1,0 +1,20 @@
+{
+  "baselineCommit": "082b8f10af953595ffe4dff31d82a8d2792cb4b9",
+  "apkSha256": "afe0e7aea9bda052304c97e8cc20342d123507f86ba56d02ff3be70803cb6cc6",
+  "sameSigningIdentityAs1_1": true,
+  "applicationId": "lab.nfc",
+  "versionCode": 3,
+  "versionName": "3.0-chimera",
+  "jvm": {
+    "tests": 47,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "pythonExisting": 8,
+  "pythonNew": 5,
+  "physicalExperiments": 0,
+  "androidTestsExecutedThisVersion": 0,
+  "officialEmvCasesExecuted": 0,
+  "vulnerabilitiesDemonstrated": 0
+}
