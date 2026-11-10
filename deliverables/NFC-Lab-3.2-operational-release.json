@@ -1,0 +1,33 @@
+{
+  "applicationId": "lab.nfc",
+  "version": "3.2-operational",
+  "versionCode": 5,
+  "sourceCommit": "d467dc613909ffdb8d187c966661583a6ee91a50",
+  "sourceTag": "nfclab-3.2-operational",
+  "baselineTag": "pre-v3.2-operational",
+  "generatedAt": "2026-11-10T09:54:26.150812+00:00",
+  "jvmTestsPassed": 89,
+  "composeInteractionTestsPassedOnHost": 3,
+  "pythonTestsPassed": 19,
+  "androidInstrumentedTestsExecuted": 0,
+  "physicalExperimentsExecuted": 0,
+  "lintErrors": 0,
+  "lintWarnings": 10,
+  "signerCertificateSha256": "b5a82a5a677a7e111591365a1ee6113a135a02fd81f78e39e31b458f44659ea5",
+  "windowsDestination": "D:\\NFC-Lab",
+  "limitations": "docs/operational/README.md",
+  "files": {
+    "NFC-Lab-3.2-operational-debug.apk": {
+      "sha256": "49817b6ea7f6cd631e49fc96066d7f23f1211e0be76f1e03eab9ca020a78c07d",
+      "bytes": 9398572
+    },
+    "NFC-Lab-3.2-operational-androidTest.apk": {
+      "sha256": "6423b23794fbb886b39c571f8a771d40e4e7122bbca58162c787ac30cf780234",
+      "bytes": 377832
+    },
+    "NFC-Lab-3.2-operational-history.bundle": {
+      "sha256": "c794109418286194619ba19fbc0f3f7aec957149de2c161d8315b2872c271e64",
+      "bytes": 536239
+    }
+  }
+}

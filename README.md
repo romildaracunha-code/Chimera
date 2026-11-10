@@ -2,7 +2,7 @@
 
 ## NFC Lab 3.2 — recuperação e operação
 
-[APK atualizado](https://github.com/romildaracunha-code/Chimera/releases/download/nfclab-3.2-operational/NFC-Lab-3.2-operational-debug.apk) · [Fontes completos](https://github.com/romildaracunha-code/Chimera/releases/download/nfclab-3.2-operational/NFC-Lab-3.2-operational-project.zip) · [Manual 3.2](docs/operational/README.md) · [Validação executada](docs/operational/VALIDATION.md).
+[APK atualizado](deliverables/NFC-Lab-3.2-operational-debug.apk) · [Fontes completos](deliverables/NFC-Lab-3.2-operational-project.zip) · [Manual 3.2](docs/operational/README.md) · [Validação executada](docs/operational/VALIDATION.md).
 
 Evolução da 3.1: recuperação pela tela de erro em banco separado, sessões criptografadas e paginadas (50 por página), exportação completa em stream, retenção automática opcional, recuperação do destino de importação após recriação da tela, diagnóstico do próprio Android e proteção de CSV contra fórmulas.
 
