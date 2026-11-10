@@ -46,12 +46,14 @@ class MainActivity: ComponentActivity() {
  private val saveChimera=registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
   val uri=result.data?.data;val text=pendingText;val file=pendingFile;pendingText=null;pendingFile=null
   if(result.resultCode==RESULT_OK && uri!=null) lifecycleScope.launch(Dispatchers.IO) {
-   runCatching { require(text!=null || file!=null) { "Exportação interrompida; gere novamente após rotação" };contentResolver.openOutputStream(uri)?.use { out -> if(file!=null) file.inputStream().use { it.copyTo(out) } else out.write(text!!.toByteArray()) } ?: error("Destino indisponível") }
-    .onSuccess { chimera.message.value="Arquivo exportado; revise antes de compartilhar" }.onFailure { chimera.message.value=it.message ?: "Erro de exportação" }
+   val restoredText=text ?: SecureRepository.get(applicationContext).read("draft/saf-export")?.toString(Charsets.UTF_8)
+   runCatching { require(restoredText!=null || file!=null) { "Exportação interrompida; gere novamente após rotação" };contentResolver.openOutputStream(uri)?.use { out -> if(file!=null) (if(file.name.endsWith(".enc")) chimera.repository.openSealedFile(file) else file.inputStream()).use { it.copyTo(out) } else out.write(restoredText!!.toByteArray()) } ?: error("Destino indisponível") }
+    .onSuccess { chimera.message.value="Arquivo exportado; revise antes de compartilhar";chimera.repository.delete("draft/saf-export");file?.delete() }.onFailure { chimera.message.value=it.message ?: "Erro de exportação" }
   }
  }
  private val readChimera=registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
   val callback=pendingRead;pendingRead=null
+  if(uri!=null && callback==null) chimera.message.value="Importação interrompida pela recriação da tela; selecione novamente o arquivo para revisar seu conteúdo"
   if(uri!=null && callback!=null) lifecycleScope.launch(Dispatchers.IO) {
    runCatching { contentResolver.openInputStream(uri)?.use { chimera.importAnalysisFile(it) } ?: error("Arquivo indisponível") }
     .onSuccess { text -> runOnUiThread { callback(text) } }.onFailure { chimera.message.value=it.message ?: "Importação inválida" }
@@ -65,18 +67,52 @@ class MainActivity: ComponentActivity() {
    chimera.attach(stream,name,request.third,request.first,request.second)
   }.onFailure { chimera.message.value=it.message ?: "Anexo inválido" }
  }
- private fun offerExport(name:String,mime:String,text:String?=null,file:java.io.File?=null) { runOnUiThread {
-  pendingText=text;pendingFile=file
-  saveChimera.launch(Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType(mime).putExtra(Intent.EXTRA_TITLE,name))
- } }
+ private fun offerExport(name:String,mime:String,text:String?=null,file:java.io.File?=null) {
+  lifecycleScope.launch(Dispatchers.IO) {
+   runCatching {
+    if(text!=null) chimera.repository.write("draft/saf-export",text.toByteArray()) else chimera.repository.delete("draft/saf-export")
+    kotlinx.coroutines.withContext(Dispatchers.Main) {
+     pendingText=text;pendingFile=file
+     saveChimera.launch(Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType(mime).putExtra(Intent.EXTRA_TITLE,name))
+    }
+   }.onFailure { chimera.message.value=it.message ?: "Erro ao preparar exportação" }
+  }
+ }
+ private var ready=false
  private lateinit var reader: ReaderController
  private val capability=mutableStateOf(Capabilities(false,false,false,false))
  private var exportText=""
  private val exportJson=registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri -> writeExport(uri) }
  private val exportCsv=registerForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri -> writeExport(uri) }
- private fun writeExport(uri: android.net.Uri?) { if(uri!=null) runCatching { contentResolver.openOutputStream(uri)?.use { it.write(exportText.toByteArray()) } ?: error("Destino indisponível") }.onSuccess { vm.message.value="Exportação concluída" }.onFailure { vm.message.value="Falha ao exportar: ${it.message}" } }
- override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState); reader=ReaderController(this,vm)
- setContent {
+ private fun offerLegacyExport(name:String,body:String,csv:Boolean=false) {
+  lifecycleScope.launch(Dispatchers.IO) {
+   runCatching {
+    SecureRepository.get(applicationContext).write("draft/legacy-export",body.toByteArray());exportText=body
+    kotlinx.coroutines.withContext(Dispatchers.Main) { if(csv) exportCsv.launch(name) else exportJson.launch(name) }
+   }.onFailure { vm.message.value=it.message ?: "Erro ao preparar exportação" }
+  }
+ }
+ private fun writeExport(uri: android.net.Uri?) {
+  if(uri!=null) lifecycleScope.launch(Dispatchers.IO) {
+   runCatching {
+    val text=exportText.ifEmpty { SecureRepository.get(applicationContext).read("draft/legacy-export")?.toString(Charsets.UTF_8) ?: error("Exportação interrompida; gere novamente") }
+    contentResolver.openOutputStream(uri)?.use { it.write(text.toByteArray()) } ?: error("Destino indisponível")
+    SecureRepository.get(applicationContext).delete("draft/legacy-export");exportText=""
+   }.onSuccess { vm.message.value="Exportação concluída" }.onFailure { vm.message.value="Falha ao exportar: ${it.message}" }
+  }
+ }
+ override fun onCreate(savedInstanceState: Bundle?) {
+  super.onCreate(savedInstanceState)
+  savedInstanceState?.getString("pendingFile")?.let { path -> java.io.File(path).takeIf { it.canonicalFile.parentFile==cacheDir.canonicalFile }?.let { pendingFile=it } }
+  savedInstanceState?.getString("attachmentRun")?.let { run -> runCatching { pendingAttachment=Triple(run,ArtifactRole.valueOf(savedInstanceState.getString("attachmentRole")!!),savedInstanceState.getBoolean("attachmentAuthorized")) } }
+  setContent { MaterialTheme(colorScheme=darkColorScheme()) { Surface(Modifier.fillMaxSize()) { Column(Modifier.padding(24.dp)) { Text("NFC Lab • abrindo e verificando armazenamento…");LinearProgressIndicator() } } } }
+  lifecycleScope.launch(Dispatchers.IO) {
+   runCatching { WorkspaceBootstrap.prepare(applicationContext) }.onSuccess {
+    kotlinx.coroutines.withContext(Dispatchers.Main) { ready=true;reader=ReaderController(this@MainActivity,vm);showApp();capability.value=Capabilities.detect(this@MainActivity) }
+   }.onFailure { error -> runOnUiThread { setContent { MaterialTheme { Surface(Modifier.fillMaxSize()) { Column(Modifier.padding(24.dp)) { Text("Armazenamento indisponível; dados preservados. Não reinstale nem limpe os dados.");Text(error.cause?.message ?: error.message ?: "Erro de abertura") } } } } } }
+  }
+ }
+ private fun showApp() { setContent {
  MaterialTheme(colorScheme=darkColorScheme(primary=Color(0xFF29D8FF),secondary=Color(0xFF418BFF),background=Color(0xFF0B0F16),surface=Color(0xFF151D29))) {
  Surface(Modifier.fillMaxSize()) { LabApp(vm,capability.value,
  chimera=chimera,
@@ -88,14 +124,19 @@ class MainActivity: ComponentActivity() {
  onStopReader={ reader.stop(); vm.message.value="Leitor desativado" },
  onHce={ reader.stop(); if(capability.value.enabled && capability.value.hce) { vm.startHce(); preferHce() } else vm.message.value="HCE requer NFC ligado e suporte HCE" },
  onSettings={ runCatching { startActivity(Intent(Settings.ACTION_NFC_SETTINGS)) }.onFailure { vm.message.value="Configuração NFC não disponível neste Android" } },
- onPhysicalExport={ filename,body -> exportText=body; exportJson.launch(filename) },
- onExport={ csv,session -> val list=session?.let { listOf(it) } ?: vm.store.sessions.value; exportText=if(csv) Export.csv(list) else Export.json(list); if(csv) exportCsv.launch("nfc-lab.csv") else exportJson.launch("nfc-lab.json") }) }
+ onPhysicalExport={ filename,body -> offerLegacyExport(filename,body) },
+ onExport={ csv,session -> val list=session?.let { listOf(it) } ?: vm.store.sessions.value; offerLegacyExport(if(csv) "nfc-lab.csv" else "nfc-lab.json",if(csv) Export.csv(list) else Export.json(list),csv) }) }
  }
  }
+ }
+ override fun onSaveInstanceState(out:Bundle) {
+  pendingFile?.let { out.putString("pendingFile",it.absolutePath) }
+  pendingAttachment?.let { out.putString("attachmentRun",it.first);out.putString("attachmentRole",it.second.name);out.putBoolean("attachmentAuthorized",it.third) }
+  super.onSaveInstanceState(out)
  }
  private fun preferHce() { if(capability.value.hce) NfcAdapter.getDefaultAdapter(this)?.let { CardEmulation.getInstance(it).setPreferredService(this,ComponentName(this,LabHceService::class.java)) } }
- override fun onResume() { super.onResume(); capability.value=Capabilities.detect(this); if(vm.store.activeHce!=null) preferHce() }
- override fun onPause() { reader.stop(); if(capability.value.hce) NfcAdapter.getDefaultAdapter(this)?.let { CardEmulation.getInstance(it).unsetPreferredService(this) }; super.onPause() }
- override fun onDestroy() { reader.destroy(); super.onDestroy() }
+ override fun onResume() { super.onResume(); capability.value=Capabilities.detect(this); if(ready && vm.store.activeHce!=null) preferHce() }
+ override fun onPause() { if(::reader.isInitialized) reader.stop(); if(capability.value.hce) NfcAdapter.getDefaultAdapter(this)?.let { CardEmulation.getInstance(it).unsetPreferredService(this) }; super.onPause() }
+ override fun onDestroy() { if(ready) chimera.flushDraft();if(::reader.isInitialized) reader.destroy(); super.onDestroy() }
 }
 fun time(value: Long): String = SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS",Locale.getDefault()).format(Date(value))

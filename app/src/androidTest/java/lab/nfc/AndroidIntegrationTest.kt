@@ -46,7 +46,7 @@ class AndroidIntegrationTest {
  val c=ApplicationProvider.getApplicationContext<Context>(); val store=LabStore.get(c)
  val e=LabEngine(); val s=Session(device="Android instrumentation",technology="Logical only",mode="SIMULAÇÃO LOCAL",profile="LAB-TEST")
  store.save(s); store.append(s.id,Exchange(1,"SIMULATED",LabProtocol.SELECT,e.exchange(LabProtocol.SELECT.bytes(),s.profile).hex(),0))
- val disk=java.io.File(c.filesDir,"sessions.json").readText(); val a=JSONArray(disk)
+ val disk=SecureRepository.get(c).read("legacy/sessions")!!.toString(Charsets.UTF_8); val a=JSONArray(disk)
  val found=(0 until a.length()).map { Session.from(a.getJSONObject(it)) }.first { it.id==s.id }
  assertEquals("9000",found.exchanges.single().status)
  assertTrue(Export.csv(listOf(found)).contains("SIMULATED"))
@@ -65,7 +65,7 @@ class PhysicalStorageIntegrationTest {
   val plan=PhysicalExperiment(terminalId=id,operator="AUTOMATED TEST",phoneReference="TEST FIXTURE",environment=ExperimentEnvironment.LAB_PROTOCOL,environmentReference="AUTOMATED STORAGE ONLY",credential=CredentialKind.NFC_LAB_FICTITIOUS,emv=ProcessingResult.NOT_APPLICABLE,authorization=AuthorizationResult.NOT_REQUESTED,notes="No physical experiment executed")
   assertThrows(IllegalArgumentException::class.java) { store.saveExperiment(plan.copy(labSessionId=simulated.id)) }
   store.saveExperiment(plan)
-  val disk=JSONArray(java.io.File(c.filesDir,"physical-experiments.json").readText())
+  val disk=JSONArray(SecureRepository.get(c).read("legacy/experiments")!!.toString(Charsets.UTF_8))
   val saved=(0 until disk.length()).map { PhysicalExperiment.from(disk.getJSONObject(it)) }.first { it.id==plan.id }
   assertEquals(plan.copy(terminalSnapshot=store.devices.value.first { it.internalId==id }),saved); assertEquals(Observation.UNKNOWN,saved.nfc)
  }
@@ -84,5 +84,18 @@ class ChimeraIntegrationTest {
    val reload=lab.nfc.core.chimera.ChimeraLedger(dir,seed)
    assertNull(reload.integrityError);assertEquals(0,reload.snapshot().getJSONArray("runs").length());assertEquals("PUBLIC_TEST",reload.snapshot().getJSONArray("analyses").getJSONObject(0).getString("origin"))
   } finally { dir.deleteRecursively() }
+ }
+}
+
+@RunWith(AndroidJUnit4::class)
+class KeystoreIntegrationTest {
+ @Test fun authenticatedEncryptedCacheRoundTripAndNoPlaintextFile() {
+  val c=ApplicationProvider.getApplicationContext<Context>();val repo=SecureRepository.get(c)
+  val f=java.io.File(c.cacheDir,"synthetic-keystore-test.enc")
+  try {
+   repo.sealFile(f) { it.write("SYNTHETIC SOFTWARE FIXTURE ONLY".toByteArray()) }
+   assertFalse(f.readText().contains("SYNTHETIC SOFTWARE FIXTURE ONLY"))
+   assertEquals("SYNTHETIC SOFTWARE FIXTURE ONLY",repo.openSealedFile(f).bufferedReader().use { it.readText() })
+  } finally { f.delete() }
  }
 }

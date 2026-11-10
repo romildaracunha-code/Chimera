@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lab.nfc.LabTests" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-10T08:40:37" hostname="d61db6bbd1f9" time="0.009">
+  <properties/>
+  <testcase name="persistenceAndJsonRoundTrip" classname="lab.nfc.LabTests" time="0.003"/>
+  <testcase name="responseParsingAndSerialization" classname="lab.nfc.LabTests" time="0.001"/>
+  <testcase name="whitespaceHexAndDecode" classname="lab.nfc.LabTests" time="0.0"/>
+  <testcase name="statusWordsAndErrors" classname="lab.nfc.LabTests" time="0.001"/>
+  <testcase name="parseAllShortCasesAndRoundTrip" classname="lab.nfc.LabTests" time="0.0"/>
+  <testcase name="csvEscapesNotesAndExportsEmptySessions" classname="lab.nfc.LabTests" time="0.001"/>
+  <testcase name="deviceCatalogRoundTrip" classname="lab.nfc.LabTests" time="0.0"/>
+  <testcase name="selectAndData" classname="lab.nfc.LabTests" time="0.0"/>
+  <testcase name="rejectOversizedCommandAndInvalidLe" classname="lab.nfc.LabTests" time="0.001"/>
+  <testcase name="wrongAidClearsSelection" classname="lab.nfc.LabTests" time="0.0"/>
+  <testcase name="selectionRequiredAndReset" classname="lab.nfc.LabTests" time="0.0"/>
+  <testcase name="capabilityMatrixDoesNotAssumeHce" classname="lab.nfc.LabTests" time="0.001"/>
+  <testcase name="malformedCommandsRejected" classname="lab.nfc.LabTests" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

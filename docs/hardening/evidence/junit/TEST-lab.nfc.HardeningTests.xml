@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="lab.nfc.HardeningTests" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-11-10T08:40:37" hostname="d61db6bbd1f9" time="0.86">
+  <properties/>
+  <testcase name="retentionDeletesOnlyExplicitPreviewIds" classname="lab.nfc.HardeningTests" time="0.014"/>
+  <testcase name="tvRtsiAipAndCvmDecodeWithoutInferringApproval" classname="lab.nfc.HardeningTests" time="0.001"/>
+  <testcase name="cvmListAndKernelScope" classname="lab.nfc.HardeningTests" time="0.005"/>
+  <testcase name="aesEnvelopeAuthenticatesContextAndTampering" classname="lab.nfc.HardeningTests" time="0.027"/>
+  <testcase name="contextualContradictionIsReviewFindingOnly" classname="lab.nfc.HardeningTests" time="0.001"/>
+  <testcase name="artifactDeletionInvalidatesReviewAndExportUsesDecryptedBytes" classname="lab.nfc.HardeningTests" time="0.056"/>
+  <testcase name="pcscImportPreservesFailuresTimingAndProvenance" classname="lab.nfc.HardeningTests" time="0.01"/>
+  <testcase name="typedSdkContractCannotProduceLocalVerification" classname="lab.nfc.HardeningTests" time="0.002"/>
+  <testcase name="streamingEnvelopeAndPortableFixtureForIndependentVerification" classname="lab.nfc.HardeningTests" time="0.326"/>
+  <testcase name="encryptedRecordBackendAndDeletionRemainAuditable" classname="lab.nfc.HardeningTests" time="0.005"/>
+  <testcase name="simulationImportCannotBecomePhysicalAndBatchIsSeparated" classname="lab.nfc.HardeningTests" time="0.004"/>
+  <testcase name="portableBackupAuthenticatesPasswordAndRejectsTampering" classname="lab.nfc.HardeningTests" time="0.399"/>
+  <testcase name="comparisonIncludesFailureSequenceConfigAndTimingScope" classname="lab.nfc.HardeningTests" time="0.002"/>
+  <testcase name="independentRandomNonces" classname="lab.nfc.HardeningTests" time="0.001"/>
+  <testcase name="backupRejectsUnknownRecordsMissingArtifactsAndBadJournal" classname="lab.nfc.HardeningTests" time="0.005"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,6 +1,16 @@
 # NFC Lab
 
-## NFC Lab V3 — Operação Chimera
+## NFC Lab 3.1 — operação e proteção de dados
+
+[APK 3.1](deliverables/NFC-Lab-3.1-hardened-debug.apk) · [Projeto completo](deliverables/NFC-Lab-3.1-hardened-project.zip) · [Guia e limites](docs/hardening/README.md) · [Resultados executados](docs/hardening/VALIDATION.md).
+
+Evolução da V3, preservando HCE/Reader/ISO-DEP e a identidade de assinatura: roteiro guiado com rascunhos, Room com migração dos dados anteriores, criptografia Android Keystore, backup portátil autenticado e restauração atômica, retenção/exclusão auditável, semântica TVR/TSI/AIP/CVM, importação NFC Lab/PCSC, comparação de sequência/tempos e contratos tipados de SDK oficial.
+
+**70 testes JVM (incluindo 8 integrações Room/SQLite em Robolectric) e 17 Python aprovados. APK compilado. Zero experimentos físicos executados nesta sprint.** Android Keystore real, interface/SAF no celular e SDKs de fabricantes permanecem sem validação física. O guia lista limitações de recuperação, volume e integração; o adaptador de SDK padrão retorna bloqueios, sem fabricar execução.
+
+Código em `/workspace/NFC-Lab`; extraia os fontes no Windows em `D:\NFC-Lab`. Baseline `pre-v3.1-hardening`; release `nfclab-3.1-hardened`. Atualize com `adb install -r`, sem desinstalar/limpar dados. O ZIP não inclui keystore nem configuração local de SDK. As seções abaixo descrevem entregas históricas e não substituem o guia 3.1.
+
+## Histórico: NFC Lab V3 — Operação Chimera
 
 [APK V3](deliverables/NFC-Lab-V3-Chimera-debug.apk) · [Projeto completo](deliverables/NFC-Lab-V3-Chimera-project.zip) · [Documentação V3](docs/chimera/README.md) · [Auditoria](docs/chimera/AUDIT.md) · [Validação real e bloqueios](docs/chimera/VALIDATION.md).
 

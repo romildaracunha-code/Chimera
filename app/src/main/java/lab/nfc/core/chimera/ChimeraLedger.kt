@@ -37,25 +37,37 @@ fun cloneJson(x:JSONObject)=JSONObject(x.toString())
 fun JSONArray.objects():List<JSONObject> = (0 until length()).map { getJSONObject(it) }
 
 /** Separate, bounded v3 store. Hash journal detects accidental/tampered state, not trusted hardware attestation. */
-class ChimeraLedger(private val directory:File,seedCases:JSONArray) {
+interface LedgerRecords {
+ fun read(name:String):ByteArray?
+ fun write(name:String,value:ByteArray)
+ fun delete(name:String)
+}
+class ChimeraLedger(private val directory:File,seedCases:JSONArray,private val records:LedgerRecords?=null) {
+ private fun read(name:String)=if(records!=null) records.read(name) else File(directory,name).takeIf { it.exists() }?.readBytes()
+ private fun write(name:String,value:ByteArray) { if(records!=null) records.write(name,value) else {
+  val target=File(directory,name);val tmp=File(directory,"$name.tmp")
+  tmp.outputStream().use { it.write(value);it.fd.sync() }
+  try { Files.move(tmp.toPath(),target.toPath(),StandardCopyOption.ATOMIC_MOVE,StandardCopyOption.REPLACE_EXISTING) }
+  catch(_:java.nio.file.AtomicMoveNotSupportedException) { Files.move(tmp.toPath(),target.toPath(),StandardCopyOption.REPLACE_EXISTING) }
+ } }
+ private fun delete(name:String) { if(records!=null) records.delete(name) else File(directory,name).delete() }
+
  private val file=File(directory,"workspace-v3.json")
  private var root=JSONObject().put("schemaVersion",3).put("cases",JSONArray(seedCases.toString())).put("analyses",JSONArray()).put("runs",JSONArray()).put("artifacts",JSONArray()).put("journal",JSONArray())
  var integrityError:String?=null;private set
  init {
   directory.mkdirs()
-  if(file.exists()) {
+  val loaded=runCatching { read("workspace-v3.json") }.getOrElse { integrityError="Falha de armazenamento: ${it.javaClass.simpleName}";null }
+  if(loaded!=null) {
    val cleanSeed=cloneJson(root)
-   runCatching { require(file.length()<=16*1024*1024);root=JSONObject(file.readText());require(root.getInt("schemaVersion")==3);verifyJournal(root) }.onFailure { root=cleanSeed;integrityError="Ledger inválido; original preservado: ${it.javaClass.simpleName}" }
-  } else runCatching { commit("INITIALIZE","workspace") }.onFailure { integrityError="Não foi possível inicializar o ledger; nenhum arquivo anterior foi substituído" }
+   runCatching { require(loaded.size<=16*1024*1024);root=JSONObject(loaded.toString(Charsets.UTF_8));require(root.getInt("schemaVersion")==3);verifyJournal(root) }.onFailure { root=cleanSeed;integrityError="Ledger inválido; original preservado: ${it.javaClass.simpleName}" }
+  } else if(integrityError==null) runCatching { commit("INITIALIZE","workspace") }.onFailure { integrityError="Não foi possível inicializar o ledger; nenhum arquivo anterior foi substituído" }
  }
  @Synchronized fun snapshot():JSONObject=cloneJson(root).put("integrity",integrityError ?: "HASH_CHAIN_CONSISTENT_NOT_AUTHENTICATED")
  private fun dataDigest():String { val data=JSONObject();listOf("cases","analyses","runs","artifacts").forEach { data.put(it,root.getJSONArray(it)) };return digest(canonical(data).toByteArray()) }
  private fun persist() {
   val text=root.toString(2);require(text.length<=16*1024*1024)
-  val temp=File(directory,"workspace-v3.tmp")
-  temp.outputStream().use { it.write(text.toByteArray());it.fd.sync() }
-  try { Files.move(temp.toPath(),file.toPath(),StandardCopyOption.ATOMIC_MOVE,StandardCopyOption.REPLACE_EXISTING) }
-  catch(_:java.nio.file.AtomicMoveNotSupportedException) { Files.move(temp.toPath(),file.toPath(),StandardCopyOption.REPLACE_EXISTING) }
+  write("workspace-v3.json",text.toByteArray())
  }
  private fun commit(action:String,id:String) {
   check(integrityError==null) { integrityError!! }
@@ -103,16 +115,48 @@ class ChimeraLedger(private val directory:File,seedCases:JSONArray) {
   require(authorizedRedacted) { "Confirme autorização e redação antes de importar" };find("runs",runId)
   val existingSize=root.getJSONArray("artifacts").objects().sumOf { it.getLong("size") }
   require(existingSize<64L*1024*1024) { "Cota de anexos atingida" }
-  val id=UUID.randomUUID().toString();val target=File(directory,"$id.bin");var count=0L
+  val id=UUID.randomUUID().toString();val buffer=java.io.ByteArrayOutputStream();var count=0L
   try {
-   target.outputStream().use { output -> val buf=ByteArray(8192);while(true) { val n=input.read(buf);if(n<0) break;count+=n;require(count<=8*1024*1024) { "Anexo excede 8 MiB" };require(existingSize+count<=64L*1024*1024) { "Cota total de anexos excedida" };output.write(buf,0,n) };output.fd.sync() }
+   val buf=ByteArray(8192);while(true) { val n=input.read(buf);if(n<0) break;count+=n;require(count<=8*1024*1024) { "Anexo excede 8 MiB" };require(existingSize+count<=64L*1024*1024);buffer.write(buf,0,n) }
+   val bytes=buffer.toByteArray();write("$id.bin",bytes)
    require(count>0) { "Anexo vazio" }
-   val artifact=JSONObject().put("id",id).put("runId",runId).put("name",displayName.take(128)).put("role",role.name).put("size",count).put("sha256",digest(target.readBytes()))
+   val artifact=JSONObject().put("id",id).put("runId",runId).put("name",displayName.take(128)).put("role",role.name).put("size",count).put("sha256",digest(bytes))
     .put("registeredAt",System.currentTimeMillis()).put("origin","IMPORTED_AUTHORIZED").put("authenticity","NOT_AUTOMATICALLY_VERIFIED")
    mutate("ATTACH_AUTHORIZED_REDACTED_FILE",id) { root.getJSONArray("artifacts").put(artifact);root.getJSONArray("runs").objects().first { it.getString("id")==runId }.put("reviewer","").put("reviewReference","").put("validation","UNVERIFIED").getJSONArray("artifacts").put(id) }
-  } catch(e:Exception) { target.delete();throw e };return id
+  } catch(e:Exception) { delete("$id.bin");throw e };return id
  }
+ fun artifactBytes(id:String):ByteArray { artifactFile(id);return read("$id.bin") ?: error("Anexo ausente") }
  fun artifactFile(id:String):File { require(id.matches(Regex("[a-f0-9-]{36}")));return File(directory,"$id.bin") }
+ @Synchronized fun retentionPreview(days:Int):JSONObject {
+  require(days in 1..3650);val cutoff=System.currentTimeMillis()-days*86400000L
+  return JSONObject().put("days",days).put("cutoff",cutoff)
+   .put("analyses",JSONArray(root.getJSONArray("analyses").objects().filter { it.getLong("savedAt")<cutoff }.map { it.getString("id") }))
+   .put("artifacts",JSONArray(root.getJSONArray("artifacts").objects().filter { it.getLong("registeredAt")<cutoff }.map { it.getString("id") }))
+   .put("limit","Manual confirmation required; attached evidence deletion invalidates reviews. Runs/journal are retained.")
+ }
+ @Synchronized fun applyRetention(preview:JSONObject):JSONObject {
+  val plan=cloneJson(preview);require(plan.getInt("days") in 1..3650 && plan.getLong("cutoff")<=System.currentTimeMillis())
+  val cutoff=plan.getLong("cutoff")
+  val artifacts=plan.getJSONArray("artifacts");val analyses=plan.getJSONArray("analyses")
+  // Validate all selected records before deletion; never add records absent from the reviewed preview.
+  for(i in 0 until artifacts.length()) require(find("artifacts",artifacts.getString(i)).getLong("registeredAt")<cutoff)
+  for(i in 0 until analyses.length()) require(find("analyses",analyses.getString(i)).getLong("savedAt")<cutoff)
+  for(i in 0 until artifacts.length()) deleteArtifact(artifacts.getString(i))
+  for(i in 0 until analyses.length()) deleteAnalysis(analyses.getString(i))
+  return plan
+ }
+ @Synchronized fun deleteArtifact(id:String) {
+  val artifact=find("artifacts",id);val runId=artifact.getString("runId")
+  mutate("DELETE_ARTIFACT_INVALIDATE_REVIEW",id) {
+   root.put("artifacts",JSONArray(root.getJSONArray("artifacts").objects().filter { it.getString("id")!=id }))
+   val run=root.getJSONArray("runs").objects().first { it.getString("id")==runId }
+   val refs=run.getJSONArray("artifacts");run.put("artifacts",JSONArray((0 until refs.length()).map { refs.getString(it) }.filter { it!=id }))
+    .put("reviewer","").put("reviewReference","").put("validation","UNVERIFIED")
+  };delete("$id.bin")
+ }
+ @Synchronized fun deleteAnalysis(id:String) {
+  find("analyses",id);mutate("DELETE_ANALYSIS",id) { root.put("analyses",JSONArray(root.getJSONArray("analyses").objects().filter { it.getString("id")!=id })) }
+ }
  @Synchronized fun importSdk(runId:String,raw:JSONObject) {
   val required=setOf("provider","caseId","environment","result","version","traceReference")
   val allowed=required+"authenticationResult"
@@ -133,8 +177,8 @@ class ChimeraLedger(private val directory:File,seedCases:JSONArray) {
  }
  @Synchronized fun artifactIssues(runId:String):List<String> {
   val run=find("runs",runId);val refs=run.getJSONArray("artifacts");val problems=mutableListOf<String>()
-  for(i in 0 until refs.length()) { val id=refs.getString(i);val a=runCatching { find("artifacts",id) }.getOrNull();val f=runCatching { artifactFile(id) }.getOrNull()
-   if(a==null || a.optString("runId")!=runId || f==null || !f.isFile || f.length()!=a.getLong("size") || digest(f.readBytes())!=a.getString("sha256")) problems.add("Artefato ausente/alterado: $id") }
+  for(i in 0 until refs.length()) { val id=refs.getString(i);val a=runCatching { find("artifacts",id) }.getOrNull();val bytes=runCatching { artifactBytes(id) }.getOrNull()
+   if(a==null || a.optString("runId")!=runId || bytes==null || bytes.size.toLong()!=a.getLong("size") || digest(bytes)!=a.getString("sha256")) problems.add("Artefato ausente/alterado: $id") }
   return problems
  }
  @Synchronized fun stageIssues(runId:String):List<String> {

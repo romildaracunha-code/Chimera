@@ -1,0 +1,12 @@
+# Operação Chimera — verificação offline
+
+Integridade: CONSISTENT
+Autenticidade física: UNVERIFIED_BY_OFFLINE_TOOL. Não é aprovação EMV ou financeira.
+
+| Run | Terminal | Firmware | Caso | Equipe | Etapa declarada | Resultado declarado |
+| --- | --- | --- | --- | --- | --- | --- |
+| 98c996c6-428f-445b-9b4a-471f4f59ec0b | NO HARDWARE | fixture-v1 | LAB | RED | PROTOCOL_PROCESSED | PASS |
+
+## Limitações
+
+Journal/state/bytes only. Stored reviews/results remain operator declarations, not independent hardware proof.

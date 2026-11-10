@@ -1,0 +1,64 @@
+{
+  "generatedAt": "2026-11-10T08:42:24.737587+00:00",
+  "baselineTag": "pre-v3.1-hardening",
+  "version": "3.1-hardened",
+  "suites": [
+    {
+      "name": "lab.nfc.ChimeraTests",
+      "tests": "12",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.651"
+    },
+    {
+      "name": "lab.nfc.EmvTests",
+      "tests": "16",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.097"
+    },
+    {
+      "name": "lab.nfc.HardeningTests",
+      "tests": "15",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.86"
+    },
+    {
+      "name": "lab.nfc.LabTests",
+      "tests": "13",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.009"
+    },
+    {
+      "name": "lab.nfc.PhysicalTests",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.004"
+    },
+    {
+      "name": "lab.nfc.RoomIntegrationTests",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "3.863"
+    }
+  ],
+  "tests": 70,
+  "failures": 0,
+  "pythonTests": 17,
+  "lintErrors": 0,
+  "lintWarnings": 9,
+  "physicalExperimentsExecuted": 0,
+  "androidInstrumentedTestsExecutedThisSprint": 0,
+  "hardwareAvailability": "No ADB device attached",
+  "keystoreHardwareProtection": "NOT_VERIFIED"
+}

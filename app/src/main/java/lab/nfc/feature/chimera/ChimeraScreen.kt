@@ -13,7 +13,7 @@ import lab.nfc.feature.shared.Panel
 import lab.nfc.feature.devices.DeviceEditor
 import org.json.JSONObject
 
-val chimeraPages=listOf("EMV Explorer","Vulnerability Research","Physical Test Lab","Terminal Inventory","Test Case Manager","Security Evidence","Red/Blue Comparison","Technical Reports")
+val chimeraPages=listOf("Guided Workflow","Data Protection","SDK Integrations","EMV Explorer","Vulnerability Research","Physical Test Lab","Terminal Inventory","Test Case Manager","Security Evidence","Red/Blue Comparison","Technical Reports")
 @Composable private fun Field(value:String,set:(String)->Unit,label:String)=OutlinedTextField(value,{ if(it.length<=32768) set(it) },label={ Text(label) },modifier=Modifier.fillMaxWidth(),maxLines=8)
 @Composable private fun <T:Enum<T>> Cycle(label:String,value:T,values:List<T>,set:(T)->Unit) { TextButton(onClick={ set(values[(values.indexOf(value)+1)%values.size]) }) { Text("$label: ${value.name} ▸") } }
 
@@ -25,15 +25,27 @@ val chimeraPages=listOf("EMV Explorer","Vulnerability Research","Physical Test L
  val message by vm.message.collectAsStateWithLifecycle()
  val output by vm.output.collectAsStateWithLifecycle()
  val busy by vm.busy.collectAsStateWithLifecycle()
+ val draft by vm.draft.collectAsStateWithLifecycle()
+ val activeRun=draft.optString("selectedRun")
  val devices by legacy.store.devices.collectAsStateWithLifecycle()
  val cases=state.getJSONArray("cases").objects();val runs=state.getJSONArray("runs").objects()
  var runId by remember { mutableStateOf(vm.selectedRun) }
- fun selectRun(id:String) { runId=id;vm.selectedRun=id }
+ fun selectRun(id:String) { if(busy) return;runId=id;vm.selectedRun=id }
  Column(verticalArrangement=Arrangement.spacedBy(androidx.compose.ui.unit.Dp(12f))) {
   Text(message,color=MaterialTheme.colorScheme.primary)
   if(busy) LinearProgressIndicator(Modifier.fillMaxWidth())
   if(vm.ledger.integrityError!=null) { Text("Módulo V3 bloqueado; arquivos originais preservados: ${vm.ledger.integrityError}");return@Column }
   when(page) {
+   "Guided Workflow" -> GuidedWorkflow(vm,legacy,attach,export)
+   "Data Protection" -> DataProtection(vm,legacy)
+   "SDK Integrations" -> {
+    TypedSdkSummary(vm)
+    IntegrationProfile(vm)
+    Panel("Integração de fabricante • bloqueios explícitos") {
+     Text("O contrato OfficialSdkAdapter está disponível no código. Nenhum SDK de fabricante foi instalado nem pagamento executado. Informar fornecedor/versão não configura acesso ao terminal.")
+     Text("Indispensáveis: biblioteca/documentação do SDK, modelo/firmware, plano L2/L3 e credenciais oficiais, ambiente de homologação e canal autorizado de logs. O adaptador não configurado retorna Blocked com essas dependências.")
+    }
+   }
    "EMV Explorer" -> {
     var hex by remember { mutableStateOf("") };var source by remember { mutableStateOf("Entrada autorizada do pesquisador") }
     var context by remember { mutableStateOf("") };var kind by remember { mutableStateOf(InputKind.TLV) };var origin by remember { mutableStateOf(DataOrigin.IMPORTED_AUTHORIZED) }
@@ -41,7 +53,7 @@ val chimeraPages=listOf("EMV Explorer","Vulnerability Research","Physical Test L
      Text("Não envia APDUs nem comprova autenticação. PAN/trilhas/criptogramas/certificados e tags desconhecidas são omitidos nos relatórios. Não insira dados reais secretos.")
      Cycle("Formato",kind,InputKind.entries) { kind=it }
      Text("Origem: $origin. Importações nunca se tornam hardware observado pelo app.")
-     Button(onClick={ importText { hex=it;origin=DataOrigin.IMPORTED_AUTHORIZED;source="Arquivo autorizado importado por SAF" } }) { Text("Importar arquivo hexadecimal autorizado") }
+     Button(onClick={ importText { hex=it;if(it.trimStart().startsWith("{") || it.trimStart().startsWith("[")) kind=InputKind.TRACE_JSON;origin=DataOrigin.IMPORTED_AUTHORIZED;source="Arquivo autorizado importado por SAF" } }) { Text("Importar arquivo autorizado (hex / JSON NFC Lab / PCSC)") }
      vm.vectors.getJSONArray("vectors").objects().forEach { v -> TextButton(onClick={ hex=v.getString("hex");source=vm.vectors.getString("sourceUrl")+"#"+v.getString("id");kind=InputKind.TLV;origin=DataOrigin.PUBLIC_TEST }) { Text("Fixture pública: ${v.getString("id")}") } }
      TextButton(onClick={ origin=DataOrigin.SIMULATED;source="Fixture sintética declarada pelo operador" }) { Text("Marcar entrada como sintética") }
      Field(hex,{ hex=it;if(origin==DataOrigin.PUBLIC_TEST) { origin=DataOrigin.IMPORTED_AUTHORIZED;source="Fixture editada pelo operador" } },if(kind==InputKind.TRACE_JSON) "JSON: exchanges [{command,response,timestamp}]" else "Hexadecimal BER-TLV / APDU")
@@ -56,8 +68,7 @@ val chimeraPages=listOf("EMV Explorer","Vulnerability Research","Physical Test L
      Text("A=$left • B=$right")
      Button(enabled=left.isNotBlank() && right.isNotBlank(),onClick={ vm.work {
       val a=vm.ledger.find("analyses",left);val b=vm.ledger.find("analyses",right)
-      val x=a.getJSONArray("nodes").objects().associate { it.getString("path") to it.getString("value") };val y=b.getJSONArray("nodes").objects().associate { it.getString("path") to it.getString("value") }
-      vm.output.value=JSONObject().put("leftOrigin",a.getString("origin")).put("rightOrigin",b.getString("origin")).put("changedPaths",org.json.JSONArray((x.keys+y.keys).filter { x[it]!=y[it] }.sorted())).put("limit","Igualdade após redação não prova igualdade original").toString(2);"Comparação sanitizada concluída"
+      vm.output.value=TraceImport.compare(a,b).toString(2);"Comparação sanitizada e métricas declaradas calculadas"
      } }) { Text("Comparar A/B") }
     }
     if(output.isNotBlank()) Panel("Resultado técnico") { SelectionContainer { Text(if(output.length>65536) output.take(65536)+"\n[Prévia limitada; exportação mantém conteúdo completo]" else output) };TextButton(onClick={ export("emv-analysis.txt","text/plain",output) }) { Text("Exportar análise") } }
@@ -96,6 +107,7 @@ val chimeraPages=listOf("EMV Explorer","Vulnerability Research","Physical Test L
     runs.takeLast(20).forEach { r -> Panel("${r.getString("id")} • ${r.getString("team")}") { Text("${r.getJSONObject("terminalSnapshot").optString("model")} • ${r.getJSONObject("caseSnapshot").getString("id")}");Text("Observação: ${r.getString("claimedStage")} / ${r.getString("outcome")}; ${r.getString("validation")}");TextButton(onClick={ selectRun(r.getString("id")) }) { Text("Selecionar para Security Evidence") } } }
    }
    "Security Evidence" -> {
+    TypedSdkSummary(vm)
     var stage by remember { mutableStateOf(EvidenceStage.UNVERIFIED) };var outcome by remember { mutableStateOf("INCONCLUSIVE") };var notes by remember { mutableStateOf("") };var physical by remember { mutableStateOf(false) }
     var role by remember { mutableStateOf(ArtifactRole.PHYSICAL_CONTEXT) };var authorized by remember { mutableStateOf(false) };var reviewer by remember { mutableStateOf("") };var reviewRef by remember { mutableStateOf("") };var sdk by remember { mutableStateOf("") }
     Panel("Captura, hash e revisão de evidências") {
@@ -105,7 +117,7 @@ val chimeraPages=listOf("EMV Explorer","Vulnerability Research","Physical Test L
      TextButton(onClick={ val all=listOf("INCONCLUSIVE","OBSERVED","PASS","FAIL");outcome=all[(all.indexOf(outcome)+1)%all.size] }) { Text("Resultado declarado: $outcome") }
      Field(notes,{ notes=it },"Observações sem segredos / condições / limitações")
      Row { Checkbox(checked=physical,onCheckedChange={ physical=it });Text("Atesto execução presencial com equipamentos identificados; não é simulação") }
-     Button(enabled=!busy && vm.selectedRun.isNotBlank(),onClick={ vm.work { vm.ledger.observe(vm.selectedRun,stage,outcome,notes,physical);"Observação declarada, ainda UNVERIFIED até anexos/revisão" } }) { Text("Salvar observação") }
+     Button(enabled=!busy && vm.selectedRun.isNotBlank(),onClick={ vm.work { vm.ledger.observe(activeRun,stage,outcome,notes,physical);"Observação declarada, ainda UNVERIFIED até anexos/revisão" } }) { Text("Salvar observação") }
      Cycle("Tipo de anexo",role,ArtifactRole.entries) { role=it }
      Row { Checkbox(checked=authorized,onCheckedChange={ authorized=it });Text("Arquivo autorizado e já redigido, sem PAN/PIN/trilhas/chaves") }
      Button(enabled=!busy && authorized && vm.selectedRun.isNotBlank(),onClick={ attach(vm.selectedRun,role,authorized) }) { Text("Anexar arquivo real por SAF") }
@@ -118,10 +130,10 @@ val chimeraPages=listOf("EMV Explorer","Vulnerability Research","Physical Test L
      TextButton(onClick={ val v=listOf("UNKNOWN","APPROVED","DECLINED","NOT_REQUESTED");terminalDecision=v[(v.indexOf(terminalDecision)+1)%v.size] }) { Text("Resultado terminal: $terminalDecision") }
      TextButton(onClick={ val v=listOf("UNKNOWN","APPROVED","DECLINED","NOT_REQUESTED");hostDecision=v[(v.indexOf(hostDecision)+1)%v.size] }) { Text("Processador de homologação: $hostDecision") }
      Field(correlation,{ correlation=it },"Referência de correlação do host (sem segredos)")
-     Button(enabled=!busy && vm.selectedRun.isNotBlank(),onClick={ vm.work { vm.ledger.decisions(vm.selectedRun,terminalDecision,hostDecision,correlation);"Resultados separados registrados; divergências serão sinalizadas" } }) { Text("Registrar terminal / processador") }
+     Button(enabled=!busy && vm.selectedRun.isNotBlank(),onClick={ vm.work { vm.ledger.decisions(activeRun,terminalDecision,hostDecision,correlation);"Resultados separados registrados; divergências serão sinalizadas" } }) { Text("Registrar terminal / processador") }
      Field(reviewer,{ reviewer=it },"Revisor Blue distinto do operador");Field(reviewRef,{ reviewRef=it },"Referência da revisão e correlação dos traces")
-     Button(enabled=!busy && vm.selectedRun.isNotBlank(),onClick={ vm.work { vm.ledger.review(vm.selectedRun,reviewer,reviewRef);"Revisão documental registrada; não é aprovação financeira ou atestado criptográfico" } }) { Text("Revisar evidências") }
-     Button(enabled=!busy && vm.selectedRun.isNotBlank(),onClick={ vm.work { vm.output.value=vm.ledger.runReport(vm.selectedRun).toString(2);"Validação e hashes recalculados" } }) { Text("Verificar anexos e etapa efetiva") }
+     Button(enabled=!busy && vm.selectedRun.isNotBlank(),onClick={ vm.work { vm.ledger.review(activeRun,reviewer,reviewRef);"Revisão documental registrada; não é aprovação financeira ou atestado criptográfico" } }) { Text("Revisar evidências") }
+     Button(enabled=!busy && vm.selectedRun.isNotBlank(),onClick={ vm.work { vm.output.value=vm.ledger.runReport(activeRun).toString(2);"Validação e hashes recalculados" } }) { Text("Verificar anexos e etapa efetiva") }
      state.getJSONArray("artifacts").objects().filter { it.getString("runId")==vm.selectedRun }.forEach { a -> Text("${a.getString("role")} • ${a.getLong("size")} bytes • SHA256 ${a.getString("sha256")}") }
     }
     if(output.isNotBlank()) SelectionContainer { Text(if(output.length>65536) output.take(65536)+"\n[Prévia limitada; exportação mantém conteúdo completo]" else output) }
@@ -136,11 +148,13 @@ val chimeraPages=listOf("EMV Explorer","Vulnerability Research","Physical Test L
     }
    }
    "Technical Reports" -> Panel("Relatórios reproduzíveis / pacote de evidências") {
+    var reviewed by remember { mutableStateOf(false) }
+    Row { Checkbox(reviewed,{ reviewed=it });Text("Revisei notas, nomes e anexos; autorizo a exportação destes dados") }
     Text("JSON inclui snapshots, análises sanitizadas, resultados, hashes e journal. CSV/Markdown distinguem UNVERIFIED. ZIP contém somente anexos que você autorizou importar; revise antes de compartilhar.")
-    Button(enabled=!busy,onClick={ vm.work { export("chimera-report.json","application/json",vm.exportText(false));"Relatório JSON preparado" } }) { Text("Exportar JSON") }
-    Button(enabled=!busy,onClick={ vm.work { export("chimera-report.md","text/markdown",vm.exportText(true));"Relatório Markdown preparado" } }) { Text("Exportar Markdown") }
-    Button(enabled=!busy,onClick={ vm.work { export("chimera-report.csv","text/csv",vm.exportCsv());"Relatório CSV preparado" } }) { Text("Exportar CSV") }
-    Button(enabled=!busy,onClick=exportZip) { Text("Exportar ZIP com anexos e manifesto") }
+    Button(enabled=!busy && reviewed,onClick={ vm.work { export("chimera-report.json","application/json",vm.exportText(false));"Relatório JSON preparado" } }) { Text("Exportar JSON") }
+    Button(enabled=!busy && reviewed,onClick={ vm.work { export("chimera-report.md","text/markdown",vm.exportText(true));"Relatório Markdown preparado" } }) { Text("Exportar Markdown") }
+    Button(enabled=!busy && reviewed,onClick={ vm.work { export("chimera-report.csv","text/csv",vm.exportCsv());"Relatório CSV preparado" } }) { Text("Exportar CSV") }
+    Button(enabled=!busy && reviewed,onClick=exportZip) { Text("Exportar ZIP com anexos e manifesto") }
     Text("Planos ${runs.size} • análises ${state.getJSONArray("analyses").length()} • anexos ${state.getJSONArray("artifacts").length()}. A contagem não representa testes físicos aprovados.")
    }
   }

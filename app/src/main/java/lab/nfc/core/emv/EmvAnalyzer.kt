@@ -7,8 +7,8 @@ import java.security.MessageDigest
 enum class DataOrigin { PUBLIC_TEST, IMPORTED_AUTHORIZED, SIMULATED, REAL_HARDWARE }
 enum class InputKind { TLV, RESPONSE_APDU, COMMAND_APDU, TRACE_JSON }
 fun digest(b:ByteArray)=MessageDigest.getInstance("SHA-256").digest(b).hex()
-data class Analysis(val origin:DataOrigin,val kind:InputKind,val source:String,val inputHash:String,val stage:String,val status:String,val rows:List<JSONObject>,val findings:List<String>) {
- fun json()=JSONObject().put("schemaVersion",3).put("origin",origin.name).put("kind",kind.name).put("source",source).put("inputSha256",inputHash).put("stage",stage).put("statusWord",status).put("nodes",JSONArray(rows)).put("findings",JSONArray(findings)).put("authentication","NOT_CRYPTOGRAPHICALLY_VERIFIED").put("authorization","NOT_INFERRED")
+data class Analysis(val origin:DataOrigin,val kind:InputKind,val source:String,val inputHash:String,val stage:String,val status:String,val rows:List<JSONObject>,val findings:List<String>,val traceSummary:JSONObject?=null) {
+ fun json()=JSONObject().put("schemaVersion",3).put("origin",origin.name).put("kind",kind.name).put("source",source).put("inputSha256",inputHash).put("stage",stage).put("statusWord",status).put("nodes",JSONArray(rows)).put("findings",JSONArray(findings)).put("traceSummary",traceSummary ?: JSONObject.NULL).put("authentication","NOT_CRYPTOGRAPHICALLY_VERIFIED").put("authorization","NOT_INFERRED")
  fun text():String=buildString { appendLine("# EMV Explorer • $origin");appendLine("Fonte: $source");appendLine("SHA256: $inputHash");appendLine("Etapa: $stage • SW: $status");appendLine("Não verifica criptografia, autorização ou liquidação. Valores sensíveis/unknown omitidos.");rows.forEach { appendLine("${it.getString("path")} ${it.getString("tag")} ${it.getString("name")} [${it.getInt("length")}] ${it.getString("value")}") };findings.forEach { appendLine("- $it") } }
 }
 /** Offline structural analysis with explicit provenance; never generates/replays payment traffic. */
@@ -28,14 +28,15 @@ object EmvAnalyzer {
     nodes.forEach { n -> val i=seen.getOrDefault(n.tag,0);seen[n.tag]=i+1;val path="$parent/${n.tag}[$i]";val info=EmvTags.dictionary[n.tag]
      if(i>0 && n.tag !in setOf("61","70","EF","86","71","72")) notes.add("REPEATED_TAG $path: verificar escopo")
      if(info!=null && n.length !in info.min..info.max) notes.add("INVALID_LENGTH $path esperado ${info.min}..${info.max}")
-     rows.add(JSONObject().put("path",path).put("tag",n.tag).put("offset",n.offset).put("length",n.length).put("name",info?.name ?: "Unknown/proprietary").put("value",EmvTags.preview(n)))
+     rows.add(JSONObject().put("path",path).put("tag",n.tag).put("offset",n.offset).put("length",n.length).put("name",info?.name ?: "Unknown/proprietary").put("value",EmvTags.preview(n)).put("decoded",JSONArray(EmvSemantics.decode(n.tag,n.value))))
+     notes.addAll(EmvSemantics.decode(n.tag,n.value).map { "$path $it" })
      if(n.tag=="94") checkAfl(n.value,notes)
      if(n.tag in setOf("8C","8D","9F38")) runCatching { parseDol(n.value) }.onSuccess { notes.add("DOL $path: ${it.joinToString()}") }.onFailure { notes.add("INVALID_DOL $path") }
      if(n.tag=="9F27" && n.length==1) notes.add("CID ${when(n.value[0].toInt() and 0xC0) { 0->"AAC";0x40->"TC (resultado offline, não liquidação)";0x80->"ARQC (pedido online, não autorização)";else->"RFU" }}; criptografia não verificada")
      if(n.tag=="80" && ins==0xA8) { if(n.length<2) notes.add("INVALID_GPO_FORMAT1") else { notes.add("GPO format1 AIP=${n.value.copyOfRange(0,2).hex()}");if(n.length>2) checkAfl(n.value.copyOfRange(2,n.length),notes) } }
      visit(n.children,path)
     }
-   };visit(tree.nodes,"")
+   };visit(tree.nodes,"");notes.addAll(EmvSemantics.consistency(tree.nodes.flatMap { it.flatten() }))
    if(ins==0xA4 && tree.nodes.none { it.tag=="6F" }) notes.add("SELECT_RESPONSE_WITHOUT_FCI: avaliar perfil, não erro universal")
   }
   if(rows.isEmpty()) notes.add("Nenhum TLV disponível para análise")
